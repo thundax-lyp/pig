@@ -17,29 +17,6 @@
 
 package com.pig4cloud.pig.codegen.service.impl;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import org.springframework.boot.SpringBootVersion;
-import org.springframework.stereotype.Service;
-
-import com.pig4cloud.pig.codegen.config.PigCodeGenDefaultProperties;
-import com.pig4cloud.pig.codegen.entity.GenTable;
-import com.pig4cloud.pig.codegen.entity.GenTableColumnEntity;
-import com.pig4cloud.pig.codegen.entity.GenTemplateEntity;
-import com.pig4cloud.pig.codegen.service.GenFieldTypeService;
-import com.pig4cloud.pig.codegen.service.GenGroupService;
-import com.pig4cloud.pig.codegen.service.GenTableColumnService;
-import com.pig4cloud.pig.codegen.service.GenTableService;
-import com.pig4cloud.pig.codegen.service.GeneratorService;
-import com.pig4cloud.pig.codegen.util.VelocityKit;
-import com.pig4cloud.pig.codegen.util.vo.GroupVO;
-
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
@@ -47,8 +24,26 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.text.NamingCase;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
+import com.pig4cloud.pig.codegen.config.PigCodeGenDefaultProperties;
+import com.pig4cloud.pig.codegen.entity.GenTable;
+import com.pig4cloud.pig.codegen.entity.GenTableColumnEntity;
+import com.pig4cloud.pig.codegen.service.*;
+import com.pig4cloud.pig.codegen.util.VelocityKit;
+import com.pig4cloud.pig.codegen.util.vo.GenTemplateDTO;
+import com.pig4cloud.pig.codegen.util.vo.GroupVO;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.boot.SpringBootVersion;
+import org.springframework.stereotype.Service;
+
+import java.io.Serial;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * 代码生成器服务实现类
@@ -84,12 +79,12 @@ public class GeneratorServiceImpl implements GeneratorService {
 		Long style = (Long) dataModel.get("style");
 
 		GroupVO groupVo = genGroupService.getGroupVoById(style);
-		List<GenTemplateEntity> templateList = groupVo.getTemplateList();
+		List<GenTemplateDTO> templateList = groupVo.getTemplateList();
 
 		String frontendPath = configurationProperties.getFrontendPath();
 		String backendPath = configurationProperties.getBackendPath();
 
-		for (GenTemplateEntity template : templateList) {
+		for (GenTemplateDTO template : templateList) {
 			String templateCode = template.getTemplateCode();
 			String generatorPath = template.getGeneratorPath();
 
@@ -121,7 +116,7 @@ public class GeneratorServiceImpl implements GeneratorService {
 		Long style = (Long) dataModel.get("style");
 
 		// 获取模板列表，Lambda 表达式简化代码
-		List<GenTemplateEntity> templateList = genGroupService.getGroupVoById(style).getTemplateList();
+		List<GenTemplateDTO> templateList = genGroupService.getGroupVoById(style).getTemplateList();
 
 		String frontendPath = configurationProperties.getFrontendPath();
 		String backendPath = configurationProperties.getBackendPath();
@@ -138,7 +133,8 @@ public class GeneratorServiceImpl implements GeneratorService {
 
 			// 使用 map 简化代码
 			return new HashMap<String, String>(4) {
-				private static final long serialVersionUID = 1L;
+				@Serial
+	private static final long serialVersionUID = 1L;
 
 				{
 					put("code", content);
@@ -159,7 +155,7 @@ public class GeneratorServiceImpl implements GeneratorService {
 		Long style = (Long) dataModel.get("style");
 
 		// 获取模板列表，Lambda 表达式简化代码
-		List<GenTemplateEntity> templateList = genGroupService.getGroupVoById(style).getTemplateList();
+		List<GenTemplateDTO> templateList = genGroupService.getGroupVoById(style).getTemplateList();
 
 		templateList.forEach(template -> {
 			String templateCode = template.getTemplateCode();

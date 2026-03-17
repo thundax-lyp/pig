@@ -35,6 +35,10 @@
             <groupId>com.pig4cloud</groupId>
             <artifactId>pig-common-mybatis</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.pig4cloud</groupId>
+            <artifactId>pig-common-feign</artifactId>
+        </dependency>
         <!--动态数据源 数据操作-->
         <dependency>
             <groupId>com.pig4cloud</groupId>
@@ -61,6 +65,11 @@
             <version>${anyline.version}</version>
         </dependency>
         <!--common-->
+        <dependency>
+            <groupId>com.pig4cloud</groupId>
+            <artifactId>pig-codegen-contract</artifactId>
+            <version>${revision}</version>
+        </dependency>
         <dependency>
             <groupId>com.pig4cloud</groupId>
             <artifactId>pig-common-core</artifactId>

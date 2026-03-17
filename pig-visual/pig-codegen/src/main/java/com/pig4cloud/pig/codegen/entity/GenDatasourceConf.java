@@ -21,6 +21,7 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serial;
 import java.time.LocalDateTime;
 
 /**
@@ -34,6 +35,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 public class GenDatasourceConf extends Model<GenDatasourceConf> {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	/**

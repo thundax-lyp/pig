@@ -16,11 +16,8 @@
  */
 package com.pig4cloud.pig.codegen.service.impl;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.pig4cloud.pig.codegen.entity.GenGroupEntity;
@@ -30,10 +27,11 @@ import com.pig4cloud.pig.codegen.service.GenGroupService;
 import com.pig4cloud.pig.codegen.service.GenTemplateGroupService;
 import com.pig4cloud.pig.codegen.util.vo.GroupVO;
 import com.pig4cloud.pig.codegen.util.vo.TemplateGroupDTO;
-
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollUtil;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * 模板分组服务实现类

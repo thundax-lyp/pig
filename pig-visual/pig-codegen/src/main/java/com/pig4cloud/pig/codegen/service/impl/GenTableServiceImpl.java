@@ -44,7 +44,6 @@ import org.anyline.metadata.Table;
 import org.anyline.proxy.CacheProxy;
 import org.anyline.proxy.ServiceProxy;
 import org.anyline.service.AnylineService;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -230,7 +229,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
 	 * @param tableMetadata 表的元数据
 	 * @return list
 	 */
-	private static @NotNull List<GenTableColumnEntity> getGenTableColumnEntities(String dsName, String tableName,
+	private static List<GenTableColumnEntity> getGenTableColumnEntities(String dsName, String tableName,
 			Table tableMetadata) {
 		List<GenTableColumnEntity> tableFieldList = new ArrayList<>();
 		LinkedHashMap<String, Column> columns = tableMetadata.getColumns();

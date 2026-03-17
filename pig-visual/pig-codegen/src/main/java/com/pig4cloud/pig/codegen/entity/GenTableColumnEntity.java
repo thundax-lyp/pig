@@ -22,6 +22,8 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serial;
+
 /**
  * @author lengleng
  * @date 2023-02-06
@@ -33,6 +35,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class GenTableColumnEntity extends Model<GenDatasourceConf> {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	/**

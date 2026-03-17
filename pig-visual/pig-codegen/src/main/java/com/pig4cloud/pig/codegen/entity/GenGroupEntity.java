@@ -23,6 +23,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serial;
 import java.time.LocalDateTime;
 
 /**
@@ -37,6 +38,7 @@ import java.time.LocalDateTime;
 @Schema(description = "模板分组")
 public class GenGroupEntity extends Model<GenGroupEntity> {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	/**

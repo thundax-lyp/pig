@@ -24,6 +24,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.io.Serial;
+
 /**
  * 模板分组关联表
  *
@@ -37,6 +39,7 @@ import lombok.experimental.Accessors;
 @Schema(description = "模板分组关联表")
 public class GenTemplateGroupEntity extends Model<GenTemplateGroupEntity> {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	/**

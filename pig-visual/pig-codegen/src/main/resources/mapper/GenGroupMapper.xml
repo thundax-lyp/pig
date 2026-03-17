@@ -7,7 +7,7 @@
         <id property="id" column="group_id"/>
         <result property="groupName" column="group_name"/>
         <result property="groupDesc" column="group_desc"/>
-	    <collection property="templateList" ofType="com.pig4cloud.pig.codegen.entity.GenTemplateEntity"
+	    <collection property="templateList" ofType="com.pig4cloud.pig.codegen.util.vo.GenTemplateDTO"
 				  select="com.pig4cloud.pig.codegen.mapper.GenTemplateMapper.listTemplateById" column="group_id">
 	    </collection>
   </resultMap>

@@ -26,6 +26,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serial;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -41,6 +42,7 @@ import java.util.List;
 @Schema(description = "列属性")
 public class GenTable extends Model<GenTable> {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	/**
