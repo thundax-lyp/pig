@@ -17,10 +17,12 @@
 
 package com.pig4cloud.pig.daemon.quartz.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.pig4cloud.pig.common.core.util.R;
+import com.pig4cloud.pig.daemon.quartz.dto.SysJobLogDTO;
 import com.pig4cloud.pig.daemon.quartz.entity.SysJobLog;
 import com.pig4cloud.pig.daemon.quartz.service.SysJobLogService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,6 +31,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 /**
  * 定时任务日志控制器
@@ -54,8 +59,13 @@ public class SysJobLogController {
 	 */
 	@GetMapping("/page")
 	@Operation(summary = "分页定时任务日志查询", description = "分页定时任务日志查询")
-	public R getJobLogPage(Page page, SysJobLog sysJobLog) {
-		return R.ok(sysJobLogService.page(page, Wrappers.query(sysJobLog)));
+	public R getJobLogPage(Page page, SysJobLogDTO sysJobLog) {
+		Page<SysJobLog> jobLogPage = sysJobLogService.page(page, Wrappers.query(toEntity(sysJobLog)));
+		Page<SysJobLogDTO> dtoPage = new Page<>(page.getCurrent(), page.getSize(), jobLogPage.getTotal());
+		dtoPage.setPages(jobLogPage.getPages());
+		dtoPage.setRecords(jobLogPage.getRecords() == null ? new ArrayList<>()
+				: jobLogPage.getRecords().stream().map(this::toDto).collect(Collectors.toList()));
+		return R.ok(dtoPage);
 	}
 
 	/**
@@ -67,6 +77,14 @@ public class SysJobLogController {
 	@Operation(summary = "批量删除日志", description = "批量删除日志")
 	public R removeBatchByIds(@RequestBody Long[] ids) {
 		return R.ok(sysJobLogService.removeBatchByIds(CollUtil.toList(ids)));
+	}
+
+	private SysJobLogDTO toDto(SysJobLog sysJobLog) {
+		return sysJobLog == null ? null : BeanUtil.copyProperties(sysJobLog, SysJobLogDTO.class);
+	}
+
+	private SysJobLog toEntity(SysJobLogDTO sysJobLog) {
+		return sysJobLog == null ? null : BeanUtil.copyProperties(sysJobLog, SysJobLog.class);
 	}
 
 }

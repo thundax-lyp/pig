@@ -17,15 +17,13 @@
 
 package com.pig4cloud.pig.daemon.quartz.config;
 
-import org.quartz.Scheduler;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.annotation.Configuration;
-
 import com.pig4cloud.pig.daemon.quartz.constants.PigQuartzEnum;
 import com.pig4cloud.pig.daemon.quartz.service.SysJobService;
 import com.pig4cloud.pig.daemon.quartz.util.TaskUtil;
-
 import lombok.AllArgsConstructor;
+import org.quartz.Scheduler;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * 初始化加载定时任务配置类

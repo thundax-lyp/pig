@@ -17,6 +17,7 @@
 
 package com.pig4cloud.pig.daemon.quartz.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -28,6 +29,8 @@ import com.pig4cloud.pig.common.security.annotation.HasPermission;
 import com.pig4cloud.pig.common.security.util.SecurityUtils;
 import com.pig4cloud.pig.daemon.quartz.constants.JobTypeQuartzEnum;
 import com.pig4cloud.pig.daemon.quartz.constants.PigQuartzEnum;
+import com.pig4cloud.pig.daemon.quartz.dto.SysJobDTO;
+import com.pig4cloud.pig.daemon.quartz.dto.SysJobLogDTO;
 import com.pig4cloud.pig.daemon.quartz.entity.SysJob;
 import com.pig4cloud.pig.daemon.quartz.entity.SysJobLog;
 import com.pig4cloud.pig.daemon.quartz.service.SysJobLogService;
@@ -45,7 +48,9 @@ import org.quartz.SchedulerException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 定时任务管理控制器
@@ -77,14 +82,15 @@ public class SysJobController {
 	 */
 	@GetMapping("/page")
 	@Operation(summary = "分页定时业务查询", description = "分页定时业务查询")
-	public R getJobPage(Page page, SysJob sysJob) {
+	public R getJobPage(Page page, SysJobDTO sysJob) {
 		LambdaQueryWrapper<SysJob> wrapper = Wrappers.<SysJob>lambdaQuery()
 			.like(StrUtil.isNotBlank(sysJob.getJobName()), SysJob::getJobName, sysJob.getJobName())
 			.like(StrUtil.isNotBlank(sysJob.getJobGroup()), SysJob::getJobGroup, sysJob.getJobGroup())
 			.eq(StrUtil.isNotBlank(sysJob.getJobStatus()), SysJob::getJobStatus, sysJob.getJobGroup())
-			.eq(StrUtil.isNotBlank(sysJob.getJobExecuteStatus()), SysJob::getJobExecuteStatus,
+					.eq(StrUtil.isNotBlank(sysJob.getJobExecuteStatus()), SysJob::getJobExecuteStatus,
 					sysJob.getJobExecuteStatus());
-		return R.ok(sysJobService.page(page, wrapper));
+		Page<SysJob> jobPage = sysJobService.page(page, wrapper);
+		return R.ok(toJobDtoPage(jobPage));
 	}
 
 	/**
@@ -95,19 +101,20 @@ public class SysJobController {
 	@GetMapping("/{id}")
 	@Operation(summary = "唯一标识查询定时任务", description = "唯一标识查询定时任务")
 	public R getById(@PathVariable("id") Long id) {
-		return R.ok(sysJobService.getById(id));
+		return R.ok(toJobDto(sysJobService.getById(id)));
 	}
 
 	/**
 	 * 新增定时任务,默认新增状态为1已发布
-	 * @param sysJob 定时任务调度表
+	 * @param sysJobDto 定时任务调度表
 	 * @return R
 	 */
 	@SysLog("新增定时任务")
 	@PostMapping
 	@HasPermission("job_sys_job_add")
 	@Operation(summary = "新增定时任务", description = "新增定时任务")
-	public R saveJob(@RequestBody SysJob sysJob) {
+	public R saveJob(@RequestBody SysJobDTO sysJobDto) {
+		SysJob sysJob = toJobEntity(sysJobDto);
 		long count = sysJobService.count(
 				Wrappers.query(SysJob.builder().jobName(sysJob.getJobName()).jobGroup(sysJob.getJobGroup()).build()));
 
@@ -134,14 +141,15 @@ public class SysJobController {
 
 	/**
 	 * 修改定时任务
-	 * @param sysJob 定时任务调度表
+	 * @param sysJobDto 定时任务调度表
 	 * @return R
 	 */
 	@SysLog("修改定时任务")
 	@PutMapping
 	@HasPermission("job_sys_job_edit")
 	@Operation(summary = "修改定时任务", description = "修改定时任务")
-	public R updateJob(@RequestBody SysJob sysJob) {
+	public R updateJob(@RequestBody SysJobDTO sysJobDto) {
+		SysJob sysJob = toJobEntity(sysJobDto);
 		// 安全验证：对于Java类类型的任务，验证类名和方法名
 		if (JobTypeQuartzEnum.JAVA.getType().equals(sysJob.getJobType())) {
 			if (!ClassNameValidator.isValidClassName(sysJob.getClassName())) {
@@ -334,8 +342,9 @@ public class SysJobController {
 	 */
 	@GetMapping("/job-log")
 	@Operation(summary = "唯一标识查询定时执行日志", description = "唯一标识查询定时执行日志")
-	public R getJobLogPage(Page page, SysJobLog sysJobLog) {
-		return R.ok(sysJobLogService.page(page, Wrappers.query(sysJobLog)));
+	public R getJobLogPage(Page page, SysJobLogDTO sysJobLog) {
+		Page<SysJobLog> jobLogPage = sysJobLogService.page(page, Wrappers.query(toJobLogEntity(sysJobLog)));
+		return R.ok(toJobLogDtoPage(jobLogPage));
 	}
 
 	/**
@@ -360,8 +369,40 @@ public class SysJobController {
 	@ResponseExcel
 	@GetMapping("/export")
 	@Operation(summary = "导出任务", description = "导出任务")
-	public List<SysJob> exportJobs(SysJob sysJob) {
-		return sysJobService.list(Wrappers.query(sysJob));
+	public List<SysJobDTO> exportJobs(SysJobDTO sysJob) {
+		return sysJobService.list(Wrappers.query(toJobEntity(sysJob))).stream().map(this::toJobDto).toList();
+	}
+
+	private SysJobDTO toJobDto(SysJob sysJob) {
+		return sysJob == null ? null : BeanUtil.copyProperties(sysJob, SysJobDTO.class);
+	}
+
+	private SysJob toJobEntity(SysJobDTO sysJob) {
+		return sysJob == null ? null : BeanUtil.copyProperties(sysJob, SysJob.class);
+	}
+
+	private SysJobLogDTO toJobLogDto(SysJobLog sysJobLog) {
+		return sysJobLog == null ? null : BeanUtil.copyProperties(sysJobLog, SysJobLogDTO.class);
+	}
+
+	private SysJobLog toJobLogEntity(SysJobLogDTO sysJobLog) {
+		return sysJobLog == null ? null : BeanUtil.copyProperties(sysJobLog, SysJobLog.class);
+	}
+
+	private Page<SysJobDTO> toJobDtoPage(Page<SysJob> page) {
+		Page<SysJobDTO> dtoPage = new Page<>(page.getCurrent(), page.getSize(), page.getTotal());
+		dtoPage.setPages(page.getPages());
+		dtoPage.setRecords(page.getRecords() == null ? new ArrayList<>()
+				: page.getRecords().stream().map(this::toJobDto).collect(Collectors.toList()));
+		return dtoPage;
+	}
+
+	private Page<SysJobLogDTO> toJobLogDtoPage(Page<SysJobLog> page) {
+		Page<SysJobLogDTO> dtoPage = new Page<>(page.getCurrent(), page.getSize(), page.getTotal());
+		dtoPage.setPages(page.getPages());
+		dtoPage.setRecords(page.getRecords() == null ? new ArrayList<>()
+				: page.getRecords().stream().map(this::toJobLogDto).collect(Collectors.toList()));
+		return dtoPage;
 	}
 
 }

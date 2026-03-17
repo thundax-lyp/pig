@@ -30,6 +30,11 @@
             <groupId>com.pig4cloud</groupId>
             <artifactId>pig-common-log</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.pig4cloud</groupId>
+            <artifactId>pig-quartz-contract</artifactId>
+            <version>${revision}</version>
+        </dependency>
         <!--feign 处理-->
         <dependency>
             <groupId>com.pig4cloud</groupId>
