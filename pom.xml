@@ -38,6 +38,7 @@
 		<docker.host>http://192.168.0.100:2375</docker.host>
 		<commons-lang3.version>3.20.0</commons-lang3.version>
 		<docker.plugin.version>0.45.1</docker.plugin.version>
+		<jetcache.version>2.7.7</jetcache.version>
 		<spring.checkstyle.plugin>0.0.47</spring.checkstyle.plugin>
 		<spring-boot-admin.version>3.5.6</spring-boot-admin.version>
 		<flatten-maven-plugin.version>1.6.0</flatten-maven-plugin.version>
@@ -89,6 +90,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.alicp.jetcache</groupId>
+			<artifactId>jetcache-starter-redis</artifactId>
+			<version>${jetcache.version}</version>
 		</dependency>
 	</dependencies>
 
