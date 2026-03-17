@@ -16,9 +16,9 @@
 
 package com.pig4cloud.pig.common.xss.core;
 
-import java.io.Serial;
-
 import lombok.Getter;
+
+import java.io.Serial;
 
 /**
  * XSS 表单异常类，用于处理表单相关的 XSS 异常情况

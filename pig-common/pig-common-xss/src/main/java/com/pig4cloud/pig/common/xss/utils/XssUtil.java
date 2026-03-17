@@ -16,12 +16,11 @@
 
 package com.pig4cloud.pig.common.xss.utils;
 
+import cn.hutool.core.util.StrUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Element;
 import org.springframework.util.StringUtils;
-
-import cn.hutool.core.util.StrUtil;
 
 /**
  * xss clean

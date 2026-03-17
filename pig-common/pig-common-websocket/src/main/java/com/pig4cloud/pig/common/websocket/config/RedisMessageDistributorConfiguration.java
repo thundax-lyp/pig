@@ -3,6 +3,7 @@ package com.pig4cloud.pig.common.websocket.config;
 import com.pig4cloud.pig.common.websocket.distribute.MessageDistributor;
 import com.pig4cloud.pig.common.websocket.distribute.RedisMessageDistributor;
 import com.pig4cloud.pig.common.websocket.distribute.RedisWebsocketMessageListener;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -14,8 +15,6 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-
-import jakarta.annotation.PostConstruct;
 
 /**
  * 基于 Redis Pub/Sub 的消息分发器配置
