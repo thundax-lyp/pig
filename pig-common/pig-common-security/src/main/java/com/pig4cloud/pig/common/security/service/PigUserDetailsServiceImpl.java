@@ -19,12 +19,9 @@ package com.pig4cloud.pig.common.security.service;
 import com.pig4cloud.pig.admin.api.dto.UserDTO;
 import com.pig4cloud.pig.admin.api.dto.UserInfo;
 import com.pig4cloud.pig.admin.api.service.UserQueryApi;
-import com.pig4cloud.pig.common.core.constant.CacheConstants;
 import com.pig4cloud.pig.common.core.util.R;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -41,29 +38,26 @@ public class PigUserDetailsServiceImpl implements PigUserDetailsService {
 
 	private final UserQueryApi userQueryApi;
 
-	private final CacheManager cacheManager;
+	private final UserDetailsCacheService userDetailsCacheService;
 
 	/**
 	 * 根据用户名加载用户详情
 	 * @param username 用户名
 	 * @return 用户详情信息
-	 * @throws Exception 获取用户信息过程中可能抛出的异常
-	 */
+     */
 	@Override
 	@SneakyThrows
 	public UserDetails loadUserByUsername(String username) {
-		Cache cache = cacheManager.getCache(CacheConstants.USER_DETAILS);
-		if (cache != null && cache.get(username) != null) {
-			return (PigUser) cache.get(username).get();
+		UserDetails userDetails = userDetailsCacheService.get(username);
+		if (userDetails != null) {
+			return userDetails;
 		}
 
 		UserDTO userDTO = new UserDTO();
 		userDTO.setUsername(username);
 		R<UserInfo> result = userQueryApi.info(userDTO);
-		UserDetails userDetails = getUserDetails(result);
-		if (cache != null) {
-			cache.put(username, userDetails);
-		}
+		userDetails = getUserDetails(result);
+		userDetailsCacheService.put(username, userDetails);
 		return userDetails;
 	}
 

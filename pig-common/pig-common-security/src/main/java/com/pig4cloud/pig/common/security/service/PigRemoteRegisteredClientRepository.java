@@ -2,6 +2,8 @@ package com.pig4cloud.pig.common.security.service;
 
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alicp.jetcache.anno.CacheType;
+import com.alicp.jetcache.anno.Cached;
 import com.pig4cloud.pig.admin.api.dto.SysOauthClientDetailsDTO;
 import com.pig4cloud.pig.admin.api.service.ClientDetailsApi;
 import com.pig4cloud.pig.common.core.constant.CacheConstants;
@@ -9,7 +11,6 @@ import com.pig4cloud.pig.common.core.constant.SecurityConstants;
 import com.pig4cloud.pig.common.core.util.RetOps;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.OAuth2Error;
@@ -23,6 +24,7 @@ import org.springframework.security.oauth2.server.authorization.settings.TokenSe
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 查询客户端相关信息实现类，支持Redis缓存
@@ -78,7 +80,9 @@ public class PigRemoteRegisteredClientRepository implements RegisteredClientRepo
 	 */
 	@Override
 	@SneakyThrows
-	@Cacheable(value = CacheConstants.CLIENT_DETAILS_KEY, key = "#clientId", unless = "#result == null")
+	@Cached(name = CacheConstants.CLIENT_DETAILS_KEY + ":",
+			key = "@jetCacheVersionSupport.versionedKey('" + CacheConstants.CLIENT_DETAILS_KEY + "', #clientId)",
+			expire = 12, timeUnit = TimeUnit.HOURS, cacheType = CacheType.REMOTE, postCondition = "#result != null")
 	public RegisteredClient findByClientId(String clientId) {
 
 		SysOauthClientDetailsDTO clientDetails = RetOps.of(clientDetailsApi.getClientDetailsById(clientId))
