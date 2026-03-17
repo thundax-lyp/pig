@@ -25,6 +25,8 @@ import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alicp.jetcache.anno.CacheType;
+import com.alicp.jetcache.anno.Cached;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.pig4cloud.pig.admin.api.entity.SysMenu;
@@ -36,13 +38,12 @@ import com.pig4cloud.pig.common.core.constant.CacheConstants;
 import com.pig4cloud.pig.common.core.constant.CommonConstants;
 import com.pig4cloud.pig.common.core.constant.enums.MenuTypeEnum;
 import com.pig4cloud.pig.common.core.exception.ErrorCodes;
+import com.pig4cloud.pig.common.core.support.JetCacheVersionSupport;
 import com.pig4cloud.pig.common.core.util.MsgUtils;
 import com.pig4cloud.pig.common.core.util.R;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,6 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -65,6 +67,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
 	private final SysRoleMenuMapper sysRoleMenuMapper;
 
+	private final JetCacheVersionSupport jetCacheVersionSupport;
+
 	/**
 	 * 根据角色ID查询菜单列表
 	 * @param roleId 角色ID
@@ -72,7 +76,10 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 	 * @see CacheConstants#MENU_DETAILS
 	 */
 	@Override
-	@Cacheable(value = CacheConstants.MENU_DETAILS, key = "#roleId", unless = "#result.isEmpty()")
+	@Cached(name = CacheConstants.MENU_DETAILS + ":",
+			key = "@jetCacheVersionSupport.versionedKey('" + CacheConstants.MENU_DETAILS + "', #roleId)",
+			expire = 30, timeUnit = TimeUnit.MINUTES, cacheType = CacheType.REMOTE,
+			postCondition = "#result != null && !#result.isEmpty()")
 	public List<SysMenu> findMenuByRoleId(Long roleId) {
 		return baseMapper.listMenusByRoleId(roleId);
 	}
@@ -81,11 +88,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 	 * 根据ID删除菜单
 	 * @param id 菜单ID
 	 * @return 删除结果
-	 * @throws Exception 事务回滚时抛出异常
-	 */
+     */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	@CacheEvict(value = CacheConstants.MENU_DETAILS, allEntries = true)
 	public R removeMenuById(Long id) {
 		// 查询父节点为当前节点的节点
 		List<SysMenu> menuList = this.list(Wrappers.<SysMenu>query().lambda().eq(SysMenu::getParentId, id));
@@ -95,7 +100,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
 		sysRoleMenuMapper.delete(Wrappers.<SysRoleMenu>query().lambda().eq(SysRoleMenu::getMenuId, id));
 		// 删除当前菜单及其子菜单
-		return R.ok(this.removeById(id));
+		R result = R.ok(this.removeById(id));
+		jetCacheVersionSupport.increment(CacheConstants.MENU_DETAILS);
+		return result;
 	}
 
 	/**
@@ -104,9 +111,10 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 	 * @return 更新是否成功
 	 */
 	@Override
-	@CacheEvict(value = CacheConstants.MENU_DETAILS, allEntries = true)
 	public Boolean updateMenuById(SysMenu sysMenu) {
-		return this.updateById(sysMenu);
+		Boolean result = this.updateById(sysMenu);
+		jetCacheVersionSupport.increment(CacheConstants.MENU_DETAILS);
+		return result;
 	}
 
 	/**

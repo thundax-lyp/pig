@@ -20,15 +20,16 @@
 package com.pig4cloud.pig.admin.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.alicp.jetcache.anno.CacheInvalidate;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.pig4cloud.pig.admin.api.entity.SysRoleMenu;
 import com.pig4cloud.pig.admin.mapper.SysRoleMenuMapper;
 import com.pig4cloud.pig.admin.service.SysRoleMenuService;
 import com.pig4cloud.pig.common.core.constant.CacheConstants;
+import com.pig4cloud.pig.common.core.support.JetCacheVersionSupport;
+import com.pig4cloud.pig.common.security.service.UserDetailsCacheService;
 import lombok.AllArgsConstructor;
-import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,7 +46,9 @@ import java.util.List;
 @AllArgsConstructor
 public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuMapper, SysRoleMenu> implements SysRoleMenuService {
 
-	private final CacheManager cacheManager;
+	private final UserDetailsCacheService userDetailsCacheService;
+
+	private final JetCacheVersionSupport jetCacheVersionSupport;
 
 	/**
 	 * @param roleId 角色
@@ -54,7 +57,8 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuMapper, SysRo
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	@CacheEvict(value = CacheConstants.MENU_DETAILS, key = "#roleId")
+	@CacheInvalidate(name = CacheConstants.MENU_DETAILS + ":",
+			key = "@jetCacheVersionSupport.versionedKey('" + CacheConstants.MENU_DETAILS + "', #roleId)")
 	public Boolean saveRoleMenus(Long roleId, String menuIds) {
 		this.remove(Wrappers.<SysRoleMenu>query().lambda().eq(SysRoleMenu::getRoleId, roleId));
 
@@ -69,7 +73,7 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuMapper, SysRo
 		}).toList();
 
 		// 清空userinfo
-		cacheManager.getCache(CacheConstants.USER_DETAILS).clear();
+		userDetailsCacheService.clear();
 		this.saveBatch(roleMenuList);
 		return Boolean.TRUE;
 	}

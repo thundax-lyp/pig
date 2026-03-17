@@ -17,6 +17,7 @@
 package com.pig4cloud.pig.admin.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import com.alicp.jetcache.anno.CacheInvalidate;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.pig4cloud.pig.admin.api.entity.SysDict;
@@ -27,10 +28,10 @@ import com.pig4cloud.pig.admin.service.SysDictService;
 import com.pig4cloud.pig.common.core.constant.CacheConstants;
 import com.pig4cloud.pig.common.core.constant.enums.DictTypeEnum;
 import com.pig4cloud.pig.common.core.exception.ErrorCodes;
+import com.pig4cloud.pig.common.core.support.JetCacheVersionSupport;
 import com.pig4cloud.pig.common.core.util.MsgUtils;
 import com.pig4cloud.pig.common.core.util.R;
 import lombok.AllArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,6 +49,8 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
 
 	private final SysDictItemMapper dictItemMapper;
 
+	private final JetCacheVersionSupport jetCacheVersionSupport;
+
 	/**
 	 * 根据ID删除字典
 	 * @param ids 字典ID数组
@@ -55,7 +58,6 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	@CacheEvict(value = CacheConstants.DICT_DETAILS, allEntries = true)
 	public R removeDictByIds(Long[] ids) {
 
 		List<Long> dictIdList = baseMapper.selectByIds(CollUtil.toList(ids))
@@ -67,6 +69,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
 		baseMapper.deleteByIds(dictIdList);
 
 		dictItemMapper.delete(Wrappers.<SysDictItem>lambdaQuery().in(SysDictItem::getDictId, dictIdList));
+		jetCacheVersionSupport.increment(CacheConstants.DICT_DETAILS);
 		return R.ok();
 	}
 
@@ -77,7 +80,8 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
 	 * @see R 返回结果封装类
 	 */
 	@Override
-	@CacheEvict(value = CacheConstants.DICT_DETAILS, key = "#dict.dictType")
+	@CacheInvalidate(name = CacheConstants.DICT_DETAILS + ":",
+			key = "@jetCacheVersionSupport.versionedKey('" + CacheConstants.DICT_DETAILS + "', #dict.dictType)")
 	public R updateDict(SysDict dict) {
 		SysDict sysDict = this.getById(dict.getId());
 		// 系统内置
@@ -93,8 +97,8 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
 	 * @return 操作结果
 	 */
 	@Override
-	@CacheEvict(value = CacheConstants.DICT_DETAILS, allEntries = true)
 	public R syncDictCache() {
+		jetCacheVersionSupport.increment(CacheConstants.DICT_DETAILS);
 		return R.ok();
 	}
 

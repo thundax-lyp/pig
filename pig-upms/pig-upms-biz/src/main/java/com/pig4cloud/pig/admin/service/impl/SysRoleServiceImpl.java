@@ -21,6 +21,8 @@ package com.pig4cloud.pig.admin.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import com.alicp.jetcache.anno.CacheType;
+import com.alicp.jetcache.anno.Cached;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.pig4cloud.pig.admin.api.entity.SysRole;
@@ -36,7 +38,6 @@ import com.pig4cloud.pig.common.core.util.MsgUtils;
 import com.pig4cloud.pig.common.core.util.R;
 import com.pig4cloud.plugin.excel.vo.ErrorMessage;
 import lombok.AllArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -44,6 +45,7 @@ import org.springframework.validation.BindingResult;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 系统角色服务实现类
@@ -74,7 +76,10 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 	 * @return 角色列表
 	 */
 	@Override
-	@Cacheable(value = CacheConstants.ROLE_DETAILS, key = "#key", unless = "#result.isEmpty()")
+	@Cached(name = CacheConstants.ROLE_DETAILS + ":",
+			key = "@jetCacheVersionSupport.versionedKey('" + CacheConstants.ROLE_DETAILS + "', #key)",
+			expire = 30, timeUnit = TimeUnit.MINUTES, cacheType = CacheType.REMOTE,
+			postCondition = "#result != null && !#result.isEmpty()")
 	public List<SysRole> listRolesByRoleIds(List<Long> roleIdList, String key) {
 		return baseMapper.selectByIds(roleIdList);
 	}

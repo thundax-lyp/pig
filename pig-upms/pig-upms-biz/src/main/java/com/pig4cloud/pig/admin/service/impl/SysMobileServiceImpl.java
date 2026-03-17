@@ -26,6 +26,7 @@ import com.pig4cloud.pig.admin.service.SysMobileService;
 import com.pig4cloud.pig.common.core.constant.CacheConstants;
 import com.pig4cloud.pig.common.core.constant.SecurityConstants;
 import com.pig4cloud.pig.common.core.exception.ErrorCodes;
+import com.pig4cloud.pig.common.core.support.DefaultCodeCacheService;
 import com.pig4cloud.pig.common.core.util.MsgUtils;
 import com.pig4cloud.pig.common.core.util.R;
 import lombok.AllArgsConstructor;
@@ -33,8 +34,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.dromara.sms4j.api.SmsBlend;
 import org.dromara.sms4j.api.entity.SmsResponse;
 import org.dromara.sms4j.core.factory.SmsFactory;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
@@ -55,7 +54,7 @@ public class SysMobileServiceImpl implements SysMobileService {
 
 	private final SysUserMapper userMapper;
 
-	private final CacheManager cacheManager;
+	private final DefaultCodeCacheService defaultCodeCacheService;
 
 	/**
 	 * 发送手机验证码
@@ -72,8 +71,7 @@ public class SysMobileServiceImpl implements SysMobileService {
 			return R.ok(Boolean.FALSE, MsgUtils.getMessage(ErrorCodes.SYS_APP_PHONE_UNREGISTERED, mobile));
 		}
 
-		Cache cache = cacheManager.getCache(CacheConstants.DEFAULT_CODE_CACHE);
-		String codeObj = cache != null ? cache.get(mobile, String.class) : null;
+		String codeObj = defaultCodeCacheService.get(mobile);
 
 		if (codeObj != null) {
 			log.info("手机号验证码未过期:{}，{}", mobile, codeObj);
@@ -82,9 +80,7 @@ public class SysMobileServiceImpl implements SysMobileService {
 
 		String code = RandomUtil.randomNumbers(Integer.parseInt(SecurityConstants.CODE_SIZE));
 		log.info("手机号生成验证码成功:{},{}", mobile, code);
-		if (cache != null) {
-			cache.put(mobile, code);
-		}
+		defaultCodeCacheService.put(mobile, code);
 
 		// 集成短信服务发送验证码
 		SmsBlend smsBlend = SmsFactory.getSmsBlend();

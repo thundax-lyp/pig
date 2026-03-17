@@ -18,6 +18,9 @@
 package com.pig4cloud.pig.admin.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import com.alicp.jetcache.anno.CacheInvalidate;
+import com.alicp.jetcache.anno.CacheType;
+import com.alicp.jetcache.anno.Cached;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.pig4cloud.pig.admin.api.entity.SysPublicParam;
@@ -26,14 +29,14 @@ import com.pig4cloud.pig.admin.service.SysPublicParamService;
 import com.pig4cloud.pig.common.core.constant.CacheConstants;
 import com.pig4cloud.pig.common.core.constant.enums.DictTypeEnum;
 import com.pig4cloud.pig.common.core.exception.ErrorCodes;
+import com.pig4cloud.pig.common.core.support.JetCacheVersionSupport;
 import com.pig4cloud.pig.common.core.util.MsgUtils;
 import com.pig4cloud.pig.common.core.util.R;
 import lombok.AllArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 系统公共参数服务实现类
@@ -46,6 +49,8 @@ import java.util.List;
 public class SysPublicParamServiceImpl extends ServiceImpl<SysPublicParamMapper, SysPublicParam>
 		implements SysPublicParamService {
 
+	private final JetCacheVersionSupport jetCacheVersionSupport;
+
 	/**
 	 * 根据公共参数key获取对应的value值
 	 * @param publicKey 公共参数key
@@ -53,7 +58,10 @@ public class SysPublicParamServiceImpl extends ServiceImpl<SysPublicParamMapper,
 	 * @Cacheable 使用缓存，缓存名称为PARAMS_DETAILS，key为publicKey，当结果为null时不缓存
 	 */
 	@Override
-	@Cacheable(value = CacheConstants.PARAMS_DETAILS, key = "#publicKey", unless = "#result == null ")
+	@Cached(name = CacheConstants.PARAMS_DETAILS + ":",
+			key = "@jetCacheVersionSupport.versionedKey('" + CacheConstants.PARAMS_DETAILS + "', #publicKey)",
+			expire = 1, timeUnit = TimeUnit.HOURS, cacheType = CacheType.REMOTE,
+			postCondition = "#result != null")
 	public String getParamValue(String publicKey) {
 		SysPublicParam sysPublicParam = this.baseMapper
 			.selectOne(Wrappers.<SysPublicParam>lambdaQuery().eq(SysPublicParam::getPublicKey, publicKey));
@@ -71,7 +79,8 @@ public class SysPublicParamServiceImpl extends ServiceImpl<SysPublicParamMapper,
 	 * @see R
 	 */
 	@Override
-	@CacheEvict(value = CacheConstants.PARAMS_DETAILS, key = "#sysPublicParam.publicKey")
+	@CacheInvalidate(name = CacheConstants.PARAMS_DETAILS + ":",
+			key = "@jetCacheVersionSupport.versionedKey('" + CacheConstants.PARAMS_DETAILS + "', #sysPublicParam.publicKey)")
 	public R updateParam(SysPublicParam sysPublicParam) {
 		SysPublicParam param = this.getById(sysPublicParam.getPublicId());
 		// 系统内置
@@ -88,14 +97,15 @@ public class SysPublicParamServiceImpl extends ServiceImpl<SysPublicParamMapper,
 	 * @see CacheConstants#PARAMS_DETAILS 缓存常量
 	 */
 	@Override
-	@CacheEvict(value = CacheConstants.PARAMS_DETAILS, allEntries = true)
 	public R removeParamByIds(Long[] publicIds) {
 		List<Long> idList = this.baseMapper.selectByIds(CollUtil.toList(publicIds))
 			.stream()
 			.filter(p -> !p.getSystemFlag().equals(DictTypeEnum.SYSTEM.getType()))// 系统内置的跳过不能删除
 			.map(SysPublicParam::getPublicId)
 			.toList();
-		return R.ok(this.removeBatchByIds(idList));
+		R result = R.ok(this.removeBatchByIds(idList));
+		jetCacheVersionSupport.increment(CacheConstants.PARAMS_DETAILS);
+		return result;
 	}
 
 	/**
@@ -103,8 +113,8 @@ public class SysPublicParamServiceImpl extends ServiceImpl<SysPublicParamMapper,
 	 * @return 操作结果
 	 */
 	@Override
-	@CacheEvict(value = CacheConstants.PARAMS_DETAILS, allEntries = true)
 	public R syncParamCache() {
+		jetCacheVersionSupport.increment(CacheConstants.PARAMS_DETAILS);
 		return R.ok();
 	}
 

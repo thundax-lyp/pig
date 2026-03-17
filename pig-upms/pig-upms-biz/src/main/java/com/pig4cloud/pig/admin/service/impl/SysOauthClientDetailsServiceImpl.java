@@ -19,6 +19,7 @@
 
 package com.pig4cloud.pig.admin.service.impl;
 
+import com.alicp.jetcache.anno.CacheInvalidate;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -26,9 +27,9 @@ import com.pig4cloud.pig.admin.api.entity.SysOauthClientDetails;
 import com.pig4cloud.pig.admin.mapper.SysOauthClientDetailsMapper;
 import com.pig4cloud.pig.admin.service.SysOauthClientDetailsService;
 import com.pig4cloud.pig.common.core.constant.CacheConstants;
+import com.pig4cloud.pig.common.core.support.JetCacheVersionSupport;
 import com.pig4cloud.pig.common.core.util.R;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,13 +44,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class SysOauthClientDetailsServiceImpl extends ServiceImpl<SysOauthClientDetailsMapper, SysOauthClientDetails>
 		implements SysOauthClientDetailsService {
 
+	private final JetCacheVersionSupport jetCacheVersionSupport;
+
 	/**
 	 * 根据客户端信息更新客户端详情
 	 * @param clientDetails 客户端详情信息
 	 * @return 更新结果，成功返回true
 	 */
 	@Override
-	@CacheEvict(value = CacheConstants.CLIENT_DETAILS_KEY, key = "#clientDetails.clientId")
+	@CacheInvalidate(name = CacheConstants.CLIENT_DETAILS_KEY + ":",
+			key = "@jetCacheVersionSupport.versionedKey('" + CacheConstants.CLIENT_DETAILS_KEY + "', #clientDetails.clientId)")
 	@Transactional(rollbackFor = Exception.class)
 	public Boolean updateClientById(SysOauthClientDetails clientDetails) {
 		this.insertOrUpdate(clientDetails);
@@ -62,6 +66,8 @@ public class SysOauthClientDetailsServiceImpl extends ServiceImpl<SysOauthClient
 	 * @return 操作是否成功
 	 */
 	@Override
+	@CacheInvalidate(name = CacheConstants.CLIENT_DETAILS_KEY + ":",
+			key = "@jetCacheVersionSupport.versionedKey('" + CacheConstants.CLIENT_DETAILS_KEY + "', #clientDetails.clientId)")
 	@Transactional(rollbackFor = Exception.class)
 	public Boolean saveClient(SysOauthClientDetails clientDetails) {
 		this.insertOrUpdate(clientDetails);
@@ -95,8 +101,8 @@ public class SysOauthClientDetailsServiceImpl extends ServiceImpl<SysOauthClient
 	 * @return 操作结果
 	 */
 	@Override
-	@CacheEvict(value = CacheConstants.CLIENT_DETAILS_KEY, allEntries = true)
 	public R syncClientCache() {
+		jetCacheVersionSupport.increment(CacheConstants.CLIENT_DETAILS_KEY);
 		return R.ok();
 	}
 

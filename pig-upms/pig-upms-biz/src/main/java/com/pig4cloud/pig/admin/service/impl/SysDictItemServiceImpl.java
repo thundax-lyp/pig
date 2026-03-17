@@ -16,6 +16,7 @@
  */
 package com.pig4cloud.pig.admin.service.impl;
 
+import com.alicp.jetcache.anno.CacheInvalidate;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.pig4cloud.pig.admin.api.entity.SysDict;
 import com.pig4cloud.pig.admin.api.entity.SysDictItem;
@@ -25,10 +26,10 @@ import com.pig4cloud.pig.admin.service.SysDictService;
 import com.pig4cloud.pig.common.core.constant.CacheConstants;
 import com.pig4cloud.pig.common.core.constant.enums.DictTypeEnum;
 import com.pig4cloud.pig.common.core.exception.ErrorCodes;
+import com.pig4cloud.pig.common.core.support.JetCacheVersionSupport;
 import com.pig4cloud.pig.common.core.util.MsgUtils;
 import com.pig4cloud.pig.common.core.util.R;
 import lombok.AllArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 /**
@@ -43,6 +44,8 @@ public class SysDictItemServiceImpl extends ServiceImpl<SysDictItemMapper, SysDi
 
 	private final SysDictService dictService;
 
+	private final JetCacheVersionSupport jetCacheVersionSupport;
+
 	/**
 	 * 删除字典项
 	 * @param id 字典项ID
@@ -50,7 +53,6 @@ public class SysDictItemServiceImpl extends ServiceImpl<SysDictItemMapper, SysDi
 	 * @see R
 	 */
 	@Override
-	@CacheEvict(value = CacheConstants.DICT_DETAILS, allEntries = true)
 	public R removeDictItem(Long id) {
 		// 根据ID查询字典ID
 		SysDictItem dictItem = this.getById(id);
@@ -59,7 +61,9 @@ public class SysDictItemServiceImpl extends ServiceImpl<SysDictItemMapper, SysDi
 		if (DictTypeEnum.SYSTEM.getType().equals(dict.getSystemFlag())) {
 			return R.failed(MsgUtils.getMessage(ErrorCodes.SYS_DICT_DELETE_SYSTEM));
 		}
-		return R.ok(this.removeById(id));
+		R result = R.ok(this.removeById(id));
+		jetCacheVersionSupport.increment(CacheConstants.DICT_DETAILS);
+		return result;
 	}
 
 	/**
@@ -69,7 +73,8 @@ public class SysDictItemServiceImpl extends ServiceImpl<SysDictItemMapper, SysDi
 	 * @see R
 	 */
 	@Override
-	@CacheEvict(value = CacheConstants.DICT_DETAILS, key = "#item.dictType")
+	@CacheInvalidate(name = CacheConstants.DICT_DETAILS + ":",
+			key = "@jetCacheVersionSupport.versionedKey('" + CacheConstants.DICT_DETAILS + "', #item.dictType)")
 	public R updateDictItem(SysDictItem item) {
 		// 查询字典
 		SysDict dict = dictService.getById(item.getDictId());

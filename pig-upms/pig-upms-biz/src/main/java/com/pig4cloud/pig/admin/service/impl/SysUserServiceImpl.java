@@ -44,13 +44,11 @@ import com.pig4cloud.pig.common.core.constant.CommonConstants;
 import com.pig4cloud.pig.common.core.exception.ErrorCodes;
 import com.pig4cloud.pig.common.core.util.MsgUtils;
 import com.pig4cloud.pig.common.core.util.R;
+import com.pig4cloud.pig.common.security.service.UserDetailsCacheService;
 import com.pig4cloud.pig.common.security.util.SecurityUtils;
 import com.pig4cloud.plugin.excel.vo.ErrorMessage;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -86,7 +84,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
 	private final SysUserPostMapper sysUserPostMapper;
 
-	private final CacheManager cacheManager;
+	private final UserDetailsCacheService userDetailsCacheService;
 
 	/**
 	 * 保存用户信息
@@ -190,10 +188,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 	@Transactional(rollbackFor = Exception.class)
 	public Boolean removeUserByIds(Long[] ids) {
 		List<Long> idList = CollUtil.toList(ids);
-		// 删除 spring cache
-		Cache cache = cacheManager.getCache(CacheConstants.USER_DETAILS);
-		assert cache != null;
-		baseMapper.selectByIds(idList).forEach(user -> cache.evictIfPresent(user.getUsername()));
+		userDetailsCacheService.removeAll(baseMapper.selectByIds(idList).stream().map(SysUser::getUsername).toList());
 
 		sysUserRoleMapper.delete(Wrappers.<SysUserRole>lambdaQuery().in(SysUserRole::getUserId, idList));
 		this.removeBatchByIds(idList);
@@ -206,7 +201,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 	 * @return 操作结果，包含更新是否成功
 	 */
 	@Override
-	@CacheEvict(value = CacheConstants.USER_DETAILS, key = "#userDto.username")
 	public R<Boolean> updateUserInfo(UserDTO userDto) {
 		SysUser sysUser = new SysUser();
 		sysUser.setPhone(userDto.getPhone());
@@ -215,6 +209,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 		sysUser.setNickname(userDto.getNickname());
 		sysUser.setName(userDto.getName());
 		sysUser.setEmail(userDto.getEmail());
+		userDetailsCacheService.remove(userDto.getUsername());
 		return R.ok(this.updateById(sysUser));
 	}
 
@@ -225,7 +220,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	@CacheEvict(value = CacheConstants.USER_DETAILS, key = "#userDto.username")
 	public Boolean updateUser(UserDTO userDto) {
 		// 更新用户表信息
 		SysUser sysUser = new SysUser();
@@ -260,6 +254,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 				sysUserPostMapper.insert(userPost);
 			});
 		}
+		userDetailsCacheService.remove(userDto.getUsername());
 		return Boolean.TRUE;
 	}
 
@@ -413,7 +408,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 	 * @return 操作结果，包含是否成功的信息
 	 */
 	@Override
-	@CacheEvict(value = CacheConstants.USER_DETAILS, key = "#username")
 	public R<Boolean> lockUser(String username) {
 		SysUser sysUser = baseMapper.selectOne(Wrappers.<SysUser>lambdaQuery().eq(SysUser::getUsername, username));
 
@@ -421,6 +415,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 			sysUser.setLockFlag(CommonConstants.STATUS_LOCK);
 			baseMapper.updateById(sysUser);
 		}
+		userDetailsCacheService.remove(username);
 		return R.ok();
 	}
 
@@ -431,7 +426,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 	 * @CacheEvict 清除用户详情缓存
 	 */
 	@Override
-	@CacheEvict(value = CacheConstants.USER_DETAILS, key = "#userDto.username")
 	public R changePassword(UserDTO userDto) {
 		SysUser sysUser = baseMapper.selectById(SecurityUtils.getUser().getId());
 		if (Objects.isNull(sysUser)) {
@@ -455,6 +449,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 		this.update(Wrappers.<SysUser>lambdaUpdate()
 			.set(SysUser::getPassword, password)
 			.eq(SysUser::getUserId, sysUser.getUserId()));
+		userDetailsCacheService.remove(userDto.getUsername());
 		return R.ok();
 	}
 
