@@ -3,7 +3,7 @@ package com.pig4cloud.pig.admin.service.api;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.pig4cloud.pig.admin.api.dto.SysOauthClientDetailsDTO;
-import com.pig4cloud.pig.admin.api.entity.SysOauthClientDetails;
+import com.pig4cloud.pig.admin.entity.SysOauthClientDetails;
 import com.pig4cloud.pig.admin.api.service.ClientDetailsApi;
 import com.pig4cloud.pig.admin.service.SysOauthClientDetailsService;
 import com.pig4cloud.pig.common.core.util.R;

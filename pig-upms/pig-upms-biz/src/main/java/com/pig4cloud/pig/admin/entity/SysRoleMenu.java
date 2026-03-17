@@ -17,70 +17,37 @@
  *
  */
 
-package com.pig4cloud.pig.admin.api.entity;
+package com.pig4cloud.pig.admin.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
-import java.time.LocalDateTime;
 
 /**
  * <p>
- * 客户端信息
+ * 角色菜单表
  * </p>
  *
  * @author lengleng
- * @since 2018-05-15
+ * @since 2017-10-29
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class SysOauthClientDetails extends Model<SysOauthClientDetails> {
+public class SysRoleMenu extends Model<SysRoleMenu> {
 
 	@Serial
 	private static final long serialVersionUID = 1L;
 
-	@TableId(value = "id", type = IdType.ASSIGN_ID)
-	private Long id;
+	/**
+	 * 角色ID
+	 */
+	private Long roleId;
 
-	private String clientId;
-
-	private String clientSecret;
-
-	private String resourceIds;
-
-	private String scope;
-
-	private String[] authorizedGrantTypes;
-
-	private String webServerRedirectUri;
-
-	private String authorities;
-
-	private Integer accessTokenValidity;
-
-	private Integer refreshTokenValidity;
-
-	private String additionalInformation;
-
-	private String autoapprove;
-
-	@TableLogic
-	@TableField(fill = FieldFill.INSERT)
-	private String delFlag;
-
-	@TableField(fill = FieldFill.INSERT)
-	private String createBy;
-
-	@TableField(fill = FieldFill.UPDATE)
-	private String updateBy;
-
-	@TableField(fill = FieldFill.INSERT)
-	private LocalDateTime createTime;
-
-	@TableField(fill = FieldFill.UPDATE)
-	private LocalDateTime updateTime;
+	/**
+	 * 菜单ID
+	 */
+	private Long menuId;
 
 }

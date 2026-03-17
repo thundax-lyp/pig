@@ -15,25 +15,27 @@
  * Author: lengleng (wangiegie@gmail.com)
  */
 
-package com.pig4cloud.pig.admin.api.entity;
+package com.pig4cloud.pig.admin.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.FieldNameConstants;
 
 import java.io.Serial;
 import java.time.LocalDateTime;
 
 /**
- * 公共参数配置
+ * 文件管理实体类
  *
- * @author Lucky
- * @date 2019-04-29
+ * @author lengleng
+ * @date 2025/07/03
  */
 @Data
+@FieldNameConstants
 @EqualsAndHashCode(callSuper = true)
-public class SysPublicParam extends Model<SysPublicParam> {
+public class SysFile extends Model<SysFile> {
 
 	@Serial
 	private static final long serialVersionUID = 1L;
@@ -42,72 +44,62 @@ public class SysPublicParam extends Model<SysPublicParam> {
 	 * 编号
 	 */
 	@TableId(type = IdType.ASSIGN_ID)
-	private Long publicId;
+	private Long id;
 
 	/**
-	 * 公共参数名称
+	 * 文件名
 	 */
-	private String publicName;
+	private String fileName;
 
 	/**
-	 * 公共参数地址值,英文大写+下划线
+	 * 原文件名
 	 */
-	private String publicKey;
+	private String original;
 
 	/**
-	 * 值
+	 * 容器名称
 	 */
-	private String publicValue;
+	private String bucketName;
 
 	/**
-	 * 状态（1有效；2无效；）
+	 * 文件类型
 	 */
-	private String status;
+	private String type;
 
 	/**
-	 * 公共参数编码
+	 * 文件大小
 	 */
-	private String validateCode;
+	private Long fileSize;
 
 	/**
-	 * 是否是系统内置
-	 */
-	private String systemFlag;
-
-	/**
-	 * 配置类型：0-默认；1-检索；2-原文；3-报表；4-安全；5-文档；6-消息；9-其他
-	 */
-	private String publicType;
-
-	/**
-	 * 创建人
+	 * 上传人
 	 */
 	@TableField(fill = FieldFill.INSERT)
 	private String createBy;
 
 	/**
-	 * 修改人
-	 */
-	@TableField(fill = FieldFill.UPDATE)
-	private String updateBy;
-
-	/**
-	 * 删除标记
-	 */
-	@TableLogic
-	@TableField(fill = FieldFill.INSERT)
-	private String delFlag;
-
-	/**
-	 * 创建时间
+	 * 上传时间
 	 */
 	@TableField(fill = FieldFill.INSERT)
 	private LocalDateTime createTime;
+
+	/**
+	 * 更新人
+	 */
+	@TableField(fill = FieldFill.INSERT)
+	private String updateBy;
 
 	/**
 	 * 更新时间
 	 */
 	@TableField(fill = FieldFill.UPDATE)
 	private LocalDateTime updateTime;
+
+	/**
+	 * 删除标识：1-删除，0-正常
+	 */
+	@TableLogic
+	@TableField(fill = FieldFill.INSERT)
+	private String delFlag;
 
 }

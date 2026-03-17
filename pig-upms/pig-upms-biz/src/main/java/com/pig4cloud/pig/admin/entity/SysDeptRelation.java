@@ -17,7 +17,7 @@
  *
  */
 
-package com.pig4cloud.pig.admin.api.entity;
+package com.pig4cloud.pig.admin.entity;
 
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
@@ -27,27 +27,27 @@ import java.io.Serial;
 
 /**
  * <p>
- * 用户角色表
+ * 部门关系表
  * </p>
  *
  * @author lengleng
- * @since 2017-10-29
+ * @since 2018-01-22
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class SysUserRole extends Model<SysUserRole> {
+public class SysDeptRelation extends Model<SysDeptRelation> {
 
 	@Serial
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 用户ID
+	 * 祖先节点
 	 */
-	private Long userId;
+	private Long ancestor;
 
 	/**
-	 * 角色ID
+	 * 后代节点
 	 */
-	private Long roleId;
+	private Long descendant;
 
 }

@@ -21,7 +21,7 @@ package com.pig4cloud.pig.admin.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.pig4cloud.pig.admin.api.dto.SysMenuDTO;
-import com.pig4cloud.pig.admin.api.entity.SysMenu;
+import com.pig4cloud.pig.admin.entity.SysMenu;
 import com.pig4cloud.pig.admin.service.SysMenuService;
 import com.pig4cloud.pig.common.core.util.R;
 import com.pig4cloud.pig.common.log.annotation.SysLog;

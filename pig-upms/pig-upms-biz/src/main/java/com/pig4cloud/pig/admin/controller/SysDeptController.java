@@ -21,7 +21,7 @@ package com.pig4cloud.pig.admin.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.pig4cloud.pig.admin.api.dto.SysDeptDTO;
-import com.pig4cloud.pig.admin.api.entity.SysDept;
+import com.pig4cloud.pig.admin.entity.SysDept;
 import com.pig4cloud.pig.admin.api.vo.DeptExcelVo;
 import com.pig4cloud.pig.admin.service.SysDeptService;
 import com.pig4cloud.pig.common.core.util.R;

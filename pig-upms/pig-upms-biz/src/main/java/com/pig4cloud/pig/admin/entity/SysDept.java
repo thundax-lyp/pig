@@ -17,37 +17,80 @@
  *
  */
 
-package com.pig4cloud.pig.admin.api.entity;
+package com.pig4cloud.pig.admin.entity;
 
+import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.FieldNameConstants;
 
 import java.io.Serial;
+import java.time.LocalDateTime;
 
 /**
  * <p>
- * 角色菜单表
+ * 部门管理
  * </p>
  *
  * @author lengleng
- * @since 2017-10-29
+ * @since 2018-01-22
  */
 @Data
+@FieldNameConstants
 @EqualsAndHashCode(callSuper = true)
-public class SysRoleMenu extends Model<SysRoleMenu> {
+public class SysDept extends Model<SysDept> {
 
 	@Serial
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * 角色ID
-	 */
-	private Long roleId;
+	@TableId(value = "dept_id", type = IdType.ASSIGN_ID)
+	private Long deptId;
 
 	/**
-	 * 菜单ID
+	 * 部门名称
 	 */
-	private Long menuId;
+	private String name;
+
+	/**
+	 * 排序
+	 */
+	private Integer sortOrder;
+
+	/**
+	 * 创建人
+	 */
+	@TableField(fill = FieldFill.INSERT)
+	private String createBy;
+
+	/**
+	 * 修改人
+	 */
+	@TableField(fill = FieldFill.UPDATE)
+	private String updateBy;
+
+	/**
+	 * 创建时间
+	 */
+	@TableField(fill = FieldFill.INSERT)
+	private LocalDateTime createTime;
+
+	/**
+	 * 修改时间
+	 */
+	@TableField(fill = FieldFill.UPDATE)
+	private LocalDateTime updateTime;
+
+	/**
+	 * 父级部门id
+	 */
+	private Long parentId;
+
+	/**
+	 * 是否删除 1：已删除 0：正常
+	 */
+	@TableLogic
+	@TableField(fill = FieldFill.INSERT)
+	private String delFlag;
 
 }

@@ -20,7 +20,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.pig4cloud.pig.admin.api.entity.SysPost;
+import com.pig4cloud.pig.admin.entity.SysPost;
 import com.pig4cloud.pig.admin.api.vo.PostExcelVO;
 import com.pig4cloud.pig.admin.mapper.SysPostMapper;
 import com.pig4cloud.pig.admin.service.SysPostService;

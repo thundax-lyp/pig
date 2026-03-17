@@ -24,7 +24,7 @@ import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.pig4cloud.pig.admin.api.dto.SysLogDTO;
 import com.pig4cloud.pig.admin.api.dto.SysLogRecordDTO;
-import com.pig4cloud.pig.admin.api.entity.SysLog;
+import com.pig4cloud.pig.admin.entity.SysLog;
 import com.pig4cloud.pig.admin.api.vo.SysLogExcelVO;
 import com.pig4cloud.pig.admin.service.SysLogService;
 import com.pig4cloud.pig.common.core.util.R;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.pig4cloud.pig.admin.api.entity;
+package com.pig4cloud.pig.admin.entity;
 
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;

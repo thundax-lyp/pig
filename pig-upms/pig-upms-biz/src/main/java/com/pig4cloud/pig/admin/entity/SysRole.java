@@ -17,45 +17,39 @@
  *
  */
 
-package com.pig4cloud.pig.admin.api.entity;
+package com.pig4cloud.pig.admin.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.experimental.FieldNameConstants;
 
 import java.io.Serial;
 import java.time.LocalDateTime;
 
 /**
  * <p>
- * 部门管理
+ * 角色表
  * </p>
  *
  * @author lengleng
- * @since 2018-01-22
+ * @since 2017-10-29
  */
 @Data
-@FieldNameConstants
 @EqualsAndHashCode(callSuper = true)
-public class SysDept extends Model<SysDept> {
+public class SysRole extends Model<SysRole> {
 
 	@Serial
 	private static final long serialVersionUID = 1L;
 
-	@TableId(value = "dept_id", type = IdType.ASSIGN_ID)
-	private Long deptId;
+	@TableId(value = "role_id", type = IdType.ASSIGN_ID)
+	private Long roleId;
 
-	/**
-	 * 部门名称
-	 */
-	private String name;
+	private String roleName;
 
-	/**
-	 * 排序
-	 */
-	private Integer sortOrder;
+	private String roleCode;
+
+	private String roleDesc;
 
 	/**
 	 * 创建人
@@ -82,12 +76,7 @@ public class SysDept extends Model<SysDept> {
 	private LocalDateTime updateTime;
 
 	/**
-	 * 父级部门id
-	 */
-	private Long parentId;
-
-	/**
-	 * 是否删除 1：已删除 0：正常
+	 * 删除标识（0-正常,1-删除）
 	 */
 	@TableLogic
 	@TableField(fill = FieldFill.INSERT)

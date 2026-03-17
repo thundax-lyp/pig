@@ -3,7 +3,7 @@ package com.pig4cloud.pig.admin.service.api;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.pig4cloud.pig.admin.api.dto.SysDictItemDTO;
-import com.pig4cloud.pig.admin.api.entity.SysDictItem;
+import com.pig4cloud.pig.admin.entity.SysDictItem;
 import com.pig4cloud.pig.admin.api.service.DictApi;
 import com.pig4cloud.pig.admin.service.SysDictItemService;
 import com.pig4cloud.pig.common.core.util.R;

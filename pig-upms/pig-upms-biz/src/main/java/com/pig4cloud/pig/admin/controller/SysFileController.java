@@ -25,7 +25,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.pig4cloud.pig.admin.api.dto.SysFileDTO;
-import com.pig4cloud.pig.admin.api.entity.SysFile;
+import com.pig4cloud.pig.admin.entity.SysFile;
 import com.pig4cloud.pig.admin.service.SysFileService;
 import com.pig4cloud.pig.common.core.util.R;
 import com.pig4cloud.pig.common.log.annotation.SysLog;

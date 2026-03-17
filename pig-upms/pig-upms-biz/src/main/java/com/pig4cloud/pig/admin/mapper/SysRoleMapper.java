@@ -20,7 +20,7 @@
 package com.pig4cloud.pig.admin.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.pig4cloud.pig.admin.api.entity.SysRole;
+import com.pig4cloud.pig.admin.entity.SysRole;
 import com.pig4cloud.pig.admin.api.vo.RoleItemVO;
 import org.apache.ibatis.annotations.Mapper;
 

@@ -26,7 +26,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.pig4cloud.pig.admin.api.dto.SysLogDTO;
-import com.pig4cloud.pig.admin.api.entity.SysLog;
+import com.pig4cloud.pig.admin.entity.SysLog;
 import com.pig4cloud.pig.admin.mapper.SysLogMapper;
 import com.pig4cloud.pig.admin.service.SysLogService;
 import org.springframework.stereotype.Service;

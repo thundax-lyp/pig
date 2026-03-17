@@ -18,7 +18,7 @@
 package com.pig4cloud.pig.admin.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.pig4cloud.pig.admin.api.entity.SysFile;
+import com.pig4cloud.pig.admin.entity.SysFile;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

@@ -18,8 +18,8 @@ package com.pig4cloud.pig.admin.service.impl;
 
 import com.alicp.jetcache.anno.CacheInvalidate;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.pig4cloud.pig.admin.api.entity.SysDict;
-import com.pig4cloud.pig.admin.api.entity.SysDictItem;
+import com.pig4cloud.pig.admin.entity.SysDict;
+import com.pig4cloud.pig.admin.entity.SysDictItem;
 import com.pig4cloud.pig.admin.mapper.SysDictItemMapper;
 import com.pig4cloud.pig.admin.service.SysDictItemService;
 import com.pig4cloud.pig.admin.service.SysDictService;

@@ -14,28 +14,25 @@
  * this software without specific prior written permission.
  * Author: lengleng (wangiegie@gmail.com)
  */
-
-package com.pig4cloud.pig.admin.api.entity;
+package com.pig4cloud.pig.admin.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.experimental.FieldNameConstants;
 
 import java.io.Serial;
 import java.time.LocalDateTime;
 
 /**
- * 文件管理实体类
+ * 字典表
  *
  * @author lengleng
- * @date 2025/07/03
+ * @date 2019/03/19
  */
 @Data
-@FieldNameConstants
 @EqualsAndHashCode(callSuper = true)
-public class SysFile extends Model<SysFile> {
+public class SysDict extends Model<SysDict> {
 
 	@Serial
 	private static final long serialVersionUID = 1L;
@@ -47,47 +44,20 @@ public class SysFile extends Model<SysFile> {
 	private Long id;
 
 	/**
-	 * 文件名
+	 * 类型
 	 */
-	private String fileName;
+	private String dictType;
 
 	/**
-	 * 原文件名
+	 * 描述
 	 */
-	private String original;
+	private String description;
 
 	/**
-	 * 容器名称
-	 */
-	private String bucketName;
-
-	/**
-	 * 文件类型
-	 */
-	private String type;
-
-	/**
-	 * 文件大小
-	 */
-	private Long fileSize;
-
-	/**
-	 * 上传人
-	 */
-	@TableField(fill = FieldFill.INSERT)
-	private String createBy;
-
-	/**
-	 * 上传时间
+	 * 创建时间
 	 */
 	@TableField(fill = FieldFill.INSERT)
 	private LocalDateTime createTime;
-
-	/**
-	 * 更新人
-	 */
-	@TableField(fill = FieldFill.INSERT)
-	private String updateBy;
 
 	/**
 	 * 更新时间
@@ -96,7 +66,29 @@ public class SysFile extends Model<SysFile> {
 	private LocalDateTime updateTime;
 
 	/**
-	 * 删除标识：1-删除，0-正常
+	 * 是否是系统内置
+	 */
+	private String systemFlag;
+
+	/**
+	 * 备注信息
+	 */
+	private String remarks;
+
+	/**
+	 * 创建人
+	 */
+	@TableField(fill = FieldFill.INSERT)
+	private String createBy;
+
+	/**
+	 * 修改人
+	 */
+	@TableField(fill = FieldFill.UPDATE)
+	private String updateBy;
+
+	/**
+	 * 删除标记
 	 */
 	@TableLogic
 	@TableField(fill = FieldFill.INSERT)

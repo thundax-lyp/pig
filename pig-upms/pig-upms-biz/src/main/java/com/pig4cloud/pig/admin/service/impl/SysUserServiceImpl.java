@@ -29,7 +29,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.pig4cloud.pig.admin.api.dto.RegisterUserDTO;
 import com.pig4cloud.pig.admin.api.dto.UserDTO;
 import com.pig4cloud.pig.admin.api.dto.UserInfo;
-import com.pig4cloud.pig.admin.api.entity.*;
+import com.pig4cloud.pig.admin.entity.*;
 import com.pig4cloud.pig.admin.api.util.ParamResolver;
 import com.pig4cloud.pig.admin.api.vo.PostVO;
 import com.pig4cloud.pig.admin.api.vo.RoleItemVO;

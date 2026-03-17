@@ -2,7 +2,7 @@ package com.pig4cloud.pig.admin.service.api;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.pig4cloud.pig.admin.api.dto.SysLogRecordDTO;
-import com.pig4cloud.pig.admin.api.entity.SysLog;
+import com.pig4cloud.pig.admin.entity.SysLog;
 import com.pig4cloud.pig.admin.api.service.LogApi;
 import com.pig4cloud.pig.admin.service.SysLogService;
 import com.pig4cloud.pig.common.core.util.R;

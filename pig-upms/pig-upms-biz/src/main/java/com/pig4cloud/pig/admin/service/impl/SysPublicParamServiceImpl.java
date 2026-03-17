@@ -23,7 +23,7 @@ import com.alicp.jetcache.anno.CacheType;
 import com.alicp.jetcache.anno.Cached;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.pig4cloud.pig.admin.api.entity.SysPublicParam;
+import com.pig4cloud.pig.admin.entity.SysPublicParam;
 import com.pig4cloud.pig.admin.mapper.SysPublicParamMapper;
 import com.pig4cloud.pig.admin.service.SysPublicParamService;
 import com.pig4cloud.pig.common.core.constant.CacheConstants;

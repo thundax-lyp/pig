@@ -22,7 +22,7 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.pig4cloud.pig.admin.api.entity.SysFile;
+import com.pig4cloud.pig.admin.entity.SysFile;
 import com.pig4cloud.pig.admin.mapper.SysFileMapper;
 import com.pig4cloud.pig.admin.service.SysFileService;
 import com.pig4cloud.pig.common.core.util.R;

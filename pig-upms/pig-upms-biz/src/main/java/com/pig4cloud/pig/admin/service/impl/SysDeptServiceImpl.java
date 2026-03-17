@@ -26,7 +26,7 @@ import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.pig4cloud.pig.admin.api.entity.SysDept;
+import com.pig4cloud.pig.admin.entity.SysDept;
 import com.pig4cloud.pig.admin.api.vo.DeptExcelVo;
 import com.pig4cloud.pig.admin.mapper.SysDeptMapper;
 import com.pig4cloud.pig.admin.service.SysDeptService;

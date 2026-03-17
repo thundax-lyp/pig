@@ -14,9 +14,12 @@
  * this software without specific prior written permission.
  * Author: lengleng (wangiegie@gmail.com)
  */
-package com.pig4cloud.pig.admin.api.entity;
+package com.pig4cloud.pig.admin.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,71 +28,47 @@ import java.io.Serial;
 import java.time.LocalDateTime;
 
 /**
- * 字典表
+ * 字典项
  *
  * @author lengleng
  * @date 2019/03/19
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class SysDict extends Model<SysDict> {
+public class SysDictItem extends Model<SysDictItem> {
 
 	@Serial
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * 编号
-	 */
-	@TableId(type = IdType.ASSIGN_ID)
+	@TableId
 	private Long id;
 
-	/**
-	 * 类型
-	 */
+	private Long dictId;
+
+	private String itemValue;
+
+	private String label;
+
 	private String dictType;
 
-	/**
-	 * 描述
-	 */
 	private String description;
 
-	/**
-	 * 创建时间
-	 */
-	@TableField(fill = FieldFill.INSERT)
-	private LocalDateTime createTime;
+	private Integer sortOrder;
 
-	/**
-	 * 更新时间
-	 */
-	@TableField(fill = FieldFill.UPDATE)
-	private LocalDateTime updateTime;
-
-	/**
-	 * 是否是系统内置
-	 */
-	private String systemFlag;
-
-	/**
-	 * 备注信息
-	 */
-	private String remarks;
-
-	/**
-	 * 创建人
-	 */
 	@TableField(fill = FieldFill.INSERT)
 	private String createBy;
 
-	/**
-	 * 修改人
-	 */
 	@TableField(fill = FieldFill.UPDATE)
 	private String updateBy;
 
-	/**
-	 * 删除标记
-	 */
+	@TableField(fill = FieldFill.INSERT)
+	private LocalDateTime createTime;
+
+	@TableField(fill = FieldFill.UPDATE)
+	private LocalDateTime updateTime;
+
+	private String remarks;
+
 	@TableLogic
 	@TableField(fill = FieldFill.INSERT)
 	private String delFlag;

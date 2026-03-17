@@ -17,39 +17,49 @@
  *
  */
 
-package com.pig4cloud.pig.admin.api.entity;
+package com.pig4cloud.pig.admin.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  * <p>
- * 角色表
+ * 用户表
  * </p>
  *
  * @author lengleng
  * @since 2017-10-29
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class SysRole extends Model<SysRole> {
+public class SysUser implements Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 1L;
 
-	@TableId(value = "role_id", type = IdType.ASSIGN_ID)
-	private Long roleId;
+	/**
+	 * 主键ID
+	 */
+	@TableId(value = "user_id", type = IdType.ASSIGN_ID)
+	private Long userId;
 
-	private String roleName;
+	/**
+	 * 用户名
+	 */
+	private String username;
 
-	private String roleCode;
+	/**
+	 * 密码
+	 */
+	private String password;
 
-	private String roleDesc;
+	/**
+	 * 随机盐
+	 */
+	private String salt;
 
 	/**
 	 * 创建人
@@ -76,10 +86,70 @@ public class SysRole extends Model<SysRole> {
 	private LocalDateTime updateTime;
 
 	/**
-	 * 删除标识（0-正常,1-删除）
+	 * 0-正常，1-删除
 	 */
 	@TableLogic
 	@TableField(fill = FieldFill.INSERT)
 	private String delFlag;
+
+	/**
+	 * 锁定标记
+	 */
+	private String lockFlag;
+
+	/**
+	 * 手机号
+	 */
+	private String phone;
+
+	/**
+	 * 头像
+	 */
+	private String avatar;
+
+	/**
+	 * 部门ID
+	 */
+	private Long deptId;
+
+	/**
+	 * 微信openid
+	 */
+	private String wxOpenid;
+
+	/**
+	 * 微信小程序openId
+	 */
+	private String miniOpenid;
+
+	/**
+	 * QQ openid
+	 */
+	private String qqOpenid;
+
+	/**
+	 * 码云唯一标识
+	 */
+	private String giteeLogin;
+
+	/**
+	 * 开源中国唯一标识
+	 */
+	private String oscId;
+
+	/**
+	 * 昵称
+	 */
+	private String nickname;
+
+	/**
+	 * 姓名
+	 */
+	private String name;
+
+	/**
+	 * 邮箱
+	 */
+	private String email;
 
 }

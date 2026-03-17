@@ -14,12 +14,10 @@
  * this software without specific prior written permission.
  * Author: lengleng (wangiegie@gmail.com)
  */
-package com.pig4cloud.pig.admin.api.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
+package com.pig4cloud.pig.admin.entity;
+
+import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,49 +26,88 @@ import java.io.Serial;
 import java.time.LocalDateTime;
 
 /**
- * 字典项
+ * 公共参数配置
  *
- * @author lengleng
- * @date 2019/03/19
+ * @author Lucky
+ * @date 2019-04-29
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class SysDictItem extends Model<SysDictItem> {
+public class SysPublicParam extends Model<SysPublicParam> {
 
 	@Serial
 	private static final long serialVersionUID = 1L;
 
-	@TableId
-	private Long id;
+	/**
+	 * 编号
+	 */
+	@TableId(type = IdType.ASSIGN_ID)
+	private Long publicId;
 
-	private Long dictId;
+	/**
+	 * 公共参数名称
+	 */
+	private String publicName;
 
-	private String itemValue;
+	/**
+	 * 公共参数地址值,英文大写+下划线
+	 */
+	private String publicKey;
 
-	private String label;
+	/**
+	 * 值
+	 */
+	private String publicValue;
 
-	private String dictType;
+	/**
+	 * 状态（1有效；2无效；）
+	 */
+	private String status;
 
-	private String description;
+	/**
+	 * 公共参数编码
+	 */
+	private String validateCode;
 
-	private Integer sortOrder;
+	/**
+	 * 是否是系统内置
+	 */
+	private String systemFlag;
 
+	/**
+	 * 配置类型：0-默认；1-检索；2-原文；3-报表；4-安全；5-文档；6-消息；9-其他
+	 */
+	private String publicType;
+
+	/**
+	 * 创建人
+	 */
 	@TableField(fill = FieldFill.INSERT)
 	private String createBy;
 
+	/**
+	 * 修改人
+	 */
 	@TableField(fill = FieldFill.UPDATE)
 	private String updateBy;
 
-	@TableField(fill = FieldFill.INSERT)
-	private LocalDateTime createTime;
-
-	@TableField(fill = FieldFill.UPDATE)
-	private LocalDateTime updateTime;
-
-	private String remarks;
-
+	/**
+	 * 删除标记
+	 */
 	@TableLogic
 	@TableField(fill = FieldFill.INSERT)
 	private String delFlag;
+
+	/**
+	 * 创建时间
+	 */
+	@TableField(fill = FieldFill.INSERT)
+	private LocalDateTime createTime;
+
+	/**
+	 * 更新时间
+	 */
+	@TableField(fill = FieldFill.UPDATE)
+	private LocalDateTime updateTime;
 
 }

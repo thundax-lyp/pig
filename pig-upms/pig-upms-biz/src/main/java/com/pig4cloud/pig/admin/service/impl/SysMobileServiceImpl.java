@@ -20,7 +20,7 @@ package com.pig4cloud.pig.admin.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.pig4cloud.pig.admin.api.entity.SysUser;
+import com.pig4cloud.pig.admin.entity.SysUser;
 import com.pig4cloud.pig.admin.mapper.SysUserMapper;
 import com.pig4cloud.pig.admin.service.SysMobileService;
 import com.pig4cloud.pig.common.core.constant.CacheConstants;

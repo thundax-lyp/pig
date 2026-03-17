@@ -20,7 +20,7 @@
 package com.pig4cloud.pig.admin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.pig4cloud.pig.admin.api.entity.SysRole;
+import com.pig4cloud.pig.admin.entity.SysRole;
 import com.pig4cloud.pig.admin.api.vo.RoleExcelVO;
 import com.pig4cloud.pig.admin.api.vo.RoleVO;
 import com.pig4cloud.pig.common.core.util.R;

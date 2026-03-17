@@ -18,7 +18,7 @@
 package com.pig4cloud.pig.admin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.pig4cloud.pig.admin.api.entity.SysPost;
+import com.pig4cloud.pig.admin.entity.SysPost;
 import com.pig4cloud.pig.admin.api.vo.PostExcelVO;
 import com.pig4cloud.pig.common.core.util.R;
 import org.springframework.validation.BindingResult;

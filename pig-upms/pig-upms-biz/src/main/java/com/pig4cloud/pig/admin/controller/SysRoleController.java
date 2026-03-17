@@ -26,7 +26,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.pig4cloud.pig.admin.api.dto.SysRoleDTO;
-import com.pig4cloud.pig.admin.api.entity.SysRole;
+import com.pig4cloud.pig.admin.entity.SysRole;
 import com.pig4cloud.pig.admin.api.vo.RoleExcelVO;
 import com.pig4cloud.pig.admin.api.vo.RoleVO;
 import com.pig4cloud.pig.admin.service.SysRoleService;
