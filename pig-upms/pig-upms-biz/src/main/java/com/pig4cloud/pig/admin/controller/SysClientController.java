@@ -23,6 +23,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.pig4cloud.pig.admin.api.dto.SysOauthClientDetailsDTO;
@@ -67,10 +68,10 @@ public class SysClientController {
 	 */
 	@GetMapping("/{clientId}")
 	@Operation(summary = "通过客户端ID查询客户端详情", description = "通过客户端ID查询客户端详情")
-	public R getByClientId(@PathVariable String clientId) {
+	public R<SysOauthClientDetailsDTO> getByClientId(@PathVariable String clientId) {
 		SysOauthClientDetails details = clientDetailsService
 			.getOne(Wrappers.<SysOauthClientDetails>lambdaQuery().eq(SysOauthClientDetails::getClientId, clientId));
-		return R.ok(details);
+		return R.ok(toDto(details));
 	}
 
 	/**
@@ -81,13 +82,17 @@ public class SysClientController {
 	 */
 	@GetMapping("/page")
 	@Operation(summary = "分页查询系统终端信息", description = "分页查询系统终端信息")
-	public R getClientPage(@ParameterObject Page page, @ParameterObject SysOauthClientDetails sysOauthClientDetails) {
+	public R<IPage<SysOauthClientDetailsDTO>> getClientPage(@ParameterObject Page<SysOauthClientDetails> page,
+			@ParameterObject SysOauthClientDetailsDTO sysOauthClientDetails) {
 		LambdaQueryWrapper<SysOauthClientDetails> wrapper = Wrappers.<SysOauthClientDetails>lambdaQuery()
 			.like(StrUtil.isNotBlank(sysOauthClientDetails.getClientId()), SysOauthClientDetails::getClientId,
 					sysOauthClientDetails.getClientId())
 			.like(StrUtil.isNotBlank(sysOauthClientDetails.getClientSecret()), SysOauthClientDetails::getClientSecret,
 					sysOauthClientDetails.getClientSecret());
-		return R.ok(clientDetailsService.page(page, wrapper));
+		IPage<SysOauthClientDetails> result = clientDetailsService.page(page, wrapper);
+		Page<SysOauthClientDetailsDTO> dtoPage = new Page<>(result.getCurrent(), result.getSize(), result.getTotal());
+		dtoPage.setRecords(result.getRecords().stream().map(this::toDto).toList());
+		return R.ok(dtoPage);
 	}
 
 	/**
@@ -99,8 +104,10 @@ public class SysClientController {
 	@PostMapping
 	@HasPermission("sys_client_add")
 	@Operation(summary = "添加客户端终端", description = "添加客户端终端")
-	public R saveClient(@Valid @RequestBody SysOauthClientDetails clientDetails) {
-		return R.ok(clientDetailsService.saveClient(clientDetails));
+	public R saveClient(@Valid @RequestBody SysOauthClientDetailsDTO clientDetails) {
+		SysOauthClientDetails entity = new SysOauthClientDetails();
+		BeanUtil.copyProperties(clientDetails, entity);
+		return R.ok(clientDetailsService.saveClient(entity));
 	}
 
 	/**
@@ -126,8 +133,10 @@ public class SysClientController {
 	@PutMapping
 	@HasPermission("sys_client_edit")
 	@Operation(summary = "编辑终端信息", description = "编辑终端信息")
-	public R updateClient(@Valid @RequestBody SysOauthClientDetails clientDetails) {
-		return R.ok(clientDetailsService.updateClientById(clientDetails));
+	public R updateClient(@Valid @RequestBody SysOauthClientDetailsDTO clientDetails) {
+		SysOauthClientDetails entity = new SysOauthClientDetails();
+		BeanUtil.copyProperties(clientDetails, entity);
+		return R.ok(clientDetailsService.updateClientById(entity));
 	}
 
 	/**
@@ -141,7 +150,7 @@ public class SysClientController {
 	public R getClientDetailsById(@PathVariable String clientId) {
 		SysOauthClientDetails clientDetails = clientDetailsService.getOne(
 				Wrappers.<SysOauthClientDetails>lambdaQuery().eq(SysOauthClientDetails::getClientId, clientId), false);
-		return R.ok(BeanUtil.copyProperties(clientDetails, SysOauthClientDetailsDTO.class));
+		return R.ok(toDto(clientDetails));
 	}
 
 	/**
@@ -164,8 +173,17 @@ public class SysClientController {
 	@SysLog("导出excel")
 	@GetMapping("/export")
 	@Operation(summary = "导出客户端信息到Excel", description = "导出客户端信息到Excel")
-	public List<SysOauthClientDetails> exportClients(SysOauthClientDetails sysOauthClientDetails) {
-		return clientDetailsService.list(Wrappers.query(sysOauthClientDetails));
+	public List<SysOauthClientDetailsDTO> exportClients(@ParameterObject SysOauthClientDetailsDTO sysOauthClientDetails) {
+		SysOauthClientDetails entity = new SysOauthClientDetails();
+		BeanUtil.copyProperties(sysOauthClientDetails, entity);
+		return clientDetailsService.list(Wrappers.query(entity)).stream().map(this::toDto).toList();
+	}
+
+	private SysOauthClientDetailsDTO toDto(SysOauthClientDetails clientDetails) {
+		if (clientDetails == null) {
+			return null;
+		}
+		return BeanUtil.copyProperties(clientDetails, SysOauthClientDetailsDTO.class);
 	}
 
 }
