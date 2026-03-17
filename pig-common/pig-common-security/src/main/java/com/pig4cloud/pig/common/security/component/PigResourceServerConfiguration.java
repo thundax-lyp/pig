@@ -30,7 +30,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 /**
- * 资源服务器认证授权配置
+ * 资源服务器认证与授权配置
  *
  * @author lengleng
  * @date 2025/05/31
@@ -56,7 +56,7 @@ public class PigResourceServerConfiguration {
 	private final PigBearerTokenExtractor pigBearerTokenExtractor;
 
 	/**
-	 * 自定义不透明令牌解析器
+	 * 自定义不透明令牌内省器
 	 */
 	private final OpaqueTokenIntrospector customOpaqueTokenIntrospector;
 

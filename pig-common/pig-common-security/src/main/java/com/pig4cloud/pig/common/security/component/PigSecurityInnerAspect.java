@@ -31,7 +31,7 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.security.access.AccessDeniedException;
 
 /**
- * 服务间接口不鉴权处理切面
+ * 服务间接口免认证处理切面
  *
  * @author lengleng
  * @date 2025/05/31

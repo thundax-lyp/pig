@@ -36,7 +36,7 @@ import org.springframework.security.oauth2.server.resource.introspection.OpaqueT
 public class PigResourceServerAutoConfiguration {
 
 	/**
-	 * 鉴权具体的实现逻辑
+	 * 认证与授权的具体实现逻辑
 	 * @return （#pms.xxx）
 	 */
 	@Bean("pms")
@@ -45,7 +45,7 @@ public class PigResourceServerAutoConfiguration {
 	}
 
 	/**
-	 * 请求令牌的抽取逻辑
+	 * 访问令牌提取逻辑
 	 * @param urlProperties 对外暴露的接口列表
 	 * @return BearerTokenExtractor
 	 */
@@ -67,9 +67,9 @@ public class PigResourceServerAutoConfiguration {
 	}
 
 	/**
-	 * 资源服务器toke内省处理器
-	 * @param authorizationService token 存储实现
-	 * @return TokenIntrospector
+	 * 资源服务器令牌内省处理器
+	 * @param authorizationService 令牌存储实现
+	 * @return 令牌内省器
 	 */
 	@Bean
 	public OpaqueTokenIntrospector opaqueTokenIntrospector(OAuth2AuthorizationService authorizationService) {

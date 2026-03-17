@@ -19,8 +19,8 @@
   -->
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.pig4cloud.pig.admin.mapper.SysDeptMapper">
-	<select id="getDeptVoById" resultType="com.pig4cloud.pig.admin.api.vo.DeptVO">
+<mapper namespace="com.pig4cloud.pig.sys.mapper.SysDeptMapper">
+	<select id="getDeptVoById" resultType="com.pig4cloud.pig.sys.api.vo.DeptVO">
 		SELECT dept_id, name, parent_id
 		FROM sys_dept
 		WHERE dept_id = #{deptId}

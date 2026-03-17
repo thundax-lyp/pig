@@ -4,8 +4,8 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alicp.jetcache.anno.CacheType;
 import com.alicp.jetcache.anno.Cached;
-import com.pig4cloud.pig.admin.api.dto.SysOauthClientDetailsDTO;
-import com.pig4cloud.pig.admin.api.service.ClientDetailsApi;
+import com.pig4cloud.pig.sys.api.dto.SysOauthClientDetailsDTO;
+import com.pig4cloud.pig.sys.api.service.ClientDetailsApi;
 import com.pig4cloud.pig.common.core.constant.CacheConstants;
 import com.pig4cloud.pig.common.core.constant.SecurityConstants;
 import com.pig4cloud.pig.common.core.util.RetOps;
@@ -41,7 +41,7 @@ public class PigRemoteRegisteredClientRepository implements RegisteredClientRepo
 	private final static int refreshTokenValiditySeconds = 60 * 60 * 24 * 30;
 
 	/**
-	 * 请求令牌有效期默认 12 小时
+	 * 访问令牌有效期默认 12 小时
 	 */
 	private final static int accessTokenValiditySeconds = 60 * 60 * 12;
 

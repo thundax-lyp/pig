@@ -1,6 +1,6 @@
 package com.pig4cloud.pig.common.log.event;
 
-import com.pig4cloud.pig.admin.api.dto.SysLogRecordDTO;
+import com.pig4cloud.pig.sys.api.dto.SysLogRecordDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

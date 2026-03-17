@@ -16,7 +16,7 @@
 
 package com.pig4cloud.pig.common.log;
 
-import com.pig4cloud.pig.admin.api.service.LogApi;
+import com.pig4cloud.pig.sys.api.service.LogApi;
 import com.pig4cloud.pig.common.log.aspect.SysLogAspect;
 import com.pig4cloud.pig.common.log.config.PigLogProperties;
 import com.pig4cloud.pig.common.log.event.SysLogListener;

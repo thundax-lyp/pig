@@ -16,9 +16,9 @@
 
 package com.pig4cloud.pig.common.security.service;
 
-import com.pig4cloud.pig.admin.api.dto.UserDTO;
-import com.pig4cloud.pig.admin.api.dto.UserInfo;
-import com.pig4cloud.pig.admin.api.service.UserQueryApi;
+import com.pig4cloud.pig.sys.api.dto.UserDTO;
+import com.pig4cloud.pig.sys.api.dto.UserInfo;
+import com.pig4cloud.pig.sys.api.service.UserQueryApi;
 import com.pig4cloud.pig.common.core.util.R;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
