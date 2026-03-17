@@ -19,6 +19,7 @@
 
 package com.pig4cloud.pig.admin.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -48,6 +49,7 @@ public class UserDTO implements Serializable {
 	private String password;
 
 	@Schema(description = "随机盐")
+	@JsonIgnore
 	private String salt;
 
 	@Schema(description = "创建人")
