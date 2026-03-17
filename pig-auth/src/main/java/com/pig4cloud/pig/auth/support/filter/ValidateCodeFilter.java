@@ -1,32 +1,23 @@
 package com.pig4cloud.pig.auth.support.filter;
 
-import java.io.IOException;
-import java.util.Optional;
-
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
-
+import cn.hutool.core.util.StrUtil;
 import com.pig4cloud.pig.common.core.constant.CacheConstants;
 import com.pig4cloud.pig.common.core.constant.SecurityConstants;
 import com.pig4cloud.pig.common.core.exception.ValidateCodeException;
 import com.pig4cloud.pig.common.core.util.RedisUtils;
 import com.pig4cloud.pig.common.core.util.WebUtils;
-
-/**
- * 登录前处理器
- *
- * @author lengleng
- * @date 2024/4/3
- */
-
-import cn.hutool.core.util.StrUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+import java.util.Optional;
 
 /**
  * 验证码过滤器：用于处理登录请求中的验证码校验

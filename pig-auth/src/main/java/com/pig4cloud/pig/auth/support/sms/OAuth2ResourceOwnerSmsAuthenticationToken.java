@@ -1,13 +1,12 @@
 package com.pig4cloud.pig.auth.support.sms;
 
-import java.io.Serial;
-import java.util.Map;
-import java.util.Set;
-
+import com.pig4cloud.pig.auth.support.base.OAuth2ResourceOwnerBaseAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 
-import com.pig4cloud.pig.auth.support.base.OAuth2ResourceOwnerBaseAuthenticationToken;
+import java.io.Serial;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author lengleng
