@@ -1,9 +1,9 @@
 package com.pig4cloud.pig.common.security.util;
 
-import java.io.Serial;
-
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2Error;
+
+import java.io.Serial;
 
 /**
  * ScopeException 异常类，用于处理OAuth2认证过程中的作用域异常

@@ -16,19 +16,17 @@
 
 package com.pig4cloud.pig.common.security.service;
 
+import com.pig4cloud.pig.admin.api.dto.UserDTO;
+import com.pig4cloud.pig.admin.api.dto.UserInfo;
+import com.pig4cloud.pig.admin.api.service.UserQueryApi;
+import com.pig4cloud.pig.common.core.constant.CacheConstants;
+import com.pig4cloud.pig.common.core.util.R;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import com.pig4cloud.pig.admin.api.dto.UserDTO;
-import com.pig4cloud.pig.admin.api.dto.UserInfo;
-import com.pig4cloud.pig.admin.api.feign.RemoteUserService;
-import com.pig4cloud.pig.common.core.constant.CacheConstants;
-import com.pig4cloud.pig.common.core.util.R;
-
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 
 /**
  * 用户详情服务实现类，提供基于用户名加载用户详情功能
@@ -41,7 +39,7 @@ import lombok.SneakyThrows;
 @RequiredArgsConstructor
 public class PigUserDetailsServiceImpl implements PigUserDetailsService {
 
-	private final RemoteUserService remoteUserService;
+	private final UserQueryApi userQueryApi;
 
 	private final CacheManager cacheManager;
 
@@ -61,7 +59,7 @@ public class PigUserDetailsServiceImpl implements PigUserDetailsService {
 
 		UserDTO userDTO = new UserDTO();
 		userDTO.setUsername(username);
-		R<UserInfo> result = remoteUserService.info(userDTO);
+		R<UserInfo> result = userQueryApi.info(userDTO);
 		UserDetails userDetails = getUserDetails(result);
 		if (cache != null) {
 			cache.put(username, userDetails);

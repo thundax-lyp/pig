@@ -1,9 +1,8 @@
 package com.pig4cloud.pig.common.seata.config;
 
+import com.pig4cloud.pig.common.core.factory.YamlPropertySourceFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-
-import com.pig4cloud.pig.common.core.factory.YamlPropertySourceFactory;
 
 /**
  * Seata 自动配置类

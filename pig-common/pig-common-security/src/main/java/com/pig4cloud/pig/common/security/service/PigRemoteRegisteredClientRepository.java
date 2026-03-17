@@ -2,8 +2,8 @@ package com.pig4cloud.pig.common.security.service;
 
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
-import com.pig4cloud.pig.admin.api.entity.SysOauthClientDetails;
-import com.pig4cloud.pig.admin.api.feign.RemoteClientDetailsService;
+import com.pig4cloud.pig.admin.api.dto.SysOauthClientDetailsDTO;
+import com.pig4cloud.pig.admin.api.service.ClientDetailsApi;
 import com.pig4cloud.pig.common.core.constant.CacheConstants;
 import com.pig4cloud.pig.common.core.constant.SecurityConstants;
 import com.pig4cloud.pig.common.core.util.RetOps;
@@ -46,7 +46,7 @@ public class PigRemoteRegisteredClientRepository implements RegisteredClientRepo
 	/**
 	 * 远程客户端详情服务
 	 */
-	private final RemoteClientDetailsService clientDetailsService;
+	private final ClientDetailsApi clientDetailsApi;
 
 	/**
 	 * 保存注册的客户端
@@ -81,7 +81,7 @@ public class PigRemoteRegisteredClientRepository implements RegisteredClientRepo
 	@Cacheable(value = CacheConstants.CLIENT_DETAILS_KEY, key = "#clientId", unless = "#result == null")
 	public RegisteredClient findByClientId(String clientId) {
 
-		SysOauthClientDetails clientDetails = RetOps.of(clientDetailsService.getClientDetailsById(clientId))
+		SysOauthClientDetailsDTO clientDetails = RetOps.of(clientDetailsApi.getClientDetailsById(clientId))
 			.getData()
 			.orElseThrow(() -> new OAuth2AuthorizationCodeRequestAuthenticationException(
 					new OAuth2Error("客户端查询异常，请检查数据库链接"), null));

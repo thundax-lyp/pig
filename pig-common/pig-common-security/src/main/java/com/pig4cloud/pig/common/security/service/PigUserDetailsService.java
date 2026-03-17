@@ -61,7 +61,8 @@ public interface PigUserDetailsService extends UserDetailsService, Ordered {
 			.createAuthorityList(dbAuthsSet.toArray(new String[0]));
 
 		// 构造security用户
-		return new PigUser(info.getUserId(), info.getDept().getDeptId(), info.getUsername(),
+		Long deptId = info.getDept() == null ? null : info.getDept().getDeptId();
+		return new PigUser(info.getUserId(), deptId, info.getUsername(),
 				SecurityConstants.BCRYPT + info.getPassword(), info.getPhone(), true, true, true,
 				StrUtil.equals(info.getLockFlag(), CommonConstants.STATUS_NORMAL), authorities);
 	}

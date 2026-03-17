@@ -16,19 +16,17 @@
 
 package com.pig4cloud.pig.common.security.service;
 
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import com.pig4cloud.pig.admin.api.dto.UserDTO;
 import com.pig4cloud.pig.admin.api.dto.UserInfo;
-import com.pig4cloud.pig.admin.api.feign.RemoteUserService;
+import com.pig4cloud.pig.admin.api.service.UserQueryApi;
 import com.pig4cloud.pig.common.core.constant.CacheConstants;
 import com.pig4cloud.pig.common.core.constant.SecurityConstants;
 import com.pig4cloud.pig.common.core.util.R;
-
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * 用户详细信息服务实现类，提供基于手机号的用户信息加载功能
@@ -39,7 +37,7 @@ import lombok.SneakyThrows;
 @RequiredArgsConstructor
 public class PigAppUserDetailsServiceImpl implements PigUserDetailsService {
 
-	private final RemoteUserService remoteUserService;
+	private final UserQueryApi userQueryApi;
 
 	private final CacheManager cacheManager;
 
@@ -59,7 +57,7 @@ public class PigAppUserDetailsServiceImpl implements PigUserDetailsService {
 
 		UserDTO userDTO = new UserDTO();
 		userDTO.setPhone(phone);
-		R<UserInfo> result = remoteUserService.info(userDTO);
+		R<UserInfo> result = userQueryApi.info(userDTO);
 
 		UserDetails userDetails = getUserDetails(result);
 		if (cache != null) {
