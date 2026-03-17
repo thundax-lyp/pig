@@ -30,7 +30,9 @@
 	<packaging>pom</packaging>
 
 	<modules>
+		<module>pig-upms-contract</module>
 		<module>pig-upms-api</module>
+		<module>pig-upms-client</module>
 		<module>pig-upms-biz</module>
 	</modules>
 </project>

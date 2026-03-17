@@ -16,13 +16,6 @@
 
 package com.alibaba.nacos.bootstrap;
 
-import static org.springframework.boot.context.logging.LoggingApplicationListener.CONFIG_PROPERTY;
-import static org.springframework.core.io.ResourceLoader.CLASSPATH_URL_PREFIX;
-
-import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.ConfigurableApplicationContext;
-
 import com.alibaba.nacos.NacosServerBasicApplication;
 import com.alibaba.nacos.NacosServerWebApplication;
 import com.alibaba.nacos.console.NacosConsole;
@@ -31,6 +24,12 @@ import com.alibaba.nacos.core.listener.startup.NacosStartUpManager;
 import com.alibaba.nacos.sys.env.Constants;
 import com.alibaba.nacos.sys.env.DeploymentType;
 import com.alibaba.nacos.sys.env.EnvUtil;
+import org.springframework.boot.WebApplicationType;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ConfigurableApplicationContext;
+
+import static org.springframework.boot.context.logging.LoggingApplicationListener.CONFIG_PROPERTY;
+import static org.springframework.core.io.ResourceLoader.CLASSPATH_URL_PREFIX;
 
 /**
  * @author nacos
@@ -42,7 +41,7 @@ public class PigNacosApplication {
 	/**
 	 * 独立模式系统属性名称
 	 */
-	private static String STANDALONE_MODE = "nacos.standalone";
+	private static final String STANDALONE_MODE = "nacos.standalone";
 
 	public static void main(String[] args) {
 		System.setProperty(STANDALONE_MODE, "true");
