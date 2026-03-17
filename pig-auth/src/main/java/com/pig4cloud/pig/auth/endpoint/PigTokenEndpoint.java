@@ -16,14 +16,32 @@
 
 package com.pig4cloud.pig.auth.endpoint;
 
-import java.security.Principal;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.TemporalAccessorUtil;
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.pig4cloud.pig.admin.api.dto.SysOauthClientDetailsDTO;
+import com.pig4cloud.pig.admin.api.service.ClientDetailsApi;
+import com.pig4cloud.pig.admin.api.vo.TokenVo;
+import com.pig4cloud.pig.auth.support.handler.PigAuthenticationFailureEventHandler;
+import com.pig4cloud.pig.common.core.constant.CacheConstants;
+import com.pig4cloud.pig.common.core.constant.CommonConstants;
+import com.pig4cloud.pig.common.core.constant.SecurityConstants;
+import com.pig4cloud.pig.common.core.util.R;
+import com.pig4cloud.pig.common.core.util.RedisUtils;
+import com.pig4cloud.pig.common.core.util.RetOps;
+import com.pig4cloud.pig.common.core.util.SpringContextHolder;
+import com.pig4cloud.pig.common.security.annotation.Inner;
+import com.pig4cloud.pig.common.security.util.OAuth2EndpointUtils;
+import com.pig4cloud.pig.common.security.util.OAuth2ErrorCodesExpand;
+import com.pig4cloud.pig.common.security.util.OAuthClientException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -42,42 +60,14 @@ import org.springframework.security.oauth2.server.resource.InvalidBearerTokenExc
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.pig4cloud.pig.admin.api.entity.SysOauthClientDetails;
-import com.pig4cloud.pig.admin.api.feign.RemoteClientDetailsService;
-import com.pig4cloud.pig.admin.api.vo.TokenVo;
-import com.pig4cloud.pig.auth.support.handler.PigAuthenticationFailureEventHandler;
-import com.pig4cloud.pig.common.core.constant.CacheConstants;
-import com.pig4cloud.pig.common.core.constant.CommonConstants;
-import com.pig4cloud.pig.common.core.constant.SecurityConstants;
-import com.pig4cloud.pig.common.core.util.R;
-import com.pig4cloud.pig.common.core.util.RedisUtils;
-import com.pig4cloud.pig.common.core.util.RetOps;
-import com.pig4cloud.pig.common.core.util.SpringContextHolder;
-import com.pig4cloud.pig.common.security.annotation.Inner;
-import com.pig4cloud.pig.common.security.util.OAuth2EndpointUtils;
-import com.pig4cloud.pig.common.security.util.OAuth2ErrorCodesExpand;
-import com.pig4cloud.pig.common.security.util.OAuthClientException;
-
-import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.date.TemporalAccessorUtil;
-import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.util.StrUtil;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
+import java.security.Principal;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * OAuth2 令牌端点控制器，提供令牌相关操作
@@ -97,7 +87,7 @@ public class PigTokenEndpoint {
 
 	private final OAuth2AuthorizationService authorizationService;
 
-	private final RemoteClientDetailsService clientDetailsService;
+	private final ClientDetailsApi clientDetailsApi;
 
 	private final CacheManager cacheManager;
 
@@ -130,7 +120,7 @@ public class PigTokenEndpoint {
 			@RequestParam(OAuth2ParameterNames.CLIENT_ID) String clientId,
 			@RequestParam(OAuth2ParameterNames.SCOPE) String scope,
 			@RequestParam(OAuth2ParameterNames.STATE) String state) {
-		SysOauthClientDetails clientDetails = RetOps.of(clientDetailsService.getClientDetailsById(clientId))
+		SysOauthClientDetailsDTO clientDetails = RetOps.of(clientDetailsApi.getClientDetailsById(clientId))
 			.getData()
 			.orElseThrow(() -> new OAuthClientException("clientId 不合法"));
 

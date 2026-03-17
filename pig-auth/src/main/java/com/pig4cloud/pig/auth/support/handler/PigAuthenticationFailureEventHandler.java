@@ -17,11 +17,11 @@
 package com.pig4cloud.pig.auth.support.handler;
 
 import cn.hutool.core.util.StrUtil;
-import com.pig4cloud.pig.admin.api.entity.SysLog;
 import com.pig4cloud.pig.common.core.constant.CommonConstants;
 import com.pig4cloud.pig.common.core.util.R;
 import com.pig4cloud.pig.common.core.util.SpringContextHolder;
 import com.pig4cloud.pig.common.log.event.SysLogEvent;
+import com.pig4cloud.pig.common.log.event.SysLogEventSource;
 import com.pig4cloud.pig.common.log.util.LogTypeEnum;
 import com.pig4cloud.pig.common.log.util.SysLogUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -63,7 +63,7 @@ public class PigAuthenticationFailureEventHandler implements AuthenticationFailu
 		String username = request.getParameter(OAuth2ParameterNames.USERNAME);
 
 		log.info("用户：{} 登录失败，异常：{}", username, exception.getLocalizedMessage());
-		SysLog logVo = SysLogUtils.getSysLog();
+		SysLogEventSource logVo = SysLogUtils.getSysLog();
 		logVo.setTitle("登录失败");
 		logVo.setLogType(LogTypeEnum.ERROR.getType());
 		logVo.setException(exception.getLocalizedMessage());
