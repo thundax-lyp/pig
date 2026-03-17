@@ -21,6 +21,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldNameConstants;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -36,6 +37,7 @@ import java.io.Serializable;
 @FieldNameConstants
 public class R<T> implements Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	@Getter

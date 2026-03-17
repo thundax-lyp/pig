@@ -16,9 +16,10 @@
 
 package com.pig4cloud.pig.common.log.event;
 
-import java.io.Serial;
+import com.pig4cloud.pig.admin.api.dto.SysLogRecordDTO;
 import org.springframework.context.ApplicationEvent;
-import com.pig4cloud.pig.admin.api.entity.SysLog;
+
+import java.io.Serial;
 
 /**
  * 系统日志事件类
@@ -35,7 +36,7 @@ public class SysLogEvent extends ApplicationEvent {
 	 * 构造方法，根据源SysLog对象创建SysLogEvent
 	 * @param source 源SysLog对象
 	 */
-	public SysLogEvent(SysLog source) {
+	public SysLogEvent(SysLogRecordDTO source) {
 		super(source);
 	}
 

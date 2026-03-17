@@ -18,6 +18,8 @@ package com.pig4cloud.pig.common.core.exception;
 
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
+
 /**
  * 受检异常类，继承自RuntimeException
  *
@@ -27,6 +29,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CheckedException extends RuntimeException {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	public CheckedException(String message) {

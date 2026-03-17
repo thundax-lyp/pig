@@ -18,6 +18,8 @@ package com.pig4cloud.pig.common.core.exception;
 
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
+
 /**
  * 授权拒绝异常类
  *
@@ -27,6 +29,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PigDeniedException extends RuntimeException {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	public PigDeniedException(String message) {

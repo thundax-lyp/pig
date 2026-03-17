@@ -77,7 +77,7 @@ public final class PigSentinelFeign {
 
 					// 查找 FeignClient 上的 降级策略
 					FeignClient feignClient = AnnotationUtils.findAnnotation(target.type(), FeignClient.class);
-					Class<?> fallback = feignClient.fallback();
+                    Class<?> fallback = feignClient.fallback();
 					Class<?> fallbackFactory = feignClient.fallbackFactory();
 
 					String beanName = feignClient.contextId();
@@ -90,7 +90,7 @@ public final class PigSentinelFeign {
 					if (void.class != fallback) {
 						fallbackInstance = getFromContext(beanName, "fallback", fallback, target.type());
 						return new PigSentinelInvocationHandler(target, dispatch,
-								new FallbackFactory.Default(fallbackInstance));
+								new FallbackFactory.Default<>(fallbackInstance));
 					}
 
 					if (void.class != fallbackFactory) {

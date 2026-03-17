@@ -16,6 +16,8 @@
 
 package com.pig4cloud.pig.common.core.exception;
 
+import java.io.Serial;
+
 /**
  * 验证码异常类
  *
@@ -24,6 +26,7 @@ package com.pig4cloud.pig.common.core.exception;
  */
 public class ValidateCodeException extends RuntimeException {
 
+	@Serial
 	private static final long serialVersionUID = -7285211528095468156L;
 
 	public ValidateCodeException() {

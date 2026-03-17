@@ -16,27 +16,25 @@
 
 package com.pig4cloud.pig.common.log.event;
 
-import java.util.Objects;
-
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.event.EventListener;
-import org.springframework.core.annotation.Order;
-import org.springframework.scheduling.annotation.Async;
-
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import com.pig4cloud.pig.admin.api.entity.SysLog;
-import com.pig4cloud.pig.admin.api.feign.RemoteLogService;
+import com.pig4cloud.pig.admin.api.dto.SysLogRecordDTO;
+import com.pig4cloud.pig.admin.api.service.LogApi;
 import com.pig4cloud.pig.common.core.jackson.PigJavaTimeModule;
 import com.pig4cloud.pig.common.log.config.PigLogProperties;
-
-import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.event.EventListener;
+import org.springframework.core.annotation.Order;
+import org.springframework.scheduling.annotation.Async;
+
+import java.util.Objects;
 
 /**
  * 系统日志监听器：异步处理系统日志事件
@@ -50,7 +48,7 @@ public class SysLogListener implements InitializingBean {
 	// new 一个 避免日志脱敏策略影响全局ObjectMapper
 	private final static ObjectMapper objectMapper = new ObjectMapper();
 
-	private final RemoteLogService remoteLogService;
+	private final LogApi logApi;
 
 	private final PigLogProperties logProperties;
 
@@ -64,8 +62,8 @@ public class SysLogListener implements InitializingBean {
 	@EventListener(SysLogEvent.class)
 	public void saveSysLog(SysLogEvent event) {
 		SysLogEventSource source = (SysLogEventSource) event.getSource();
-		SysLog sysLog = new SysLog();
-		BeanUtils.copyProperties(source, sysLog);
+		SysLogRecordDTO sysLog = new SysLogRecordDTO();
+		BeanUtil.copyProperties(source, sysLog);
 
 		// json 格式刷参数放在异步中处理，提升性能
 		if (Objects.nonNull(source.getBody())) {
@@ -73,7 +71,7 @@ public class SysLogListener implements InitializingBean {
 			sysLog.setParams(StrUtil.subPre(params, logProperties.getMaxLength()));
 		}
 
-		remoteLogService.saveLog(sysLog);
+		logApi.saveLog(sysLog);
 	}
 
 	@Override

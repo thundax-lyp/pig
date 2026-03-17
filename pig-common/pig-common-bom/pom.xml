@@ -108,7 +108,17 @@
 			</dependency>
 			<dependency>
 				<groupId>com.pig4cloud</groupId>
+				<artifactId>pig-upms-contract</artifactId>
+				<version>${revision}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.pig4cloud</groupId>
 				<artifactId>pig-upms-api</artifactId>
+				<version>${revision}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.pig4cloud</groupId>
+				<artifactId>pig-upms-client</artifactId>
 				<version>${revision}</version>
 			</dependency>
 			<dependency>

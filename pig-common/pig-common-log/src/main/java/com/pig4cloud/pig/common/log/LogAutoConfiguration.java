@@ -16,7 +16,7 @@
 
 package com.pig4cloud.pig.common.log;
 
-import com.pig4cloud.pig.admin.api.feign.RemoteLogService;
+import com.pig4cloud.pig.admin.api.service.LogApi;
 import com.pig4cloud.pig.common.log.aspect.SysLogAspect;
 import com.pig4cloud.pig.common.log.config.PigLogProperties;
 import com.pig4cloud.pig.common.log.event.SysLogListener;
@@ -41,12 +41,12 @@ public class LogAutoConfiguration {
 	/**
 	 * 创建并返回SysLogListener的Bean实例
 	 * @param logProperties 日志属性配置
-	 * @param remoteLogService 远程日志服务
+	 * @param logApi 远程日志服务
 	 * @return SysLogListener实例
 	 */
 	@Bean
-	public SysLogListener sysLogListener(PigLogProperties logProperties, RemoteLogService remoteLogService) {
-		return new SysLogListener(remoteLogService, logProperties);
+	public SysLogListener sysLogListener(PigLogProperties logProperties, LogApi logApi) {
+		return new SysLogListener(logApi, logProperties);
 	}
 
 	/**
