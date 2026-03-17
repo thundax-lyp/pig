@@ -20,7 +20,6 @@
 package com.pig4cloud.pig.admin.api.entity;
 
 import com.baomidou.mybatisplus.extension.activerecord.Model;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -35,7 +34,6 @@ import java.io.Serial;
  * @since 2018-01-22
  */
 @Data
-@Schema(description = "部门关系")
 @EqualsAndHashCode(callSuper = true)
 public class SysDeptRelation extends Model<SysDeptRelation> {
 
@@ -45,13 +43,11 @@ public class SysDeptRelation extends Model<SysDeptRelation> {
 	/**
 	 * 祖先节点
 	 */
-	@Schema(description = "祖先节点")
 	private Long ancestor;
 
 	/**
 	 * 后代节点
 	 */
-	@Schema(description = "后代节点")
 	private Long descendant;
 
 }

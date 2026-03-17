@@ -22,8 +22,6 @@ package com.pig4cloud.pig.admin.api.entity;
 import cn.idev.excel.annotation.ExcelIgnore;
 import cn.idev.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.*;
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 import java.io.Serial;
@@ -39,7 +37,6 @@ import java.time.LocalDateTime;
  * @since 2017-11-20
  */
 @Data
-@Schema(description = "日志")
 public class SysLog implements Serializable {
 
 	@Serial
@@ -47,69 +44,52 @@ public class SysLog implements Serializable {
 
 	@TableId(type = IdType.ASSIGN_ID)
 	@ExcelProperty("日志编号")
-	@Schema(description = "日志编号")
 	private Long id;
 
-	@NotBlank(message = "日志类型不能为空")
 	@ExcelProperty("日志类型（0-正常 9-错误）")
-	@Schema(description = "日志类型")
 	private String logType;
 
-	@NotBlank(message = "日志标题不能为空")
 	@ExcelProperty("日志标题")
-	@Schema(description = "日志标题")
 	private String title;
 
 	@ExcelProperty("创建人")
 	@TableField(fill = FieldFill.INSERT)
-	@Schema(description = "创建人")
 	private String createBy;
 
 	@ExcelProperty("创建时间")
 	@TableField(fill = FieldFill.INSERT)
-	@Schema(description = "创建时间")
 	private LocalDateTime createTime;
 
 	@ExcelIgnore
 	@TableField(fill = FieldFill.UPDATE)
-	@Schema(description = "更新时间")
 	private LocalDateTime updateTime;
 
 	@ExcelProperty("操作ip地址")
-	@Schema(description = "操作ip地址")
 	private String remoteAddr;
 
-	@Schema(description = "用户代理")
 	private String userAgent;
 
 	@ExcelProperty("浏览器")
-	@Schema(description = "请求uri")
 	private String requestUri;
 
 	@ExcelProperty("操作方式")
-	@Schema(description = "操作方式")
 	private String method;
 
 	@ExcelProperty("提交数据")
-	@Schema(description = "提交数据")
 	private String params;
 
 	@ExcelProperty("执行时间")
-	@Schema(description = "方法执行时间")
 	private Long time;
 
 	@ExcelProperty("异常信息")
-	@Schema(description = "异常信息")
 	private String exception;
 
 	@ExcelProperty("应用标识")
-	@Schema(description = "应用标识")
 	private String serviceId;
 
 	@TableLogic
 	@ExcelIgnore
 	@TableField(fill = FieldFill.INSERT)
-	@Schema(description = "删除标记,1:已删除,0:正常")
 	private String delFlag;
 
 }
