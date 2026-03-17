@@ -21,13 +21,13 @@
 		<result column="name" property="name"/>
 		<result column="email" property="email"/>
 		<association property="dept" javaType="com.pig4cloud.pig.sys.api.vo.DeptVO" column="dept_id"
-					 select="com.pig4cloud.pig.sys.mapper.SysDeptMapper.getDeptVoById">
+					 select="com.pig4cloud.pig.sys.mapper.DeptMapper.getDeptVoById">
 		</association>
 		<collection property="roleList" ofType="com.pig4cloud.pig.sys.api.vo.RoleItemVO"
 					select="com.pig4cloud.pig.sys.mapper.SysRoleMapper.listRoleVosByUserId" column="user_id">
 		</collection>
 		<collection property="postList" ofType="com.pig4cloud.pig.sys.api.vo.PostVO"
-					select="com.pig4cloud.pig.sys.mapper.SysPostMapper.listPostVosByUserId" column="user_id">
+					select="com.pig4cloud.pig.sys.mapper.PostMapper.listPostVosByUserId" column="user_id">
 		</collection>
 	</resultMap>
 
