@@ -19,6 +19,8 @@
 
 package com.pig4cloud.pig.admin.controller;
 
+import cn.hutool.core.bean.BeanUtil;
+import com.pig4cloud.pig.admin.api.dto.SysMenuDTO;
 import com.pig4cloud.pig.admin.api.entity.SysMenu;
 import com.pig4cloud.pig.admin.service.SysMenuService;
 import com.pig4cloud.pig.common.core.util.R;
@@ -97,8 +99,8 @@ public class SysMenuController {
 	 */
 	@GetMapping("/{id}")
 	@Operation(summary = "通过ID查询菜单的详细信息", description = "通过ID查询菜单的详细信息")
-	public R getById(@PathVariable Long id) {
-		return R.ok(sysMenuService.getById(id));
+	public R<SysMenuDTO> getById(@PathVariable Long id) {
+		return R.ok(toDto(sysMenuService.getById(id)));
 	}
 
 	/**
@@ -110,9 +112,11 @@ public class SysMenuController {
 	@PostMapping
 	@HasPermission("sys_menu_add")
 	@Operation(summary = "新增菜单", description = "新增菜单")
-	public R saveMenu(@Valid @RequestBody SysMenu sysMenu) {
-		sysMenuService.save(sysMenu);
-		return R.ok(sysMenu);
+	public R<SysMenuDTO> saveMenu(@Valid @RequestBody SysMenuDTO sysMenu) {
+		SysMenu entity = new SysMenu();
+		BeanUtil.copyProperties(sysMenu, entity);
+		sysMenuService.save(entity);
+		return R.ok(toDto(entity));
 	}
 
 	/**
@@ -137,8 +141,19 @@ public class SysMenuController {
 	@PutMapping
 	@HasPermission("sys_menu_edit")
 	@Operation(summary = "更新菜单", description = "更新菜单")
-	public R updateMenu(@Valid @RequestBody SysMenu sysMenu) {
-		return R.ok(sysMenuService.updateMenuById(sysMenu));
+	public R updateMenu(@Valid @RequestBody SysMenuDTO sysMenu) {
+		SysMenu entity = new SysMenu();
+		BeanUtil.copyProperties(sysMenu, entity);
+		return R.ok(sysMenuService.updateMenuById(entity));
+	}
+
+	private SysMenuDTO toDto(SysMenu sysMenu) {
+		if (sysMenu == null) {
+			return null;
+		}
+		SysMenuDTO dto = new SysMenuDTO();
+		BeanUtil.copyProperties(sysMenu, dto);
+		return dto;
 	}
 
 }

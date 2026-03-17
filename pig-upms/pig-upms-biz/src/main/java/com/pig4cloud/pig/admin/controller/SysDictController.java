@@ -21,15 +21,19 @@ package com.pig4cloud.pig.admin.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alicp.jetcache.anno.CacheType;
+import com.alicp.jetcache.anno.Cached;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.pig4cloud.pig.admin.api.dto.SysDictDTO;
 import com.pig4cloud.pig.admin.api.dto.SysDictItemDTO;
 import com.pig4cloud.pig.admin.api.entity.SysDict;
 import com.pig4cloud.pig.admin.api.entity.SysDictItem;
 import com.pig4cloud.pig.admin.service.SysDictItemService;
 import com.pig4cloud.pig.admin.service.SysDictService;
 import com.pig4cloud.pig.common.core.constant.CacheConstants;
+import com.pig4cloud.pig.common.core.support.JetCacheVersionSupport;
 import com.pig4cloud.pig.common.core.util.R;
 import com.pig4cloud.pig.common.log.annotation.SysLog;
 import com.pig4cloud.pig.common.security.annotation.Inner;
@@ -40,13 +44,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -67,6 +70,8 @@ public class SysDictController {
 
 	private final SysDictItemService sysDictItemService;
 
+	private final JetCacheVersionSupport jetCacheVersionSupport;
+
 	/**
 	 * 通过ID查询字典信息
 	 * @param id 字典ID
@@ -74,8 +79,8 @@ public class SysDictController {
 	 */
 	@GetMapping("/details/{id}")
 	@Operation(summary = "通过ID查询字典信息", description = "通过ID查询字典信息")
-	public R getById(@PathVariable Long id) {
-		return R.ok(sysDictService.getById(id));
+	public R<SysDictDTO> getById(@PathVariable Long id) {
+		return R.ok(toDictDto(sysDictService.getById(id)));
 	}
 
 	/**
@@ -85,8 +90,10 @@ public class SysDictController {
 	 */
 	@GetMapping("/details")
 	@Operation(summary = "查询字典详细信息", description = "查询字典详细信息")
-	public R getDetails(@ParameterObject SysDict query) {
-		return R.ok(sysDictService.getOne(Wrappers.query(query), false));
+	public R<SysDictDTO> getDetails(@ParameterObject SysDictDTO query) {
+		SysDict sysDict = new SysDict();
+		BeanUtil.copyProperties(query, sysDict);
+		return R.ok(toDictDto(sysDictService.getOne(Wrappers.query(sysDict), false)));
 	}
 
 	/**
@@ -97,11 +104,14 @@ public class SysDictController {
 	 */
 	@GetMapping("/page")
 	@Operation(summary = "分页查询字典信息", description = "分页查询字典信息")
-	public R<IPage> getDictPage(@ParameterObject Page page, @ParameterObject SysDict sysDict) {
-		return R.ok(sysDictService.page(page,
+	public R<IPage<SysDictDTO>> getDictPage(@ParameterObject Page<SysDict> page, @ParameterObject SysDictDTO sysDict) {
+		IPage<SysDict> result = sysDictService.page(page,
 				Wrappers.<SysDict>lambdaQuery()
 					.eq(StrUtil.isNotBlank(sysDict.getSystemFlag()), SysDict::getSystemFlag, sysDict.getSystemFlag())
-					.like(StrUtil.isNotBlank(sysDict.getDictType()), SysDict::getDictType, sysDict.getDictType())));
+					.like(StrUtil.isNotBlank(sysDict.getDictType()), SysDict::getDictType, sysDict.getDictType()));
+		Page<SysDictDTO> dtoPage = new Page<>(result.getCurrent(), result.getSize(), result.getTotal());
+		dtoPage.setRecords(result.getRecords().stream().map(this::toDictDto).toList());
+		return R.ok(dtoPage);
 	}
 
 	/**
@@ -113,9 +123,12 @@ public class SysDictController {
 	@PostMapping
 	@Operation(summary = "保存字典信息", description = "保存字典信息")
 	@PreAuthorize("@pms.hasPermission('sys_dict_add')")
-	public R saveDict(@Valid @RequestBody SysDict sysDict) {
-		sysDictService.save(sysDict);
-		return R.ok(sysDict);
+	public R<SysDictDTO> saveDict(@Valid @RequestBody SysDictDTO sysDict) {
+		SysDict entity = new SysDict();
+		BeanUtil.copyProperties(sysDict, entity);
+		sysDictService.save(entity);
+		jetCacheVersionSupport.increment(CacheConstants.DICT_DETAILS);
+		return R.ok(toDictDto(entity));
 	}
 
 	/**
@@ -127,7 +140,6 @@ public class SysDictController {
 	@DeleteMapping
 	@PreAuthorize("@pms.hasPermission('sys_dict_del')")
 	@Operation(summary = "删除字典并清除字典缓存", description = "删除字典并清除字典缓存")
-	@CacheEvict(value = CacheConstants.DICT_DETAILS, allEntries = true)
 	public R removeById(@RequestBody Long[] ids) {
 		return R.ok(sysDictService.removeDictByIds(ids));
 	}
@@ -141,8 +153,10 @@ public class SysDictController {
 	@SysLog("修改字典")
 	@PreAuthorize("@pms.hasPermission('sys_dict_edit')")
 	@Operation(summary = "修改字典信息", description = "修改字典信息")
-	public R updateDict(@Valid @RequestBody SysDict sysDict) {
-		return sysDictService.updateDict(sysDict);
+	public R updateDict(@Valid @RequestBody SysDictDTO sysDict) {
+		SysDict entity = new SysDict();
+		BeanUtil.copyProperties(sysDict, entity);
+		return sysDictService.updateDict(entity);
 	}
 
 	/**
@@ -152,11 +166,11 @@ public class SysDictController {
 	 */
 	@GetMapping("/list")
 	@Operation(summary = "分页查询字典列表", description = "分页查询字典列表")
-	public R listDicts(String name) {
+	public R<List<SysDictDTO>> listDicts(String name) {
 		return R.ok(sysDictService.list(Wrappers.<SysDict>lambdaQuery()
 			.like(StrUtil.isNotBlank(name), SysDict::getDictType, name)
 			.or()
-			.like(StrUtil.isNotBlank(name), SysDict::getDescription, name)));
+			.like(StrUtil.isNotBlank(name), SysDict::getDescription, name)).stream().map(this::toDictDto).toList());
 	}
 
 	/**
@@ -167,8 +181,14 @@ public class SysDictController {
 	 */
 	@GetMapping("/item/page")
 	@Operation(summary = "分页查询字典项", description = "分页查询字典项")
-	public R getDictItemPage(Page page, SysDictItem sysDictItem) {
-		return R.ok(sysDictItemService.page(page, Wrappers.query(sysDictItem)));
+	public R<IPage<SysDictItemDTO>> getDictItemPage(@ParameterObject Page<SysDictItem> page,
+			@ParameterObject SysDictItemDTO sysDictItem) {
+		SysDictItem entity = new SysDictItem();
+		BeanUtil.copyProperties(sysDictItem, entity);
+		IPage<SysDictItem> result = sysDictItemService.page(page, Wrappers.query(entity));
+		Page<SysDictItemDTO> dtoPage = new Page<>(result.getCurrent(), result.getSize(), result.getTotal());
+		dtoPage.setRecords(result.getRecords().stream().map(this::toDictItemDto).toList());
+		return R.ok(dtoPage);
 	}
 
 	/**
@@ -178,8 +198,8 @@ public class SysDictController {
 	 */
 	@GetMapping("/item/details/{id}")
 	@Operation(summary = "通过id查询字典项详情", description = "通过id查询字典项详情")
-	public R getDictItemById(@PathVariable("id") Long id) {
-		return R.ok(sysDictItemService.getById(id));
+	public R<SysDictItemDTO> getDictItemById(@PathVariable("id") Long id) {
+		return R.ok(toDictItemDto(sysDictItemService.getById(id)));
 	}
 
 	/**
@@ -189,8 +209,10 @@ public class SysDictController {
 	 */
 	@GetMapping("/item/details")
 	@Operation(summary = "获取字典项详情", description = "获取字典项详情")
-	public R getDictItemDetails(SysDictItem query) {
-		return R.ok(sysDictItemService.getOne(Wrappers.query(query), false));
+	public R<SysDictItemDTO> getDictItemDetails(@ParameterObject SysDictItemDTO query) {
+		SysDictItem entity = new SysDictItem();
+		BeanUtil.copyProperties(query, entity);
+		return R.ok(toDictItemDto(sysDictItemService.getOne(Wrappers.query(entity), false)));
 	}
 
 	/**
@@ -201,9 +223,12 @@ public class SysDictController {
 	@SysLog("新增字典项")
 	@PostMapping("/item")
 	@Operation(summary = "新增字典项", description = "新增字典项")
-	@CacheEvict(value = CacheConstants.DICT_DETAILS, allEntries = true)
-	public R saveDictItem(@RequestBody SysDictItem sysDictItem) {
-		return R.ok(sysDictItemService.save(sysDictItem));
+	public R saveDictItem(@RequestBody SysDictItemDTO sysDictItem) {
+		SysDictItem entity = new SysDictItem();
+		BeanUtil.copyProperties(sysDictItem, entity);
+		R result = R.ok(sysDictItemService.save(entity));
+		jetCacheVersionSupport.increment(CacheConstants.DICT_DETAILS);
+		return result;
 	}
 
 	/**
@@ -214,8 +239,10 @@ public class SysDictController {
 	@SysLog("修改字典项")
 	@PutMapping("/item")
 	@Operation(summary = "修改字典项", description = "修改字典项")
-	public R updateDictItem(@RequestBody SysDictItem sysDictItem) {
-		return sysDictItemService.updateDictItem(sysDictItem);
+	public R updateDictItem(@RequestBody SysDictItemDTO sysDictItem) {
+		SysDictItem entity = new SysDictItem();
+		BeanUtil.copyProperties(sysDictItem, entity);
+		return sysDictItemService.updateDictItem(entity);
 	}
 
 	/**
@@ -249,8 +276,10 @@ public class SysDictController {
 	@ResponseExcel
 	@GetMapping("/export")
 	@Operation(summary = "导出字典项数据", description = "导出字典项数据")
-	public List<SysDictItem> exportDictItems(SysDictItem sysDictItem) {
-		return sysDictItemService.list(Wrappers.query(sysDictItem));
+	public List<SysDictItemDTO> exportDictItems(@ParameterObject SysDictItemDTO sysDictItem) {
+		SysDictItem entity = new SysDictItem();
+		BeanUtil.copyProperties(sysDictItem, entity);
+		return sysDictItemService.list(Wrappers.query(entity)).stream().map(this::toDictItemDto).toList();
 	}
 
 	/**
@@ -260,7 +289,10 @@ public class SysDictController {
 	 */
 	@GetMapping("/type/{type}")
 	@Operation(summary = "通过字典类型查找字典", description = "通过字典类型查找字典")
-	@Cacheable(value = CacheConstants.DICT_DETAILS, key = "#type", unless = "#result.data.isEmpty()")
+	@Cached(name = CacheConstants.DICT_DETAILS + ":",
+			key = "@jetCacheVersionSupport.versionedKey('" + CacheConstants.DICT_DETAILS + "', #type)",
+			expire = 1, timeUnit = TimeUnit.HOURS, cacheType = CacheType.REMOTE,
+			postCondition = "#result != null && #result.data != null && !#result.data.isEmpty()")
 	public R<List<SysDictItemDTO>> getDictByType(@PathVariable String type) {
 		return R.ok(sysDictItemService.list(Wrappers.<SysDictItem>query().lambda().eq(SysDictItem::getDictType, type))
 			.stream()
@@ -276,12 +308,29 @@ public class SysDictController {
 	@Inner
 	@GetMapping("/remote/type/{type}")
 	@Operation(summary = "通过字典类型查找字典(针对feign调用)", description = "通过字典类型查找字典(针对feign调用)", hidden = true)
-	@Cacheable(value = CacheConstants.DICT_DETAILS, key = "#type", unless = "#result.data.isEmpty()")
+	@Cached(name = CacheConstants.DICT_DETAILS + ":",
+			key = "@jetCacheVersionSupport.versionedKey('" + CacheConstants.DICT_DETAILS + "', #type)",
+			expire = 1, timeUnit = TimeUnit.HOURS, cacheType = CacheType.REMOTE,
+			postCondition = "#result != null && #result.data != null && !#result.data.isEmpty()")
 	public R<List<SysDictItemDTO>> getRemoteDictByType(@PathVariable String type) {
 		return R.ok(sysDictItemService.list(Wrappers.<SysDictItem>query().lambda().eq(SysDictItem::getDictType, type))
 			.stream()
 			.map(item -> BeanUtil.copyProperties(item, SysDictItemDTO.class))
 			.collect(Collectors.toList()));
+	}
+
+	private SysDictDTO toDictDto(SysDict sysDict) {
+		if (sysDict == null) {
+			return null;
+		}
+		return BeanUtil.copyProperties(sysDict, SysDictDTO.class);
+	}
+
+	private SysDictItemDTO toDictItemDto(SysDictItem sysDictItem) {
+		if (sysDictItem == null) {
+			return null;
+		}
+		return BeanUtil.copyProperties(sysDictItem, SysDictItemDTO.class);
 	}
 
 }

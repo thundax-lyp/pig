@@ -17,11 +17,14 @@
 
 package com.pig4cloud.pig.admin.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.pig4cloud.pig.admin.api.dto.SysFileDTO;
 import com.pig4cloud.pig.admin.api.entity.SysFile;
 import com.pig4cloud.pig.admin.service.SysFileService;
 import com.pig4cloud.pig.common.core.util.R;
@@ -65,10 +68,13 @@ public class SysFileController {
 	 */
 	@GetMapping("/page")
 	@Operation(summary = "分页查询", description = "分页查询")
-	public R getFilePage(@ParameterObject Page page, @ParameterObject SysFile sysFile) {
+	public R<IPage<SysFileDTO>> getFilePage(@ParameterObject Page<SysFile> page, @ParameterObject SysFileDTO sysFile) {
 		LambdaQueryWrapper<SysFile> wrapper = Wrappers.<SysFile>lambdaQuery()
 			.like(StrUtil.isNotBlank(sysFile.getOriginal()), SysFile::getOriginal, sysFile.getOriginal());
-		return R.ok(sysFileService.page(page, wrapper));
+		IPage<SysFile> result = sysFileService.page(page, wrapper);
+		Page<SysFileDTO> dtoPage = new Page<>(result.getCurrent(), result.getSize(), result.getTotal());
+		dtoPage.setRecords(result.getRecords().stream().map(this::toDto).toList());
+		return R.ok(dtoPage);
 	}
 
 	/**
@@ -124,6 +130,13 @@ public class SysFileController {
 		ClassPathResource resource = new ClassPathResource("file/" + fileName);
 		response.setContentType("application/octet-stream; charset=UTF-8");
 		IoUtil.copy(resource.getInputStream(), response.getOutputStream());
+	}
+
+	private SysFileDTO toDto(SysFile sysFile) {
+		if (sysFile == null) {
+			return null;
+		}
+		return BeanUtil.copyProperties(sysFile, SysFileDTO.class);
 	}
 
 }

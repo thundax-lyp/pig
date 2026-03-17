@@ -19,6 +19,7 @@
 
 package com.pig4cloud.pig.admin.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.pig4cloud.pig.admin.api.dto.UserDTO;
@@ -110,8 +111,10 @@ public class SysUserController {
 	@Inner(value = false)
 	@GetMapping("/details")
 	@Operation(summary = "查询用户详细信息", description = "查询用户详细信息")
-	public R getDetails(@ParameterObject SysUser query) {
-		SysUser sysUser = userService.getOne(Wrappers.query(query), false);
+	public R getDetails(@ParameterObject UserDTO query) {
+		SysUser sysUser = new SysUser();
+		BeanUtil.copyProperties(query, sysUser);
+		sysUser = userService.getOne(Wrappers.query(sysUser), false);
 		return R.ok(sysUser == null ? null : CommonConstants.SUCCESS);
 	}
 

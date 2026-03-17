@@ -19,15 +19,19 @@
 
 package com.pig4cloud.pig.admin.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.pig4cloud.pig.admin.api.dto.SysRoleDTO;
 import com.pig4cloud.pig.admin.api.entity.SysRole;
 import com.pig4cloud.pig.admin.api.vo.RoleExcelVO;
 import com.pig4cloud.pig.admin.api.vo.RoleVO;
 import com.pig4cloud.pig.admin.service.SysRoleService;
 import com.pig4cloud.pig.common.core.constant.CacheConstants;
+import com.pig4cloud.pig.common.core.support.JetCacheVersionSupport;
 import com.pig4cloud.pig.common.core.util.R;
 import com.pig4cloud.pig.common.log.annotation.SysLog;
 import com.pig4cloud.pig.common.security.annotation.HasPermission;
@@ -39,13 +43,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpHeaders;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 /**
  * 角色管理控制器：提供角色相关的增删改查及权限管理功能
  *
@@ -61,6 +63,8 @@ public class SysRoleController {
 
 	private final SysRoleService sysRoleService;
 
+	private final JetCacheVersionSupport jetCacheVersionSupport;
+
 	/**
 	 * 通过ID查询角色信息
 	 * @param id 角色ID
@@ -68,8 +72,8 @@ public class SysRoleController {
 	 */
 	@GetMapping("/details/{id}")
 	@Operation(summary = "通过ID查询角色信息", description = "通过ID查询角色信息")
-	public R getById(@PathVariable Long id) {
-		return R.ok(sysRoleService.getById(id));
+	public R<SysRoleDTO> getById(@PathVariable Long id) {
+		return R.ok(toDto(sysRoleService.getById(id)));
 	}
 
 	/**
@@ -79,8 +83,10 @@ public class SysRoleController {
 	 */
 	@GetMapping("/details")
 	@Operation(summary = "查询角色详细信息", description = "查询角色详细信息")
-	public R getDetails(@ParameterObject SysRole query) {
-		return R.ok(sysRoleService.getOne(Wrappers.query(query), false));
+	public R<SysRoleDTO> getDetails(@ParameterObject SysRoleDTO query) {
+		SysRole sysRole = new SysRole();
+		BeanUtil.copyProperties(query, sysRole);
+		return R.ok(toDto(sysRoleService.getOne(Wrappers.query(sysRole), false)));
 	}
 
 	/**
@@ -92,9 +98,12 @@ public class SysRoleController {
 	@PostMapping
 	@HasPermission("sys_role_add")
 	@Operation(summary = "添加角色", description = "添加角色")
-	@CacheEvict(value = CacheConstants.ROLE_DETAILS, allEntries = true)
-	public R saveRole(@Valid @RequestBody SysRole sysRole) {
-		return R.ok(sysRoleService.save(sysRole));
+	public R saveRole(@Valid @RequestBody SysRoleDTO sysRole) {
+		SysRole entity = new SysRole();
+		BeanUtil.copyProperties(sysRole, entity);
+		R result = R.ok(sysRoleService.save(entity));
+		jetCacheVersionSupport.increment(CacheConstants.ROLE_DETAILS);
+		return result;
 	}
 
 	/**
@@ -106,9 +115,12 @@ public class SysRoleController {
 	@PutMapping
 	@HasPermission("sys_role_edit")
 	@Operation(summary = "修改角色信息", description = "修改角色信息")
-	@CacheEvict(value = CacheConstants.ROLE_DETAILS, allEntries = true)
-	public R updateRole(@Valid @RequestBody SysRole sysRole) {
-		return R.ok(sysRoleService.updateById(sysRole));
+	public R updateRole(@Valid @RequestBody SysRoleDTO sysRole) {
+		SysRole entity = new SysRole();
+		BeanUtil.copyProperties(sysRole, entity);
+		R result = R.ok(sysRoleService.updateById(entity));
+		jetCacheVersionSupport.increment(CacheConstants.ROLE_DETAILS);
+		return result;
 	}
 
 	/**
@@ -120,9 +132,10 @@ public class SysRoleController {
 	@DeleteMapping
 	@HasPermission("sys_role_del")
 	@Operation(summary = "根据ID数组删除角色", description = "根据ID数组删除角色")
-	@CacheEvict(value = CacheConstants.ROLE_DETAILS, allEntries = true)
 	public R removeById(@RequestBody Long[] ids) {
-		return R.ok(sysRoleService.removeRoleByIds(ids));
+		R result = R.ok(sysRoleService.removeRoleByIds(ids));
+		jetCacheVersionSupport.increment(CacheConstants.ROLE_DETAILS);
+		return result;
 	}
 
 	/**
@@ -131,8 +144,8 @@ public class SysRoleController {
 	 */
 	@GetMapping("/list")
 	@Operation(summary = "获取角色列表", description = "获取角色列表")
-	public R listRoles() {
-		return R.ok(sysRoleService.list(Wrappers.emptyWrapper()));
+	public R<List<SysRoleDTO>> listRoles() {
+		return R.ok(sysRoleService.list(Wrappers.emptyWrapper()).stream().map(this::toDto).toList());
 	}
 
 	/**
@@ -143,9 +156,12 @@ public class SysRoleController {
 	 */
 	@GetMapping("/page")
 	@Operation(summary = "分页查询角色信息", description = "分页查询角色信息")
-	public R getRolePage(Page page, SysRole role) {
-		return R.ok(sysRoleService.page(page, Wrappers.<SysRole>lambdaQuery()
-			.like(StrUtil.isNotBlank(role.getRoleName()), SysRole::getRoleName, role.getRoleName())));
+	public R<IPage<SysRoleDTO>> getRolePage(@ParameterObject Page<SysRole> page, @ParameterObject SysRoleDTO role) {
+		IPage<SysRole> result = sysRoleService.page(page, Wrappers.<SysRole>lambdaQuery()
+			.like(StrUtil.isNotBlank(role.getRoleName()), SysRole::getRoleName, role.getRoleName()));
+		Page<SysRoleDTO> dtoPage = new Page<>(result.getCurrent(), result.getSize(), result.getTotal());
+		dtoPage.setRecords(result.getRecords().stream().map(this::toDto).toList());
+		return R.ok(dtoPage);
 	}
 
 	/**
@@ -195,6 +211,15 @@ public class SysRoleController {
 	@Operation(summary = "导入角色数据", description = "导入角色数据")
 	public R importRole(@RequestExcel List<RoleExcelVO> excelVOList, BindingResult bindingResult) {
 		return sysRoleService.importRole(excelVOList, bindingResult);
+	}
+
+	private SysRoleDTO toDto(SysRole sysRole) {
+		if (sysRole == null) {
+			return null;
+		}
+		SysRoleDTO dto = new SysRoleDTO();
+		BeanUtil.copyProperties(sysRole, dto);
+		return dto;
 	}
 
 }

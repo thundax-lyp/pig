@@ -19,6 +19,8 @@
 
 package com.pig4cloud.pig.admin.controller;
 
+import cn.hutool.core.bean.BeanUtil;
+import com.pig4cloud.pig.admin.api.dto.SysDeptDTO;
 import com.pig4cloud.pig.admin.api.entity.SysDept;
 import com.pig4cloud.pig.admin.api.vo.DeptExcelVo;
 import com.pig4cloud.pig.admin.service.SysDeptService;
@@ -61,8 +63,8 @@ public class SysDeptController {
 	 */
 	@GetMapping("/{id}")
 	@Operation(summary = "通过ID查询部门信息", description = "通过ID查询部门信息")
-	public R getById(@PathVariable Long id) {
-		return R.ok(sysDeptService.getById(id));
+	public R<SysDeptDTO> getById(@PathVariable Long id) {
+		return R.ok(toDto(sysDeptService.getById(id)));
 	}
 
 	/**
@@ -71,8 +73,8 @@ public class SysDeptController {
 	 */
 	@GetMapping("/list")
 	@Operation(summary = "查询全部部门列表", description = "查询全部部门列表")
-	public R listDepts() {
-		return R.ok(sysDeptService.list());
+	public R<List<SysDeptDTO>> listDepts() {
+		return R.ok(sysDeptService.list().stream().map(this::toDto).toList());
 	}
 
 	/**
@@ -95,8 +97,10 @@ public class SysDeptController {
 	@PostMapping
 	@HasPermission("sys_dept_add")
 	@Operation(summary = "保存部门信息", description = "保存部门信息")
-	public R saveDept(@Valid @RequestBody SysDept sysDept) {
-		return R.ok(sysDeptService.save(sysDept));
+	public R saveDept(@Valid @RequestBody SysDeptDTO sysDept) {
+		SysDept entity = new SysDept();
+		BeanUtil.copyProperties(sysDept, entity);
+		return R.ok(sysDeptService.save(entity));
 	}
 
 	/**
@@ -121,9 +125,11 @@ public class SysDeptController {
 	@PutMapping
 	@HasPermission("sys_dept_edit")
 	@Operation(summary = "编辑部门信息", description = "编辑部门信息")
-	public R updateDept(@Valid @RequestBody SysDept sysDept) {
-		sysDept.setUpdateTime(LocalDateTime.now());
-		return R.ok(sysDeptService.updateById(sysDept));
+	public R updateDept(@Valid @RequestBody SysDeptDTO sysDept) {
+		SysDept entity = new SysDept();
+		BeanUtil.copyProperties(sysDept, entity);
+		entity.setUpdateTime(LocalDateTime.now());
+		return R.ok(sysDeptService.updateById(entity));
 	}
 
 	/**
@@ -133,8 +139,8 @@ public class SysDeptController {
 	 */
 	@GetMapping(value = "/getDescendantList/{deptId}")
 	@Operation(summary = "获取部门子级列表", description = "获取部门子级列表")
-	public R getDescendantList(@PathVariable Long deptId) {
-		return R.ok(sysDeptService.listDescendants(deptId));
+	public R<List<SysDeptDTO>> getDescendantList(@PathVariable Long deptId) {
+		return R.ok(sysDeptService.listDescendants(deptId).stream().map(this::toDto).toList());
 	}
 
 	/**
@@ -158,6 +164,15 @@ public class SysDeptController {
 	@Operation(summary = "导入部门信息", description = "导入部门信息")
 	public R importDept(@RequestExcel List<DeptExcelVo> excelVOList, BindingResult bindingResult) {
 		return sysDeptService.importDept(excelVOList, bindingResult);
+	}
+
+	private SysDeptDTO toDto(SysDept sysDept) {
+		if (sysDept == null) {
+			return null;
+		}
+		SysDeptDTO dto = new SysDeptDTO();
+		BeanUtil.copyProperties(sysDept, dto);
+		return dto;
 	}
 
 }

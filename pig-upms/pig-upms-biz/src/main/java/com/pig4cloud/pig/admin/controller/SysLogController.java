@@ -25,6 +25,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.pig4cloud.pig.admin.api.dto.SysLogDTO;
 import com.pig4cloud.pig.admin.api.dto.SysLogRecordDTO;
 import com.pig4cloud.pig.admin.api.entity.SysLog;
+import com.pig4cloud.pig.admin.api.vo.SysLogExcelVO;
 import com.pig4cloud.pig.admin.service.SysLogService;
 import com.pig4cloud.pig.common.core.util.R;
 import com.pig4cloud.pig.common.security.annotation.HasPermission;
@@ -101,8 +102,8 @@ public class SysLogController {
 	@GetMapping("/export")
 	@HasPermission("sys_log_export")
 	@Operation(summary = "导出系统日志到Excel表格", description = "导出系统日志到Excel表格")
-	public List<SysLog> exportLogs(SysLogDTO sysLog) {
-		return sysLogService.listLogs(sysLog);
+	public List<SysLogExcelVO> exportLogs(SysLogDTO sysLog) {
+		return sysLogService.listLogs(sysLog).stream().map(log -> BeanUtil.copyProperties(log, SysLogExcelVO.class)).toList();
 	}
 
 }

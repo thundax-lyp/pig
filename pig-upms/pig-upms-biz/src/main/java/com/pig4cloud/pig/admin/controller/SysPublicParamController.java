@@ -17,10 +17,13 @@
 
 package com.pig4cloud.pig.admin.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.pig4cloud.pig.admin.api.dto.SysPublicParamDTO;
 import com.pig4cloud.pig.admin.api.entity.SysPublicParam;
 import com.pig4cloud.pig.admin.service.SysPublicParamService;
 import com.pig4cloud.pig.common.core.util.R;
@@ -73,7 +76,8 @@ public class SysPublicParamController {
 	 */
 	@GetMapping("/page")
 	@Operation(description = "分页查询", summary = "分页查询")
-	public R getParamPage(@ParameterObject Page page, @ParameterObject SysPublicParam sysPublicParam) {
+	public R<IPage<SysPublicParamDTO>> getParamPage(@ParameterObject Page<SysPublicParam> page,
+			@ParameterObject SysPublicParamDTO sysPublicParam) {
 		LambdaUpdateWrapper<SysPublicParam> wrapper = Wrappers.<SysPublicParam>lambdaUpdate()
 			.like(StrUtil.isNotBlank(sysPublicParam.getPublicName()), SysPublicParam::getPublicName,
 					sysPublicParam.getPublicName())
@@ -82,7 +86,10 @@ public class SysPublicParamController {
 			.eq(StrUtil.isNotBlank(sysPublicParam.getSystemFlag()), SysPublicParam::getSystemFlag,
 					sysPublicParam.getSystemFlag());
 
-		return R.ok(sysPublicParamService.page(page, wrapper));
+		IPage<SysPublicParam> result = sysPublicParamService.page(page, wrapper);
+		Page<SysPublicParamDTO> dtoPage = new Page<>(result.getCurrent(), result.getSize(), result.getTotal());
+		dtoPage.setRecords(result.getRecords().stream().map(this::toDto).toList());
+		return R.ok(dtoPage);
 	}
 
 	/**
@@ -92,8 +99,8 @@ public class SysPublicParamController {
 	 */
 	@Operation(description = "通过id查询公共参数", summary = "通过id查询公共参数")
 	@GetMapping("/details/{publicId}")
-	public R getById(@PathVariable("publicId") Long publicId) {
-		return R.ok(sysPublicParamService.getById(publicId));
+	public R<SysPublicParamDTO> getById(@PathVariable("publicId") Long publicId) {
+		return R.ok(toDto(sysPublicParamService.getById(publicId)));
 	}
 
 	/**
@@ -103,8 +110,10 @@ public class SysPublicParamController {
 	 */
 	@GetMapping("/details")
 	@Operation(description = "获取系统公共参数详情", summary = "获取系统公共参数详情")
-	public R getDetail(@ParameterObject SysPublicParam param) {
-		return R.ok(sysPublicParamService.getOne(Wrappers.query(param), false));
+	public R<SysPublicParamDTO> getDetail(@ParameterObject SysPublicParamDTO param) {
+		SysPublicParam entity = new SysPublicParam();
+		BeanUtil.copyProperties(param, entity);
+		return R.ok(toDto(sysPublicParamService.getOne(Wrappers.query(entity), false)));
 	}
 
 	/**
@@ -116,8 +125,10 @@ public class SysPublicParamController {
 	@SysLog("新增公共参数")
 	@Operation(description = "新增公共参数", summary = "新增公共参数")
 	@HasPermission("sys_syspublicparam_add")
-	public R saveParam(@RequestBody SysPublicParam sysPublicParam) {
-		return R.ok(sysPublicParamService.save(sysPublicParam));
+	public R saveParam(@RequestBody SysPublicParamDTO sysPublicParam) {
+		SysPublicParam entity = new SysPublicParam();
+		BeanUtil.copyProperties(sysPublicParam, entity);
+		return R.ok(sysPublicParamService.save(entity));
 	}
 
 	/**
@@ -129,8 +140,10 @@ public class SysPublicParamController {
 	@SysLog("修改公共参数")
 	@HasPermission("sys_syspublicparam_edit")
 	@Operation(description = "修改公共参数", summary = "修改公共参数")
-	public R updateParam(@RequestBody SysPublicParam sysPublicParam) {
-		return sysPublicParamService.updateParam(sysPublicParam);
+	public R updateParam(@RequestBody SysPublicParamDTO sysPublicParam) {
+		SysPublicParam entity = new SysPublicParam();
+		BeanUtil.copyProperties(sysPublicParam, entity);
+		return sysPublicParamService.updateParam(entity);
 	}
 
 	/**
@@ -154,8 +167,8 @@ public class SysPublicParamController {
 	@GetMapping("/export")
 	@HasPermission("sys_syspublicparam_edit")
 	@Operation(description = "导出公共参数", summary = "导出公共参数")
-	public List<SysPublicParam> exportParams() {
-		return sysPublicParamService.list();
+	public List<SysPublicParamDTO> exportParams() {
+		return sysPublicParamService.list().stream().map(this::toDto).toList();
 	}
 
 	/**
@@ -168,6 +181,13 @@ public class SysPublicParamController {
 	@Operation(description = "同步参数到缓存", summary = "同步参数到缓存")
 	public R syncParam() {
 		return sysPublicParamService.syncParamCache();
+	}
+
+	private SysPublicParamDTO toDto(SysPublicParam sysPublicParam) {
+		if (sysPublicParam == null) {
+			return null;
+		}
+		return BeanUtil.copyProperties(sysPublicParam, SysPublicParamDTO.class);
 	}
 
 }

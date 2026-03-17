@@ -17,10 +17,13 @@
 
 package com.pig4cloud.pig.admin.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.pig4cloud.pig.admin.api.dto.SysPostDTO;
 import com.pig4cloud.pig.admin.api.entity.SysPost;
 import com.pig4cloud.pig.admin.api.vo.PostExcelVO;
 import com.pig4cloud.pig.admin.service.SysPostService;
@@ -32,6 +35,7 @@ import com.pig4cloud.plugin.excel.annotation.ResponseExcel;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpHeaders;
@@ -61,8 +65,8 @@ public class SysPostController {
 	 */
 	@GetMapping("/list")
 	@Operation(summary = "获取岗位列表", description = "获取岗位列表")
-	public R<List<SysPost>> listPosts() {
-		return R.ok(sysPostService.list(Wrappers.emptyWrapper()));
+	public R<List<SysPostDTO>> listPosts() {
+		return R.ok(sysPostService.list(Wrappers.emptyWrapper()).stream().map(this::toDto).toList());
 	}
 
 	/**
@@ -74,9 +78,12 @@ public class SysPostController {
 	@GetMapping("/page")
 	@HasPermission("sys_post_view")
 	@Operation(description = "分页查询岗位信息", summary = "分页查询岗位信息")
-	public R getPostPage(@ParameterObject Page page, @ParameterObject SysPost sysPost) {
-		return R.ok(sysPostService.page(page, Wrappers.<SysPost>lambdaQuery()
-			.like(StrUtil.isNotBlank(sysPost.getPostName()), SysPost::getPostName, sysPost.getPostName())));
+	public R<IPage<SysPostDTO>> getPostPage(@ParameterObject Page<SysPost> page, @ParameterObject SysPostDTO sysPost) {
+		IPage<SysPost> result = sysPostService.page(page, Wrappers.<SysPost>lambdaQuery()
+			.like(StrUtil.isNotBlank(sysPost.getPostName()), SysPost::getPostName, sysPost.getPostName()));
+		Page<SysPostDTO> dtoPage = new Page<>(result.getCurrent(), result.getSize(), result.getTotal());
+		dtoPage.setRecords(result.getRecords().stream().map(this::toDto).toList());
+		return R.ok(dtoPage);
 	}
 
 	/**
@@ -87,8 +94,8 @@ public class SysPostController {
 	@HasPermission("sys_post_view")
 	@GetMapping("/details/{postId}")
 	@Operation(description = "通过id查询岗位信息", summary = "通过id查询岗位信息")
-	public R getById(@PathVariable("postId") Long postId) {
-		return R.ok(sysPostService.getById(postId));
+	public R<SysPostDTO> getById(@PathVariable("postId") Long postId) {
+		return R.ok(toDto(sysPostService.getById(postId)));
 	}
 
 	/**
@@ -99,8 +106,10 @@ public class SysPostController {
 	@GetMapping("/details")
 	@HasPermission("sys_post_view")
 	@Operation(description = "查询角色信息", summary = "查询角色信息")
-	public R getDetails(SysPost query) {
-		return R.ok(sysPostService.getOne(Wrappers.query(query), false));
+	public R<SysPostDTO> getDetails(SysPostDTO query) {
+		SysPost sysPost = new SysPost();
+		BeanUtil.copyProperties(query, sysPost);
+		return R.ok(toDto(sysPostService.getOne(Wrappers.query(sysPost), false)));
 	}
 
 	/**
@@ -112,8 +121,10 @@ public class SysPostController {
 	@SysLog("新增岗位信息表")
 	@HasPermission("sys_post_add")
 	@Operation(description = "新增岗位信息表", summary = "新增岗位信息表")
-	public R savePost(@RequestBody SysPost sysPost) {
-		return R.ok(sysPostService.save(sysPost));
+	public R<Boolean> savePost(@Valid @RequestBody SysPostDTO sysPost) {
+		SysPost entity = new SysPost();
+		BeanUtil.copyProperties(sysPost, entity);
+		return R.ok(sysPostService.save(entity));
 	}
 
 	/**
@@ -125,8 +136,10 @@ public class SysPostController {
 	@SysLog("修改岗位信息表")
 	@HasPermission("sys_post_edit")
 	@Operation(description = "修改岗位信息表", summary = "修改岗位信息表")
-	public R updatePost(@RequestBody SysPost sysPost) {
-		return R.ok(sysPostService.updateById(sysPost));
+	public R<Boolean> updatePost(@Valid @RequestBody SysPostDTO sysPost) {
+		SysPost entity = new SysPost();
+		BeanUtil.copyProperties(sysPost, entity);
+		return R.ok(sysPostService.updateById(entity));
 	}
 
 	/**
@@ -165,6 +178,15 @@ public class SysPostController {
 	@Operation(description = "导入岗位信息", summary = "导入岗位信息")
 	public R importRole(@RequestExcel List<PostExcelVO> excelVOList, BindingResult bindingResult) {
 		return sysPostService.importPost(excelVOList, bindingResult);
+	}
+
+	private SysPostDTO toDto(SysPost sysPost) {
+		if (sysPost == null) {
+			return null;
+		}
+		SysPostDTO dto = new SysPostDTO();
+		BeanUtil.copyProperties(sysPost, dto);
+		return dto;
 	}
 
 }
