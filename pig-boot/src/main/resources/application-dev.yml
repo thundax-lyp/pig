@@ -11,11 +11,11 @@ spring:
 jetcache:
   statIntervalMinutes: 0
   areaInCacheName: false
-#  local:
-#    default:
-#      type: caffeine
-#      keyConvertor: jackson
-#      limit: 200
+  local:
+    default:
+      type: caffeine
+      keyConvertor: jackson
+      limit: 200
   remote:
     default:
       type: redis
