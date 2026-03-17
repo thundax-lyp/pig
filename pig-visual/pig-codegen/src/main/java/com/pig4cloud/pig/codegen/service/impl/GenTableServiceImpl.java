@@ -74,8 +74,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
 	 * @param dsName 数据源名称
 	 * @param tableName 表名称
 	 * @return ddl 语句
-	 * @throws Exception
-	 */
+     */
 	@Override
 	public String queryTableDdl(String dsName, String tableName) throws Exception {
 		// 手动切换数据源
