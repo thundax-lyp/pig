@@ -4,13 +4,14 @@ import cn.hutool.core.util.StrUtil;
 import com.pig4cloud.pig.common.core.constant.CacheConstants;
 import com.pig4cloud.pig.common.core.constant.SecurityConstants;
 import com.pig4cloud.pig.common.core.exception.ValidateCodeException;
-import com.pig4cloud.pig.common.core.util.RedisUtils;
 import com.pig4cloud.pig.common.core.util.WebUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.stereotype.Component;
@@ -30,6 +31,8 @@ import java.util.Optional;
 public class ValidateCodeFilter extends OncePerRequestFilter {
 
 	private final AuthSecurityConfigProperties authSecurityConfigProperties;
+
+	private final CacheManager cacheManager;
 
 	/**
 	 * 过滤器内部处理逻辑，用于验证码校验
@@ -95,20 +98,25 @@ public class ValidateCodeFilter extends OncePerRequestFilter {
 			randomStr = mobile;
 		}
 
-		String key = CacheConstants.DEFAULT_CODE_KEY + randomStr;
-		if (!RedisUtils.hasKey(key)) {
+		Cache cache = cacheManager.getCache(CacheConstants.DEFAULT_CODE_CACHE);
+		if (cache == null) {
 			throw new ValidateCodeException("验证码不合法");
 		}
 
-		String saveCode = RedisUtils.get(key);
+		Cache.ValueWrapper valueWrapper = cache.get(randomStr);
+		if (valueWrapper == null) {
+			throw new ValidateCodeException("验证码不合法");
+		}
+
+		String saveCode = (String) valueWrapper.get();
 
 		if (StrUtil.isBlank(saveCode)) {
-			RedisUtils.delete(key);
+			cache.evict(randomStr);
 			throw new ValidateCodeException("验证码不合法");
 		}
 
 		if (!StrUtil.equals(saveCode, code)) {
-			RedisUtils.delete(key);
+			cache.evict(randomStr);
 			throw new ValidateCodeException("验证码不合法");
 		}
 	}

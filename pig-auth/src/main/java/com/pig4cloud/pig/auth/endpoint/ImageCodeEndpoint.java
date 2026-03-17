@@ -3,8 +3,8 @@ package com.pig4cloud.pig.auth.endpoint;
 import cn.hutool.core.lang.Validator;
 import com.pig4cloud.captcha.ArithmeticCaptcha;
 import com.pig4cloud.pig.common.core.constant.CacheConstants;
-import com.pig4cloud.pig.common.core.constant.SecurityConstants;
-import com.pig4cloud.pig.common.core.util.RedisUtils;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,9 +13,6 @@ import lombok.SneakyThrows;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.concurrent.TimeUnit;
-
 /**
  * 验证码相关的接口
  *
@@ -31,6 +28,8 @@ public class ImageCodeEndpoint {
 	private static final Integer DEFAULT_IMAGE_WIDTH = 100;
 
 	private static final Integer DEFAULT_IMAGE_HEIGHT = 40;
+
+	private final CacheManager cacheManager;
 
 	/**
 	 * 创建图形验证码并输出到响应流
@@ -48,8 +47,10 @@ public class ImageCodeEndpoint {
 		}
 
 		String result = captcha.text();
-		RedisUtils.set(CacheConstants.DEFAULT_CODE_KEY + randomStr, result, SecurityConstants.CODE_TIME,
-				TimeUnit.SECONDS);
+		Cache cache = cacheManager.getCache(CacheConstants.DEFAULT_CODE_CACHE);
+		if (cache != null) {
+			cache.put(randomStr, result);
+		}
 		// 转换流信息写出
 		captcha.out(response.getOutputStream());
 	}

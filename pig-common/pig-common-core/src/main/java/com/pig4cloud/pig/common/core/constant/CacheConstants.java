@@ -30,6 +30,11 @@ public interface CacheConstants {
 	String PROJECT_OAUTH_ACCESS = "token::access_token";
 
 	/**
+	 * 验证码缓存
+	 */
+	String DEFAULT_CODE_CACHE = "default_code";
+
+	/**
 	 * 验证码前缀
 	 */
 	String DEFAULT_CODE_KEY = "DEFAULT_CODE_KEY:";
