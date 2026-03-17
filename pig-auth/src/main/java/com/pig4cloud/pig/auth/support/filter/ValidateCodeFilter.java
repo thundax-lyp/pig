@@ -1,17 +1,16 @@
 package com.pig4cloud.pig.auth.support.filter;
 
 import cn.hutool.core.util.StrUtil;
-import com.pig4cloud.pig.common.core.constant.CacheConstants;
 import com.pig4cloud.pig.common.core.constant.SecurityConstants;
 import com.pig4cloud.pig.common.core.exception.ValidateCodeException;
+import com.pig4cloud.pig.common.core.support.DefaultCodeCacheService;
 import com.pig4cloud.pig.common.core.util.WebUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.stereotype.Component;
@@ -32,7 +31,7 @@ public class ValidateCodeFilter extends OncePerRequestFilter {
 
 	private final AuthSecurityConfigProperties authSecurityConfigProperties;
 
-	private final CacheManager cacheManager;
+	private final DefaultCodeCacheService defaultCodeCacheService;
 
 	/**
 	 * 过滤器内部处理逻辑，用于验证码校验
@@ -43,7 +42,7 @@ public class ValidateCodeFilter extends OncePerRequestFilter {
 	 * @throws IOException IO异常
 	 */
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+	protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
 			throws ServletException, IOException {
 
 		String requestUrl = request.getServletPath();
@@ -98,25 +97,18 @@ public class ValidateCodeFilter extends OncePerRequestFilter {
 			randomStr = mobile;
 		}
 
-		Cache cache = cacheManager.getCache(CacheConstants.DEFAULT_CODE_CACHE);
-		if (cache == null) {
+		String saveCode = defaultCodeCacheService.get(randomStr);
+		if (saveCode == null) {
 			throw new ValidateCodeException("验证码不合法");
 		}
-
-		Cache.ValueWrapper valueWrapper = cache.get(randomStr);
-		if (valueWrapper == null) {
-			throw new ValidateCodeException("验证码不合法");
-		}
-
-		String saveCode = (String) valueWrapper.get();
 
 		if (StrUtil.isBlank(saveCode)) {
-			cache.evict(randomStr);
+			defaultCodeCacheService.remove(randomStr);
 			throw new ValidateCodeException("验证码不合法");
 		}
 
 		if (!StrUtil.equals(saveCode, code)) {
-			cache.evict(randomStr);
+			defaultCodeCacheService.remove(randomStr);
 			throw new ValidateCodeException("验证码不合法");
 		}
 	}

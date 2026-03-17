@@ -2,9 +2,7 @@ package com.pig4cloud.pig.auth.endpoint;
 
 import cn.hutool.core.lang.Validator;
 import com.pig4cloud.captcha.ArithmeticCaptcha;
-import com.pig4cloud.pig.common.core.constant.CacheConstants;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
+import com.pig4cloud.pig.common.core.support.DefaultCodeCacheService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,7 +27,7 @@ public class ImageCodeEndpoint {
 
 	private static final Integer DEFAULT_IMAGE_HEIGHT = 40;
 
-	private final CacheManager cacheManager;
+	private final DefaultCodeCacheService defaultCodeCacheService;
 
 	/**
 	 * 创建图形验证码并输出到响应流
@@ -47,10 +45,7 @@ public class ImageCodeEndpoint {
 		}
 
 		String result = captcha.text();
-		Cache cache = cacheManager.getCache(CacheConstants.DEFAULT_CODE_CACHE);
-		if (cache != null) {
-			cache.put(randomStr, result);
-		}
+		defaultCodeCacheService.put(randomStr, result);
 		// 转换流信息写出
 		captcha.out(response.getOutputStream());
 	}

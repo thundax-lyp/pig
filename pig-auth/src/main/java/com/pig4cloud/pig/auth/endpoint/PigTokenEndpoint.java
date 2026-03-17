@@ -33,6 +33,7 @@ import com.pig4cloud.pig.common.core.util.RedisUtils;
 import com.pig4cloud.pig.common.core.util.RetOps;
 import com.pig4cloud.pig.common.core.util.SpringContextHolder;
 import com.pig4cloud.pig.common.security.annotation.Inner;
+import com.pig4cloud.pig.common.security.service.UserDetailsCacheService;
 import com.pig4cloud.pig.common.security.util.OAuth2EndpointUtils;
 import com.pig4cloud.pig.common.security.util.OAuth2ErrorCodesExpand;
 import com.pig4cloud.pig.common.security.util.OAuthClientException;
@@ -42,7 +43,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -89,7 +89,7 @@ public class PigTokenEndpoint {
 
 	private final ClientDetailsApi clientDetailsApi;
 
-	private final CacheManager cacheManager;
+	private final UserDetailsCacheService userDetailsCacheService;
 
 	/**
 	 * 授权码模式：认证页面
@@ -202,7 +202,7 @@ public class PigTokenEndpoint {
 			return R.ok();
 		}
 		// 清空用户信息（立即删除）
-		cacheManager.getCache(CacheConstants.USER_DETAILS).evictIfPresent(authorization.getPrincipalName());
+		userDetailsCacheService.remove(authorization.getPrincipalName());
 		// 清空access token
 		authorizationService.remove(authorization);
 		// 处理自定义退出事件，保存相关日志
