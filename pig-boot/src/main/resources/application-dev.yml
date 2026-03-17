@@ -1,16 +1,36 @@
 spring:
-  cache:
-    type: redis # 缓存类型 Redis
   data:
     redis:
       host: 127.0.0.1
-  # 数据库相关配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: cms
     password: wdit@123
     url: jdbc:mysql://127.0.0.1:3306/pig?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8&allowMultiQueries=true&nullCatalogMeansCurrent=true
 
+jetcache:
+  statIntervalMinutes: 0
+  areaInCacheName: false
+#  local:
+#    default:
+#      type: caffeine
+#      keyConvertor: jackson
+#      limit: 200
+  remote:
+    default:
+      type: redis
+      keyConvertor: jackson
+      valueEncoder: java
+      valueDecoder: java
+      broadcastChannel: pig-boot
+      host: ${spring.data.redis.host}
+      port: ${spring.data.redis.port:6379}
+      password: ${spring.data.redis.password:}
+      database: ${spring.data.redis.database:0}
+      poolConfig:
+        minIdle: 5
+        maxIdle: 20
+        maxTotal: 50
 # 本地文件系统
 file:
   local:
