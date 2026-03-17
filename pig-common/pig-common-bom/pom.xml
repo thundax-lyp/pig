@@ -42,7 +42,6 @@
 		<swagger.core.version>2.2.39</swagger.core.version>
 		<mybatis-plus.version>3.5.16</mybatis-plus.version>
 		<shardingsphere.version>5.4.1</shardingsphere.version>
-		<fastjson.version>1.2.83_noneautotype</fastjson.version>
 		<spring.checkstyle.plugin>0.0.47</spring.checkstyle.plugin>
 		<flatten-maven-plugin.version>1.6.0</flatten-maven-plugin.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -146,12 +145,6 @@
 				<groupId>io.swagger.core.v3</groupId>
 				<artifactId>swagger-annotations-jakarta</artifactId>
 				<version>${swagger.core.version}</version>
-			</dependency>
-			<!--fastjson 版本 -->
-			<dependency>
-				<groupId>com.alibaba</groupId>
-				<artifactId>fastjson</artifactId>
-				<version>${fastjson.version}</version>
 			</dependency>
 			<!--代码生成模板引擎 -->
 			<dependency>
