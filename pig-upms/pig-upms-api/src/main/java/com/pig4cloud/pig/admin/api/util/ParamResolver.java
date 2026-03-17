@@ -2,7 +2,7 @@ package com.pig4cloud.pig.admin.api.util;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
-import com.pig4cloud.pig.admin.api.feign.RemoteParamService;
+import com.pig4cloud.pig.admin.api.service.ParamApi;
 import com.pig4cloud.pig.common.core.util.SpringContextHolder;
 import lombok.experimental.UtilityClass;
 
@@ -50,9 +50,9 @@ public class ParamResolver {
 			throw new IllegalArgumentException("参数不合法");
 		}
 
-		RemoteParamService remoteParamService = SpringContextHolder.getBean(RemoteParamService.class);
+		ParamApi paramApi = SpringContextHolder.getBean(ParamApi.class);
 
-		String result = remoteParamService.getByKey(key).getData();
+		String result = paramApi.getByKey(key).getData();
 
 		if (StrUtil.isNotBlank(result)) {
 			return Convert.convert(clazz, result);

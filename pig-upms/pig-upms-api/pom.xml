@@ -27,29 +27,16 @@
     <artifactId>pig-upms-api</artifactId>
     <packaging>jar</packaging>
 
-    <description>pig 通用用户权限管理系统公共api模块</description>
-
+    <description>pig 通用用户权限管理系统服务接口模块</description>
 
     <dependencies>
-        <!--core 工具类-->
         <dependency>
             <groupId>com.pig4cloud</groupId>
             <artifactId>pig-common-core</artifactId>
         </dependency>
-        <!--feign 注解依赖-->
         <dependency>
             <groupId>com.pig4cloud</groupId>
-            <artifactId>pig-common-feign</artifactId>
-        </dependency>
-        <!--mybatis 依赖-->
-        <dependency>
-            <groupId>com.pig4cloud</groupId>
-            <artifactId>pig-common-mybatis</artifactId>
-        </dependency>
-        <!-- excel 导入导出 -->
-        <dependency>
-            <groupId>com.pig4cloud</groupId>
-            <artifactId>pig-common-excel</artifactId>
+            <artifactId>pig-upms-contract</artifactId>
         </dependency>
     </dependencies>
 </project>

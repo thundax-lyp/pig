@@ -35,6 +35,10 @@
             <groupId>com.pig4cloud</groupId>
             <artifactId>pig-upms-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.pig4cloud</groupId>
+            <artifactId>pig-upms-client</artifactId>
+        </dependency>
         <!--文件管理-->
         <dependency>
             <groupId>com.pig4cloud</groupId>

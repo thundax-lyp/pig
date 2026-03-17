@@ -20,14 +20,14 @@
 		<result column="nickname" property="nickname"/>
 		<result column="name" property="name"/>
 		<result column="email" property="email"/>
-		<association property="dept" javaType="com.pig4cloud.pig.admin.api.entity.SysDept" column="dept_id"
-					 select="com.pig4cloud.pig.admin.mapper.SysDeptMapper.selectById">
+		<association property="dept" javaType="com.pig4cloud.pig.admin.api.vo.DeptVO" column="dept_id"
+					 select="com.pig4cloud.pig.admin.mapper.SysDeptMapper.getDeptVoById">
 		</association>
-		<collection property="roleList" ofType="com.pig4cloud.pig.admin.api.entity.SysRole"
-					select="com.pig4cloud.pig.admin.mapper.SysRoleMapper.listRolesByUserId" column="user_id">
+		<collection property="roleList" ofType="com.pig4cloud.pig.admin.api.vo.RoleItemVO"
+					select="com.pig4cloud.pig.admin.mapper.SysRoleMapper.listRoleVosByUserId" column="user_id">
 		</collection>
-		<collection property="postList" ofType="com.pig4cloud.pig.admin.api.entity.SysPost"
-					select="com.pig4cloud.pig.admin.mapper.SysPostMapper.listPostsByUserId" column="user_id">
+		<collection property="postList" ofType="com.pig4cloud.pig.admin.api.vo.PostVO"
+					select="com.pig4cloud.pig.admin.mapper.SysPostMapper.listPostVosByUserId" column="user_id">
 		</collection>
 	</resultMap>
 

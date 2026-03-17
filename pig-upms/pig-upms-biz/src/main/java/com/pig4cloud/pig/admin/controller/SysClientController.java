@@ -19,11 +19,13 @@
 
 package com.pig4cloud.pig.admin.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.pig4cloud.pig.admin.api.dto.SysOauthClientDetailsDTO;
 import com.pig4cloud.pig.admin.api.entity.SysOauthClientDetails;
 import com.pig4cloud.pig.admin.service.SysOauthClientDetailsService;
 import com.pig4cloud.pig.common.core.util.R;
@@ -137,8 +139,9 @@ public class SysClientController {
 	@GetMapping("/getClientDetailsById/{clientId}")
 	@Operation(summary = "根据客户端ID获取客户端详情", description = "根据客户端ID获取客户端详情")
 	public R getClientDetailsById(@PathVariable String clientId) {
-		return R.ok(clientDetailsService.getOne(
-				Wrappers.<SysOauthClientDetails>lambdaQuery().eq(SysOauthClientDetails::getClientId, clientId), false));
+		SysOauthClientDetails clientDetails = clientDetailsService.getOne(
+				Wrappers.<SysOauthClientDetails>lambdaQuery().eq(SysOauthClientDetails::getClientId, clientId), false);
+		return R.ok(BeanUtil.copyProperties(clientDetails, SysOauthClientDetailsDTO.class));
 	}
 
 	/**

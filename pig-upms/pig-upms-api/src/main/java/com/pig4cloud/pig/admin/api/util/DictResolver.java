@@ -1,12 +1,11 @@
 package com.pig4cloud.pig.admin.api.util;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Assert;
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
-import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
-import com.baomidou.mybatisplus.core.toolkit.StringPool;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.pig4cloud.pig.admin.api.entity.SysDictItem;
-import com.pig4cloud.pig.admin.api.feign.RemoteDictService;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import com.pig4cloud.pig.admin.api.dto.SysDictItemDTO;
+import com.pig4cloud.pig.admin.api.service.DictApi;
 import com.pig4cloud.pig.common.core.util.SpringContextHolder;
 import lombok.experimental.UtilityClass;
 
@@ -26,12 +25,12 @@ public class DictResolver {
 	 * @param type 字典类型
 	 * @return 字典数据项集合
 	 */
-	public List<SysDictItem> getDictItemsByType(String type) {
-		Assert.isTrue(StringUtils.isNotBlank(type), "参数不合法");
+	public List<SysDictItemDTO> getDictItemsByType(String type) {
+		Assert.isTrue(StrUtil.isNotBlank(type), "参数不合法");
 
-		RemoteDictService remoteDictService = SpringContextHolder.getBean(RemoteDictService.class);
+		DictApi dictApi = SpringContextHolder.getBean(DictApi.class);
 
-		return remoteDictService.getDictByType(type).getData();
+		return dictApi.getDictByType(type).getData();
 	}
 
 	/**
@@ -41,11 +40,11 @@ public class DictResolver {
 	 * @return 字典项标签值
 	 */
 	public String getDictItemLabel(String type, String itemValue) {
-		Assert.isTrue(StringUtils.isNotBlank(type) && StringUtils.isNotBlank(itemValue), "参数不合法");
+		Assert.isTrue(StrUtil.isNotBlank(type) && StrUtil.isNotBlank(itemValue), "参数不合法");
 
-		SysDictItem sysDictItem = getDictItemByItemValue(type, itemValue);
+		SysDictItemDTO sysDictItem = getDictItemByItemValue(type, itemValue);
 
-		return ObjectUtils.isNotEmpty(sysDictItem) ? sysDictItem.getLabel() : StringPool.EMPTY;
+		return ObjectUtil.isNotEmpty(sysDictItem) ? sysDictItem.getLabel() : StrUtil.EMPTY;
 	}
 
 	/**
@@ -55,11 +54,11 @@ public class DictResolver {
 	 * @return 字典数据项值
 	 */
 	public String getDictItemValue(String type, String itemLabel) {
-		Assert.isTrue(StringUtils.isNotBlank(type) && StringUtils.isNotBlank(itemLabel), "参数不合法");
+		Assert.isTrue(StrUtil.isNotBlank(type) && StrUtil.isNotBlank(itemLabel), "参数不合法");
 
-		SysDictItem sysDictItem = getDictItemByItemLabel(type, itemLabel);
+		SysDictItemDTO sysDictItem = getDictItemByItemLabel(type, itemLabel);
 
-		return ObjectUtils.isNotEmpty(sysDictItem) ? sysDictItem.getItemValue() : StringPool.EMPTY;
+		return ObjectUtil.isNotEmpty(sysDictItem) ? sysDictItem.getItemValue() : StrUtil.EMPTY;
 	}
 
 	/**
@@ -68,12 +67,12 @@ public class DictResolver {
 	 * @param itemValue 字典数据值
 	 * @return 字典数据项
 	 */
-	public SysDictItem getDictItemByItemValue(String type, String itemValue) {
-		Assert.isTrue(StringUtils.isNotBlank(type) && StringUtils.isNotBlank(itemValue), "参数不合法");
+	public SysDictItemDTO getDictItemByItemValue(String type, String itemValue) {
+		Assert.isTrue(StrUtil.isNotBlank(type) && StrUtil.isNotBlank(itemValue), "参数不合法");
 
-		List<SysDictItem> dictItemList = getDictItemsByType(type);
+		List<SysDictItemDTO> dictItemList = getDictItemsByType(type);
 
-		if (CollectionUtils.isNotEmpty(dictItemList)) {
+		if (CollUtil.isNotEmpty(dictItemList)) {
 			return dictItemList.stream().filter(item -> itemValue.equals(item.getItemValue())).findFirst().orElse(null);
 		}
 
@@ -86,12 +85,12 @@ public class DictResolver {
 	 * @param itemLabel 字典数据项标签
 	 * @return 字典数据项
 	 */
-	public SysDictItem getDictItemByItemLabel(String type, String itemLabel) {
-		Assert.isTrue(StringUtils.isNotBlank(type) && StringUtils.isNotBlank(itemLabel), "参数不合法");
+	public SysDictItemDTO getDictItemByItemLabel(String type, String itemLabel) {
+		Assert.isTrue(StrUtil.isNotBlank(type) && StrUtil.isNotBlank(itemLabel), "参数不合法");
 
-		List<SysDictItem> dictItemList = getDictItemsByType(type);
+		List<SysDictItemDTO> dictItemList = getDictItemsByType(type);
 
-		if (CollectionUtils.isNotEmpty(dictItemList)) {
+		if (CollUtil.isNotEmpty(dictItemList)) {
 			return dictItemList.stream().filter(item -> itemLabel.equals(item.getLabel())).findFirst().orElse(null);
 		}
 

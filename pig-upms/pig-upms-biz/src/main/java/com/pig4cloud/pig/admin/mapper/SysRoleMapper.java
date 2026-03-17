@@ -21,6 +21,7 @@ package com.pig4cloud.pig.admin.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.pig4cloud.pig.admin.api.entity.SysRole;
+import com.pig4cloud.pig.admin.api.vo.RoleItemVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -42,5 +43,12 @@ public interface SysRoleMapper extends BaseMapper<SysRole> {
 	 * @return 角色信息列表
 	 */
 	List<SysRole> listRolesByUserId(Long userId);
+
+	/**
+	 * 通过用户ID查询轻量角色展示对象
+	 * @param userId 用户ID
+	 * @return 角色展示对象列表
+	 */
+	List<RoleItemVO> listRoleVosByUserId(Long userId);
 
 }

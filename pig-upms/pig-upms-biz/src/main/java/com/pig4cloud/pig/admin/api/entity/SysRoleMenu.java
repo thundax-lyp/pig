@@ -17,27 +17,41 @@
  *
  */
 
-package com.pig4cloud.pig.admin.mapper;
+package com.pig4cloud.pig.admin.api.entity;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.pig4cloud.pig.admin.api.entity.SysDept;
-import com.pig4cloud.pig.admin.api.vo.DeptVO;
-import org.apache.ibatis.annotations.Mapper;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.io.Serial;
 
 /**
- * 部门管理 Mapper 接口
+ * <p>
+ * 角色菜单表
+ * </p>
  *
  * @author lengleng
- * @since 2018-01-20
+ * @since 2017-10-29
  */
-@Mapper
-public interface SysDeptMapper extends BaseMapper<SysDept> {
+@Data
+@Schema(description = "角色菜单")
+@EqualsAndHashCode(callSuper = true)
+public class SysRoleMenu extends Model<SysRoleMenu> {
+
+	@Serial
+	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 查询轻量部门展示对象
-	 * @param deptId 部门id
-	 * @return 部门展示对象
+	 * 角色ID
 	 */
-	DeptVO getDeptVoById(Long deptId);
+	@Schema(description = "角色id")
+	private Long roleId;
+
+	/**
+	 * 菜单ID
+	 */
+	@Schema(description = "菜单id")
+	private Long menuId;
 
 }

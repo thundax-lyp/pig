@@ -19,6 +19,7 @@ package com.pig4cloud.pig.admin.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.pig4cloud.pig.admin.api.entity.SysPost;
+import com.pig4cloud.pig.admin.api.vo.PostVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -38,5 +39,12 @@ public interface SysPostMapper extends BaseMapper<SysPost> {
 	 * @return 岗位信息
 	 */
 	List<SysPost> listPostsByUserId(Long userId);
+
+	/**
+	 * 通过用户ID查询轻量岗位展示对象
+	 * @param userId 用户id
+	 * @return 岗位展示对象
+	 */
+	List<PostVO> listPostVosByUserId(Long userId);
 
 }

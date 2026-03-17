@@ -46,4 +46,15 @@
 		  AND sys_role.del_flag = '0'
 		  and sys_user_role.user_id = #{userId}
 	</select>
+
+	<select id="listRoleVosByUserId" resultType="com.pig4cloud.pig.admin.api.vo.RoleItemVO">
+		SELECT sys_role.role_id,
+			   sys_role.role_name,
+			   sys_role.role_code
+		FROM sys_role,
+			 sys_user_role
+		WHERE sys_role.role_id = sys_user_role.role_id
+		  AND sys_role.del_flag = '0'
+		  and sys_user_role.user_id = #{userId}
+	</select>
 </mapper>

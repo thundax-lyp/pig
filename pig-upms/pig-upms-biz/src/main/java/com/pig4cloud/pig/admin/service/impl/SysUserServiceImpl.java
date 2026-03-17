@@ -19,6 +19,7 @@
 
 package com.pig4cloud.pig.admin.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -30,6 +31,8 @@ import com.pig4cloud.pig.admin.api.dto.UserDTO;
 import com.pig4cloud.pig.admin.api.dto.UserInfo;
 import com.pig4cloud.pig.admin.api.entity.*;
 import com.pig4cloud.pig.admin.api.util.ParamResolver;
+import com.pig4cloud.pig.admin.api.vo.PostVO;
+import com.pig4cloud.pig.admin.api.vo.RoleItemVO;
 import com.pig4cloud.pig.admin.api.vo.UserExcelVO;
 import com.pig4cloud.pig.admin.api.vo.UserVO;
 import com.pig4cloud.pig.admin.mapper.SysUserMapper;
@@ -45,7 +48,6 @@ import com.pig4cloud.pig.common.security.util.SecurityUtils;
 import com.pig4cloud.plugin.excel.vo.ErrorMessage;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
@@ -90,13 +92,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 	 * 保存用户信息
 	 * @param userDto 用户数据传输对象
 	 * @return 操作是否成功
-	 * @throws Exception 事务回滚时抛出异常
-	 */
+     */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public Boolean saveUser(UserDTO userDto) {
 		SysUser sysUser = new SysUser();
-		BeanUtils.copyProperties(userDto, sysUser);
+		BeanUtil.copyProperties(userDto, sysUser);
 		sysUser.setDelFlag(CommonConstants.STATUS_NORMAL);
 		sysUser.setCreateBy(userDto.getUsername());
 		sysUser.setPassword(ENCODER.encode(userDto.getPassword()));
@@ -143,14 +144,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 		}
 
 		UserInfo userInfo = new UserInfo();
-		BeanUtils.copyProperties(dbUser, userInfo);
+		BeanUtil.copyProperties(dbUser, userInfo);
 		// 设置权限列表（menu.permission）
 		List<String> permissions = dbUser.getRoleList()
 			.stream()
-			.map(SysRole::getRoleId)
+			.map(RoleItemVO::getRoleId)
 			.flatMap(roleId -> sysMenuService.findMenuByRoleId(roleId).stream())
-			.filter(menu -> StrUtil.isNotEmpty(menu.getPermission()))
 			.map(SysMenu::getPermission)
+			.filter(StrUtil::isNotEmpty)
 			.toList();
 		userInfo.setPermissions(permissions);
 		return R.ok(userInfo);
@@ -191,6 +192,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 		List<Long> idList = CollUtil.toList(ids);
 		// 删除 spring cache
 		Cache cache = cacheManager.getCache(CacheConstants.USER_DETAILS);
+		assert cache != null;
 		baseMapper.selectByIds(idList).forEach(user -> cache.evictIfPresent(user.getUsername()));
 
 		sysUserRoleMapper.delete(Wrappers.<SysUserRole>lambdaQuery().in(SysUserRole::getUserId, idList));
@@ -227,7 +229,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 	public Boolean updateUser(UserDTO userDto) {
 		// 更新用户表信息
 		SysUser sysUser = new SysUser();
-		BeanUtils.copyProperties(userDto, sysUser);
+		BeanUtil.copyProperties(userDto, sysUser);
 		sysUser.setUpdateTime(LocalDateTime.now());
 		if (StrUtil.isNotBlank(userDto.getPassword())) {
 			sysUser.setPassword(ENCODER.encode(userDto.getPassword()));
@@ -271,13 +273,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 		// 根据数据权限查询全部的用户信息
 		List<UserVO> voList = baseMapper.listUsers(userDTO);
 		// 转换成execl 对象输出
-		return voList.stream().map(userVO -> {
-			UserExcelVO excelVO = new UserExcelVO();
-			BeanUtils.copyProperties(userVO, excelVO);
-			excelVO.setRoleNameList(
-					userVO.getRoleList().stream().map(SysRole::getRoleName).collect(Collectors.joining(StrUtil.COMMA)));
-			excelVO.setPostNameList(
-					userVO.getPostList().stream().map(SysPost::getPostName).collect(Collectors.joining(StrUtil.COMMA)));
+			return voList.stream().map(userVO -> {
+				UserExcelVO excelVO = new UserExcelVO();
+				BeanUtil.copyProperties(userVO, excelVO);
+				excelVO.setRoleNameList(
+					userVO.getRoleList().stream().map(RoleItemVO::getRoleName).collect(Collectors.joining(StrUtil.COMMA)));
+				excelVO.setPostNameList(
+					userVO.getPostList().stream().map(PostVO::getPostName).collect(Collectors.joining(StrUtil.COMMA)));
 
 			if (Objects.nonNull(userVO.getDept())) {
 				excelVO.setDeptName(userVO.getDept().getName());
@@ -401,7 +403,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 		}
 
 		UserDTO user = new UserDTO();
-		BeanUtils.copyProperties(userDto, user);
+		BeanUtil.copyProperties(userDto, user);
 		return R.ok(saveUser(user));
 	}
 

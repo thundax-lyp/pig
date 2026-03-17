@@ -17,27 +17,41 @@
  *
  */
 
-package com.pig4cloud.pig.admin.mapper;
+package com.pig4cloud.pig.admin.api.entity;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.pig4cloud.pig.admin.api.entity.SysDept;
-import com.pig4cloud.pig.admin.api.vo.DeptVO;
-import org.apache.ibatis.annotations.Mapper;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.io.Serial;
 
 /**
- * 部门管理 Mapper 接口
+ * <p>
+ * 部门关系表
+ * </p>
  *
  * @author lengleng
- * @since 2018-01-20
+ * @since 2018-01-22
  */
-@Mapper
-public interface SysDeptMapper extends BaseMapper<SysDept> {
+@Data
+@Schema(description = "部门关系")
+@EqualsAndHashCode(callSuper = true)
+public class SysDeptRelation extends Model<SysDeptRelation> {
+
+	@Serial
+	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 查询轻量部门展示对象
-	 * @param deptId 部门id
-	 * @return 部门展示对象
+	 * 祖先节点
 	 */
-	DeptVO getDeptVoById(Long deptId);
+	@Schema(description = "祖先节点")
+	private Long ancestor;
+
+	/**
+	 * 后代节点
+	 */
+	@Schema(description = "后代节点")
+	private Long descendant;
 
 }

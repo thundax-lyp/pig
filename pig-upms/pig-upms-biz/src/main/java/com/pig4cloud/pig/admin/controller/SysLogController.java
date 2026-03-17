@@ -19,9 +19,11 @@
 
 package com.pig4cloud.pig.admin.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.pig4cloud.pig.admin.api.dto.SysLogDTO;
+import com.pig4cloud.pig.admin.api.dto.SysLogRecordDTO;
 import com.pig4cloud.pig.admin.api.entity.SysLog;
 import com.pig4cloud.pig.admin.service.SysLogService;
 import com.pig4cloud.pig.common.core.util.R;
@@ -86,8 +88,8 @@ public class SysLogController {
 	@Inner
 	@PostMapping("/save")
 	@Operation(summary = "保存日志", description = "保存日志")
-	public R saveLog(@Valid @RequestBody SysLog sysLog) {
-		return R.ok(sysLogService.saveLog(sysLog));
+	public R saveLog(@Valid @RequestBody SysLogRecordDTO sysLog) {
+		return R.ok(sysLogService.saveLog(BeanUtil.copyProperties(sysLog, SysLog.class)));
 	}
 
 	/**

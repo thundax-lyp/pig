@@ -19,10 +19,12 @@
 
 package com.pig4cloud.pig.admin.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.pig4cloud.pig.admin.api.dto.SysDictItemDTO;
 import com.pig4cloud.pig.admin.api.entity.SysDict;
 import com.pig4cloud.pig.admin.api.entity.SysDictItem;
 import com.pig4cloud.pig.admin.service.SysDictItemService;
@@ -45,6 +47,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 字典表前端控制器
@@ -258,8 +261,11 @@ public class SysDictController {
 	@GetMapping("/type/{type}")
 	@Operation(summary = "通过字典类型查找字典", description = "通过字典类型查找字典")
 	@Cacheable(value = CacheConstants.DICT_DETAILS, key = "#type", unless = "#result.data.isEmpty()")
-	public R<List<SysDictItem>> getDictByType(@PathVariable String type) {
-		return R.ok(sysDictItemService.list(Wrappers.<SysDictItem>query().lambda().eq(SysDictItem::getDictType, type)));
+	public R<List<SysDictItemDTO>> getDictByType(@PathVariable String type) {
+		return R.ok(sysDictItemService.list(Wrappers.<SysDictItem>query().lambda().eq(SysDictItem::getDictType, type))
+			.stream()
+			.map(item -> BeanUtil.copyProperties(item, SysDictItemDTO.class))
+			.collect(Collectors.toList()));
 	}
 
 	/**
@@ -271,8 +277,11 @@ public class SysDictController {
 	@GetMapping("/remote/type/{type}")
 	@Operation(summary = "通过字典类型查找字典(针对feign调用)", description = "通过字典类型查找字典(针对feign调用)", hidden = true)
 	@Cacheable(value = CacheConstants.DICT_DETAILS, key = "#type", unless = "#result.data.isEmpty()")
-	public R<List<SysDictItem>> getRemoteDictByType(@PathVariable String type) {
-		return R.ok(sysDictItemService.list(Wrappers.<SysDictItem>query().lambda().eq(SysDictItem::getDictType, type)));
+	public R<List<SysDictItemDTO>> getRemoteDictByType(@PathVariable String type) {
+		return R.ok(sysDictItemService.list(Wrappers.<SysDictItem>query().lambda().eq(SysDictItem::getDictType, type))
+			.stream()
+			.map(item -> BeanUtil.copyProperties(item, SysDictItemDTO.class))
+			.collect(Collectors.toList()));
 	}
 
 }
