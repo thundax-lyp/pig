@@ -20,20 +20,27 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.pig4cloud</groupId>
-        <artifactId>pig</artifactId>
+        <artifactId>pig-upms</artifactId>
         <version>${revision}</version>
     </parent>
 
-    <artifactId>pig-visual</artifactId>
+    <artifactId>pig-upms-contract</artifactId>
+    <packaging>jar</packaging>
 
-    <description>pig 图形化相关功能</description>
-    <packaging>pom</packaging>
+    <description>pig 通用用户权限管理系统公共契约模块</description>
 
-    <modules>
-        <module>pig-codegen-contract</module>
-        <module>pig-codegen</module>
-        <module>pig-monitor</module>
-        <module>pig-quartz-contract</module>
-        <module>pig-quartz</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>com.pig4cloud</groupId>
+            <artifactId>pig-common-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations-jakarta</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.pig4cloud</groupId>
+            <artifactId>pig-common-excel</artifactId>
+        </dependency>
+    </dependencies>
 </project>
