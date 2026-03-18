@@ -1,6 +1,6 @@
 package com.pig4cloud.pig.sys.api.service;
 
-import com.pig4cloud.pig.sys.api.dto.SysDictItemDTO;
+import com.pig4cloud.pig.sys.api.dto.DictItemDTO;
 import com.pig4cloud.pig.common.core.util.R;
 
 import java.util.List;
@@ -13,6 +13,6 @@ import java.util.List;
  */
 public interface DictApi {
 
-	R<List<SysDictItemDTO>> getDictByType(String type);
+	R<List<DictItemDTO>> getDictByType(String type);
 
 }

@@ -1,6 +1,6 @@
 package com.pig4cloud.pig.sys.api.service;
 
-import com.pig4cloud.pig.sys.api.dto.SysOauthClientDetailsDTO;
+import com.pig4cloud.pig.sys.api.dto.OauthClientDetailsDTO;
 import com.pig4cloud.pig.common.core.util.R;
 
 /**
@@ -11,6 +11,6 @@ import com.pig4cloud.pig.common.core.util.R;
  */
 public interface ClientDetailsApi {
 
-	R<SysOauthClientDetailsDTO> getClientDetailsById(String clientId);
+	R<OauthClientDetailsDTO> getClientDetailsById(String clientId);
 
 }

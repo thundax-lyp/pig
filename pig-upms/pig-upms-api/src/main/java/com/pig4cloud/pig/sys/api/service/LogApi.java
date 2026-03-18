@@ -1,6 +1,6 @@
 package com.pig4cloud.pig.sys.api.service;
 
-import com.pig4cloud.pig.sys.api.dto.SysLogRecordDTO;
+import com.pig4cloud.pig.sys.api.dto.LogRecordDTO;
 import com.pig4cloud.pig.common.core.util.R;
 
 /**
@@ -11,6 +11,6 @@ import com.pig4cloud.pig.common.core.util.R;
  */
 public interface LogApi {
 
-	R<Boolean> saveLog(SysLogRecordDTO sysLog);
+	R<Boolean> saveLog(LogRecordDTO sysLog);
 
 }

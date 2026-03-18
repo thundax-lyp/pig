@@ -4,7 +4,7 @@ import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alicp.jetcache.anno.CacheType;
 import com.alicp.jetcache.anno.Cached;
-import com.pig4cloud.pig.sys.api.dto.SysOauthClientDetailsDTO;
+import com.pig4cloud.pig.sys.api.dto.OauthClientDetailsDTO;
 import com.pig4cloud.pig.sys.api.service.ClientDetailsApi;
 import com.pig4cloud.pig.common.core.constant.CacheConstants;
 import com.pig4cloud.pig.common.core.constant.SecurityConstants;
@@ -85,7 +85,7 @@ public class PigRemoteRegisteredClientRepository implements RegisteredClientRepo
 			expire = 12, timeUnit = TimeUnit.HOURS, cacheType = CacheType.REMOTE, postCondition = "#result != null")
 	public RegisteredClient findByClientId(String clientId) {
 
-		SysOauthClientDetailsDTO clientDetails = RetOps.of(clientDetailsApi.getClientDetailsById(clientId))
+		OauthClientDetailsDTO clientDetails = RetOps.of(clientDetailsApi.getClientDetailsById(clientId))
 			.getData()
 			.orElseThrow(() -> new OAuth2AuthorizationCodeRequestAuthenticationException(
 					new OAuth2Error("客户端查询异常，请检查数据库链接"), null));
