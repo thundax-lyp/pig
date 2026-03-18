@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.github.thundax</groupId>
+        <artifactId>bacon-upms</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>bacon-upms-client</artifactId>
+    <packaging>jar</packaging>
+
+    <description>bacon 通用用户权限管理系统远程客户端模块</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.github.thundax</groupId>
+            <artifactId>bacon-common-feign</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-extension</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.thundax</groupId>
+            <artifactId>bacon-upms-api</artifactId>
+        </dependency>
+    </dependencies>
+</project>

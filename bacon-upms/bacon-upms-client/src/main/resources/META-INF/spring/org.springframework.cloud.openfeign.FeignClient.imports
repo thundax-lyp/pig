@@ -1,0 +1,6 @@
+com.github.thundax.bacon.sys.api.feign.RemoteClientDetailsService
+com.github.thundax.bacon.sys.api.feign.RemoteDictService
+com.github.thundax.bacon.sys.api.feign.RemoteLogService
+com.github.thundax.bacon.sys.api.feign.RemoteParamService
+com.github.thundax.bacon.sys.api.feign.RemoteTokenService
+com.github.thundax.bacon.sys.api.feign.RemoteUserService

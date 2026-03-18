@@ -1,7 +1,7 @@
-package com.pig4cloud.pig.sys.client;
+package com.github.thundax.bacon.sys.client;
 
-import com.pig4cloud.pig.sys.api.feign.*;
-import com.pig4cloud.pig.sys.api.service.*;
+import com.github.thundax.bacon.sys.api.feign.*;
+import com.github.thundax.bacon.sys.api.service.*;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,8 +9,6 @@ import org.springframework.context.annotation.Configuration;
 /**
  * UPMS 客户端自动配置
  *
- * @author lengleng
- * @date 2026/03/16
  */
 @Configuration(proxyBeanMethods = false)
 public class UpmsClientAutoConfiguration {

@@ -17,12 +17,12 @@
  *
  */
 
-package com.pig4cloud.pig.sys.api.feign;
+package com.github.thundax.bacon.sys.api.feign;
 
-import com.pig4cloud.pig.sys.api.dto.LogRecordDTO;
-import com.pig4cloud.pig.common.core.constant.ServiceNameConstants;
-import com.pig4cloud.pig.common.core.util.R;
-import com.pig4cloud.pig.common.feign.annotation.NoToken;
+import com.github.thundax.bacon.sys.api.dto.LogRecordDTO;
+import com.github.thundax.bacon.common.core.constant.ServiceNameConstants;
+import com.github.thundax.bacon.common.core.util.R;
+import com.github.thundax.bacon.common.feign.annotation.NoToken;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,8 +30,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 /**
  * 远程日志服务接口
  *
- * @author lengleng
- * @date 2025/05/30
  */
 @FeignClient(contextId = "remoteLogService", value = ServiceNameConstants.UPMS_SERVICE)
 public interface RemoteLogService {

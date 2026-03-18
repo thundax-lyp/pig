@@ -1,9 +1,9 @@
-package com.pig4cloud.pig.sys.api.feign;
+package com.github.thundax.bacon.sys.api.feign;
 
-import com.pig4cloud.pig.sys.api.dto.DictItemDTO;
-import com.pig4cloud.pig.common.core.constant.ServiceNameConstants;
-import com.pig4cloud.pig.common.core.util.R;
-import com.pig4cloud.pig.common.feign.annotation.NoToken;
+import com.github.thundax.bacon.sys.api.dto.DictItemDTO;
+import com.github.thundax.bacon.common.core.constant.ServiceNameConstants;
+import com.github.thundax.bacon.common.core.util.R;
+import com.github.thundax.bacon.common.feign.annotation.NoToken;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,8 +13,6 @@ import java.util.List;
 /**
  * 远程字典服务接口
  *
- * @author lengleng
- * @date 2025/05/30
  */
 @FeignClient(contextId = "remoteDictService", value = ServiceNameConstants.UPMS_SERVICE)
 public interface RemoteDictService {

@@ -15,12 +15,12 @@
  * Author: lengleng (wangiegie@gmail.com)
  */
 
-package com.pig4cloud.pig.sys.api.feign;
+package com.github.thundax.bacon.sys.api.feign;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.pig4cloud.pig.common.core.constant.ServiceNameConstants;
-import com.pig4cloud.pig.common.core.util.R;
-import com.pig4cloud.pig.common.feign.annotation.NoToken;
+import com.github.thundax.bacon.common.core.constant.ServiceNameConstants;
+import com.github.thundax.bacon.common.core.util.R;
+import com.github.thundax.bacon.common.feign.annotation.NoToken;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,8 +29,6 @@ import java.util.Map;
 /**
  * 远程令牌服务接口
  *
- * @author lengleng
- * @date 2025/05/30
  */
 @FeignClient(contextId = "remoteTokenService", value = ServiceNameConstants.AUTH_SERVICE)
 public interface RemoteTokenService {
