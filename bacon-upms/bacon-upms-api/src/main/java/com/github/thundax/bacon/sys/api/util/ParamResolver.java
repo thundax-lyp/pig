@@ -1,16 +1,14 @@
-package com.pig4cloud.pig.sys.api.util;
+package com.github.thundax.bacon.sys.api.util;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
-import com.pig4cloud.pig.sys.api.service.ParamApi;
-import com.pig4cloud.pig.common.core.util.SpringContextHolder;
+import com.github.thundax.bacon.sys.api.service.ParamApi;
+import com.github.thundax.bacon.common.core.util.SpringContextHolder;
 import lombok.experimental.UtilityClass;
 
 /**
  * 系统参数配置解析器工具类
  *
- * @author lengleng
- * @date 2025/05/30
  */
 @UtilityClass
 public class ParamResolver {

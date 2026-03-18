@@ -1,12 +1,12 @@
-package com.pig4cloud.pig.sys.api.util;
+package com.github.thundax.bacon.sys.api.util;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import com.pig4cloud.pig.sys.api.dto.DictItemDTO;
-import com.pig4cloud.pig.sys.api.service.DictApi;
-import com.pig4cloud.pig.common.core.util.SpringContextHolder;
+import com.github.thundax.bacon.sys.api.dto.DictItemDTO;
+import com.github.thundax.bacon.sys.api.service.DictApi;
+import com.github.thundax.bacon.common.core.util.SpringContextHolder;
 import lombok.experimental.UtilityClass;
 
 import java.util.List;
@@ -14,8 +14,6 @@ import java.util.List;
 /**
  * 字典解析工具类：提供字典数据的查询和解析功能
  *
- * @author lengleng
- * @date 2025/05/30
  */
 @UtilityClass
 public class DictResolver {
