@@ -1,6 +1,6 @@
 package com.pig4cloud.pig.common.log.event;
 
-import com.pig4cloud.pig.sys.api.dto.SysLogRecordDTO;
+import com.pig4cloud.pig.sys.api.dto.LogRecordDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -14,7 +14,7 @@ import java.io.Serial;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class SysLogEventSource extends SysLogRecordDTO {
+public class SysLogEventSource extends LogRecordDTO {
 
 	@Serial
 	private static final long serialVersionUID = 1L;

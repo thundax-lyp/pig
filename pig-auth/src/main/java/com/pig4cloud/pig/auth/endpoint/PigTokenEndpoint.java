@@ -21,7 +21,7 @@ import cn.hutool.core.date.TemporalAccessorUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.pig4cloud.pig.sys.api.dto.SysOauthClientDetailsDTO;
+import com.pig4cloud.pig.sys.api.dto.OauthClientDetailsDTO;
 import com.pig4cloud.pig.sys.api.service.ClientDetailsApi;
 import com.pig4cloud.pig.sys.api.vo.TokenVo;
 import com.pig4cloud.pig.auth.support.handler.PigAuthenticationFailureEventHandler;
@@ -120,7 +120,7 @@ public class PigTokenEndpoint {
 			@RequestParam(OAuth2ParameterNames.CLIENT_ID) String clientId,
 			@RequestParam(OAuth2ParameterNames.SCOPE) String scope,
 			@RequestParam(OAuth2ParameterNames.STATE) String state) {
-		SysOauthClientDetailsDTO clientDetails = RetOps.of(clientDetailsApi.getClientDetailsById(clientId))
+		OauthClientDetailsDTO clientDetails = RetOps.of(clientDetailsApi.getClientDetailsById(clientId))
 			.getData()
 			.orElseThrow(() -> new OAuthClientException("clientId 不合法"));
 

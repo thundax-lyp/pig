@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import com.pig4cloud.pig.sys.api.dto.SysLogRecordDTO;
+import com.pig4cloud.pig.sys.api.dto.LogRecordDTO;
 import com.pig4cloud.pig.sys.api.service.LogApi;
 import com.pig4cloud.pig.common.core.jackson.PigJavaTimeModule;
 import com.pig4cloud.pig.common.log.config.PigLogProperties;
@@ -62,7 +62,7 @@ public class SysLogListener implements InitializingBean {
 	@EventListener(SysLogEvent.class)
 	public void saveSysLog(SysLogEvent event) {
 		SysLogEventSource source = (SysLogEventSource) event.getSource();
-		SysLogRecordDTO sysLog = new SysLogRecordDTO();
+		LogRecordDTO sysLog = new LogRecordDTO();
 		BeanUtil.copyProperties(source, sysLog);
 
 		// json 格式刷参数放在异步中处理，提升性能
