@@ -17,23 +17,32 @@
  *
  */
 
-package com.pig4cloud.pig.sys.service.impl;
+package com.pig4cloud.pig.sys.api.feign;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.pig4cloud.pig.sys.entity.SysUserRole;
-import com.pig4cloud.pig.sys.mapper.SysUserRoleMapper;
-import com.pig4cloud.pig.sys.service.SysUserRoleService;
-import org.springframework.stereotype.Service;
+import com.pig4cloud.pig.sys.api.dto.LogRecordDTO;
+import com.pig4cloud.pig.common.core.constant.ServiceNameConstants;
+import com.pig4cloud.pig.common.core.util.R;
+import com.pig4cloud.pig.common.feign.annotation.NoToken;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
- * <p>
- * 用户角色表 服务实现类
- * </p>
+ * 远程日志服务接口
  *
  * @author lengleng
- * @since 2017-10-29
+ * @date 2025/05/30
  */
-@Service
-public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUserRole> implements SysUserRoleService {
+@FeignClient(contextId = "remoteLogService", value = ServiceNameConstants.UPMS_SERVICE)
+public interface RemoteLogService {
+
+	/**
+	 * 保存日志
+	 * @param sysLog 日志记录对象
+	 * @return 保存结果
+	 */
+	@NoToken
+	@PostMapping("/sys/log/save")
+	R<Boolean> saveLog(@RequestBody LogRecordDTO sysLog);
 
 }

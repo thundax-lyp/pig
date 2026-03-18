@@ -2,10 +2,10 @@ package com.pig4cloud.pig.sys.service.api;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.pig4cloud.pig.sys.api.dto.SysOauthClientDetailsDTO;
-import com.pig4cloud.pig.sys.entity.SysOauthClientDetails;
+import com.pig4cloud.pig.sys.api.dto.OauthClientDetailsDTO;
+import com.pig4cloud.pig.sys.entity.OauthClientDetails;
 import com.pig4cloud.pig.sys.api.service.ClientDetailsApi;
-import com.pig4cloud.pig.sys.service.SysOauthClientDetailsService;
+import com.pig4cloud.pig.sys.service.OauthClientDetailsService;
 import com.pig4cloud.pig.common.core.util.R;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,13 +20,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ClientDetailsApiImpl implements ClientDetailsApi {
 
-	private final SysOauthClientDetailsService clientDetailsService;
+	private final OauthClientDetailsService clientDetailsService;
 
 	@Override
-	public R<SysOauthClientDetailsDTO> getClientDetailsById(String clientId) {
-		SysOauthClientDetails clientDetails = clientDetailsService.getOne(
-				Wrappers.<SysOauthClientDetails>lambdaQuery().eq(SysOauthClientDetails::getClientId, clientId), false);
-		return R.ok(BeanUtil.copyProperties(clientDetails, SysOauthClientDetailsDTO.class));
+	public R<OauthClientDetailsDTO> getClientDetailsById(String clientId) {
+		OauthClientDetails clientDetails = clientDetailsService.getOne(
+				Wrappers.<OauthClientDetails>lambdaQuery().eq(OauthClientDetails::getClientId, clientId), false);
+		return R.ok(BeanUtil.copyProperties(clientDetails, OauthClientDetailsDTO.class));
 	}
 
 }

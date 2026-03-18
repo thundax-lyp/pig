@@ -1,7 +1,7 @@
 package com.pig4cloud.pig.sys.service.api;
 
 import com.pig4cloud.pig.sys.api.service.ParamApi;
-import com.pig4cloud.pig.sys.service.SysPublicParamService;
+import com.pig4cloud.pig.sys.service.PublicParamService;
 import com.pig4cloud.pig.common.core.util.R;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ParamApiImpl implements ParamApi {
 
-	private final SysPublicParamService sysPublicParamService;
+	private final PublicParamService sysPublicParamService;
 
 	@Override
 	public R<String> getByKey(String key) {

@@ -1,10 +1,10 @@
 package com.pig4cloud.pig.sys.service.api;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.pig4cloud.pig.sys.api.dto.SysLogRecordDTO;
-import com.pig4cloud.pig.sys.entity.SysLog;
+import com.pig4cloud.pig.sys.api.dto.LogRecordDTO;
+import com.pig4cloud.pig.sys.entity.Log;
 import com.pig4cloud.pig.sys.api.service.LogApi;
-import com.pig4cloud.pig.sys.service.SysLogService;
+import com.pig4cloud.pig.sys.service.LogService;
 import com.pig4cloud.pig.common.core.util.R;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,11 +19,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class LogApiImpl implements LogApi {
 
-	private final SysLogService sysLogService;
+	private final LogService logService;
 
 	@Override
-	public R<Boolean> saveLog(SysLogRecordDTO sysLog) {
-		return R.ok(sysLogService.saveLog(BeanUtil.copyProperties(sysLog, SysLog.class)));
+	public R<Boolean> saveLog(LogRecordDTO sysLog) {
+		return R.ok(logService.saveLog(BeanUtil.copyProperties(sysLog, Log.class)));
 	}
 
 }

@@ -3,7 +3,7 @@ package com.pig4cloud.pig.sys.service.api;
 import com.pig4cloud.pig.sys.api.dto.UserDTO;
 import com.pig4cloud.pig.sys.api.dto.UserInfo;
 import com.pig4cloud.pig.sys.api.service.UserQueryApi;
-import com.pig4cloud.pig.sys.service.SysUserService;
+import com.pig4cloud.pig.sys.service.UserService;
 import com.pig4cloud.pig.common.core.util.R;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserQueryApiImpl implements UserQueryApi {
 
-	private final SysUserService sysUserService;
+	private final UserService sysUserService;
 
 	@Override
 	public R<UserInfo> info(UserDTO user) {
