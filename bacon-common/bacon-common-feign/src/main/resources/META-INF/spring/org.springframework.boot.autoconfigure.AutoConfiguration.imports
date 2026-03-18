@@ -1,0 +1,3 @@
+com.github.thundax.bacon.common.feign.BaconFeignAutoConfiguration
+com.github.thundax.bacon.common.feign.sentinel.SentinelAutoConfiguration
+com.github.thundax.bacon.common.feign.sentinel.handle.GlobalBizExceptionHandler

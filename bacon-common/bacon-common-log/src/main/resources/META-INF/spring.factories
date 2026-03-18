@@ -1,0 +1,2 @@
+org.springframework.boot.env.EnvironmentPostProcessor=\
+    com.github.thundax.bacon.common.log.init.ApplicationLoggerInitializer

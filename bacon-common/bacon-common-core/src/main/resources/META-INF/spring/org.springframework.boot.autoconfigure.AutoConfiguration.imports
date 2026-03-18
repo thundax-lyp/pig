@@ -1,0 +1,6 @@
+com.github.thundax.bacon.common.core.config.JacksonConfiguration
+com.github.thundax.bacon.common.core.config.JetCacheConfiguration
+com.github.thundax.bacon.common.core.config.RedisTemplateConfiguration
+com.github.thundax.bacon.common.core.config.RestTemplateConfiguration
+com.github.thundax.bacon.common.core.util.SpringContextHolder
+com.github.thundax.bacon.common.core.config.WebMvcConfiguration

@@ -1,0 +1,58 @@
+{
+  "groups": [
+    {
+      "name": "security.xss",
+      "type": "com.github.thundax.bacon.common.xss.config.BaconXssProperties",
+      "sourceType": "com.github.thundax.bacon.common.xss.config.BaconXssProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "security.xss.enable-escape",
+      "type": "java.lang.Boolean",
+      "description": "[clear 专用] 使用转义，默认关闭",
+      "sourceType": "com.github.thundax.bacon.common.xss.config.BaconXssProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "security.xss.enabled",
+      "type": "java.lang.Boolean",
+      "description": "开启xss",
+      "sourceType": "com.github.thundax.bacon.common.xss.config.BaconXssProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "security.xss.mode",
+      "type": "com.github.thundax.bacon.common.xss.config.BaconXssProperties$Mode",
+      "description": "模式：clear 清理（默认），escape 转义",
+      "sourceType": "com.github.thundax.bacon.common.xss.config.BaconXssProperties"
+    },
+    {
+      "name": "security.xss.path-exclude-patterns",
+      "type": "java.util.List<java.lang.String>",
+      "description": "放行的路由，默认为空",
+      "sourceType": "com.github.thundax.bacon.common.xss.config.BaconXssProperties"
+    },
+    {
+      "name": "security.xss.path-patterns",
+      "type": "java.util.List<java.lang.String>",
+      "description": "拦截的路由，默认为空",
+      "sourceType": "com.github.thundax.bacon.common.xss.config.BaconXssProperties"
+    },
+    {
+      "name": "security.xss.pretty-print",
+      "type": "java.lang.Boolean",
+      "description": "[clear 专用] prettyPrint，默认关闭： 保留换行",
+      "sourceType": "com.github.thundax.bacon.common.xss.config.BaconXssProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "security.xss.trim-text",
+      "type": "java.lang.Boolean",
+      "description": "全局：对文件进行首尾 trim",
+      "sourceType": "com.github.thundax.bacon.common.xss.config.BaconXssProperties",
+      "defaultValue": true
+    }
+  ],
+  "hints": []
+}

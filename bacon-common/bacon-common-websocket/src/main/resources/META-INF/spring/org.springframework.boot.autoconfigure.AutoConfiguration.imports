@@ -1,0 +1,3 @@
+com.github.thundax.bacon.common.websocket.config.WebSocketAutoConfiguration
+com.github.thundax.bacon.common.websocket.config.RedisMessageDistributorConfiguration
+com.github.thundax.bacon.common.websocket.config.LocalMessageDistributorConfiguration

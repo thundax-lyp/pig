@@ -1,0 +1,8 @@
+com.github.thundax.bacon.common.security.service.BaconUserDetailsServiceImpl
+com.github.thundax.bacon.common.security.service.BaconAppUserDetailsServiceImpl
+com.github.thundax.bacon.common.security.service.BaconRedisOAuth2AuthorizationService
+com.github.thundax.bacon.common.security.service.BaconRedisOAuth2AuthorizationConsentService
+com.github.thundax.bacon.common.security.component.BaconSecurityInnerAspect
+com.github.thundax.bacon.common.security.component.BaconSecurityMessageSourceConfiguration
+com.github.thundax.bacon.common.security.component.BaconBootCorsProperties
+com.github.thundax.bacon.common.security.service.BaconRemoteRegisteredClientRepository

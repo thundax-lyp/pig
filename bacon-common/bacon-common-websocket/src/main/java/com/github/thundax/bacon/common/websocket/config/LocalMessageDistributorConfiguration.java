@@ -1,0 +1,29 @@
+package com.github.thundax.bacon.common.websocket.config;
+
+import com.github.thundax.bacon.common.websocket.distribute.LocalMessageDistributor;
+import com.github.thundax.bacon.common.websocket.distribute.MessageDistributor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * 本地的消息分发器配置
+ *
+ */
+@ConditionalOnProperty(prefix = WebSocketProperties.PREFIX, name = "message-distributor",
+		havingValue = MessageDistributorTypeConstants.LOCAL)
+@Configuration(proxyBeanMethods = false)
+public class LocalMessageDistributorConfiguration {
+
+	/**
+	 * 配置本地消息分发器，使用本地内存实现，不支持集群环境。
+	 * @return 返回一个 {@link LocalMessageDistributor} 实例，用于处理本地消息分发。
+	 */
+	@Bean
+	@ConditionalOnMissingBean(MessageDistributor.class)
+	public LocalMessageDistributor messageDistributor() {
+		return new LocalMessageDistributor();
+	}
+
+}
