@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.github.thundax</groupId>
+        <artifactId>bacon</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>bacon-visual</artifactId>
+
+    <description>bacon 图形化相关功能</description>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>bacon-codegen-contract</module>
+        <module>bacon-codegen</module>
+        <module>bacon-monitor</module>
+        <module>bacon-quartz-contract</module>
+        <module>bacon-quartz</module>
+    </modules>
+</project>
