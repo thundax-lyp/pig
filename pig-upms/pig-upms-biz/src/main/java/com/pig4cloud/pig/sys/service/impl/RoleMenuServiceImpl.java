@@ -1,0 +1,81 @@
+/*
+ *
+ *      Copyright (c) 2018-2025, lengleng All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice,
+ *  this list of conditions and the following disclaimer.
+ *  Redistributions in binary form must reproduce the above copyright
+ *  notice, this list of conditions and the following disclaimer in the
+ *  documentation and/or other materials provided with the distribution.
+ *  Neither the name of the pig4cloud.com developer nor the names of its
+ *  contributors may be used to endorse or promote products derived from
+ *  this software without specific prior written permission.
+ *  Author: lengleng (wangiegie@gmail.com)
+ *
+ */
+
+package com.pig4cloud.pig.sys.service.impl;
+
+import cn.hutool.core.util.StrUtil;
+import com.alicp.jetcache.anno.CacheInvalidate;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.pig4cloud.pig.sys.entity.RoleMenu;
+import com.pig4cloud.pig.sys.mapper.RoleMenuMapper;
+import com.pig4cloud.pig.sys.service.RoleMenuService;
+import com.pig4cloud.pig.common.core.constant.CacheConstants;
+import com.pig4cloud.pig.common.core.support.JetCacheVersionSupport;
+import com.pig4cloud.pig.common.security.service.UserDetailsCacheService;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * 角色菜单表服务实现类
+ *
+ * @author lengleng
+ * @date 2025/05/30
+ */
+@Service
+@AllArgsConstructor
+public class RoleMenuServiceImpl extends ServiceImpl<RoleMenuMapper, RoleMenu> implements RoleMenuService {
+
+	private final UserDetailsCacheService userDetailsCacheService;
+
+	private final JetCacheVersionSupport jetCacheVersionSupport;
+
+	/**
+	 * @param roleId 角色
+	 * @param menuIds 菜单ID拼成的字符串，每个id之间根据逗号分隔
+	 * @return
+	 */
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	@CacheInvalidate(name = CacheConstants.MENU_DETAILS + ":",
+			key = "@jetCacheVersionSupport.versionedKey('" + CacheConstants.MENU_DETAILS + "', #roleId)")
+	public Boolean saveRoleMenus(Long roleId, String menuIds) {
+		this.remove(Wrappers.<RoleMenu>query().lambda().eq(RoleMenu::getRoleId, roleId));
+
+		if (StrUtil.isBlank(menuIds)) {
+			return Boolean.TRUE;
+		}
+		List<RoleMenu> roleMenuList = Arrays.stream(menuIds.split(StrUtil.COMMA)).map(menuId -> {
+			RoleMenu roleMenu = new RoleMenu();
+			roleMenu.setRoleId(roleId);
+			roleMenu.setMenuId(Long.valueOf(menuId));
+			return roleMenu;
+		}).toList();
+
+		// 清空userinfo
+		userDetailsCacheService.clear();
+		this.saveBatch(roleMenuList);
+		return Boolean.TRUE;
+	}
+
+}
