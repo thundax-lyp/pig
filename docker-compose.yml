@@ -1,125 +1,125 @@
 services:
-  pig-mysql:
+  bacon-mysql:
     build:
       context: ./db
     environment:
       MYSQL_ROOT_HOST: "%"
       MYSQL_ROOT_PASSWORD: root
     restart: always
-    container_name: pig-mysql
-    image: pig-mysql
+    container_name: bacon-mysql
+    image: bacon-mysql
     ports:
       - 33306:3306
     networks:
       - spring_cloud_default
 
-  pig-redis:
+  bacon-redis:
     image: registry.cn-hangzhou.aliyuncs.com/dockerhub_mirror/redis
     ports:
       - 36379:6379
     restart: always
-    container_name: pig-redis
-    hostname: pig-redis
+    container_name: bacon-redis
+    hostname: bacon-redis
     networks:
       - spring_cloud_default
 
-  pig-register:
+  bacon-register:
     build:
-      context: ./pig-register
+      context: ./bacon-register
     restart: always
     ports:
       - 8848:8848
       - 9848:9848
       - 8080:8080
     environment:
-      MYSQL_HOST: pig-mysql
-      REDIS_HOST: pig-redis
-    container_name: pig-register
-    hostname: pig-register
-    image: pig-register
+      MYSQL_HOST: bacon-mysql
+      REDIS_HOST: bacon-redis
+    container_name: bacon-register
+    hostname: bacon-register
+    image: bacon-register
     networks:
       - spring_cloud_default
 
-  pig-gateway:
+  bacon-gateway:
     build:
-      context: ./pig-gateway
+      context: ./bacon-gateway
     restart: always
     ports:
       - 9999:9999
-    container_name: pig-gateway
-    hostname: pig-gateway
-    image: pig-gateway
+    container_name: bacon-gateway
+    hostname: bacon-gateway
+    image: bacon-gateway
     environment:
-      REDIS_HOST: pig-redis
-      NACOS_HOST: pig-register
+      REDIS_HOST: bacon-redis
+      NACOS_HOST: bacon-register
     networks:
       - spring_cloud_default
 
-  pig-auth:
+  bacon-auth:
     build:
-      context: ./pig-auth
+      context: ./bacon-auth
     restart: always
-    container_name: pig-auth
-    hostname: pig-auth
-    image: pig-auth
+    container_name: bacon-auth
+    hostname: bacon-auth
+    image: bacon-auth
     environment:
-      REDIS_HOST: pig-redis
-      NACOS_HOST: pig-register
+      REDIS_HOST: bacon-redis
+      NACOS_HOST: bacon-register
     networks:
       - spring_cloud_default
 
-  pig-upms:
+  bacon-upms:
     build:
-      context: ./pig-upms/pig-upms-biz
+      context: ./bacon-upms/bacon-upms-biz
     restart: always
-    container_name: pig-upms
-    hostname: pig-upms
-    image: pig-upms
+    container_name: bacon-upms
+    hostname: bacon-upms
+    image: bacon-upms
     environment:
-      MYSQL_HOST: pig-mysql
-      REDIS_HOST: pig-redis
-      NACOS_HOST: pig-register
+      MYSQL_HOST: bacon-mysql
+      REDIS_HOST: bacon-redis
+      NACOS_HOST: bacon-register
     networks:
       - spring_cloud_default
 
-  pig-monitor:
+  bacon-monitor:
     build:
-      context: ./pig-visual/pig-monitor
+      context: ./bacon-visual/bacon-monitor
     restart: always
     ports:
       - 5001:5001
-    container_name: pig-monitor
-    hostname: pig-monitor
-    image: pig-monitor
+    container_name: bacon-monitor
+    hostname: bacon-monitor
+    image: bacon-monitor
     environment:
-      NACOS_HOST: pig-register
+      NACOS_HOST: bacon-register
     networks:
       - spring_cloud_default
 
-  pig-codegen:
+  bacon-codegen:
     build:
-      context: ./pig-visual/pig-codegen
+      context: ./bacon-visual/bacon-codegen
     restart: always
-    container_name: pig-codegen
-    hostname: pig-codegen
-    image: pig-codegen
+    container_name: bacon-codegen
+    hostname: bacon-codegen
+    image: bacon-codegen
     environment:
-      MYSQL_HOST: pig-mysql
-      REDIS_HOST: pig-redis
-      NACOS_HOST: pig-register
+      MYSQL_HOST: bacon-mysql
+      REDIS_HOST: bacon-redis
+      NACOS_HOST: bacon-register
     networks:
       - spring_cloud_default
 
-  pig-quartz:
+  bacon-quartz:
     build:
-      context: ./pig-visual/pig-quartz
+      context: ./bacon-visual/bacon-quartz
     restart: always
-    image: pig-quartz
-    container_name: pig-quartz
+    image: bacon-quartz
+    container_name: bacon-quartz
     environment:
-      MYSQL_HOST: pig-mysql
-      REDIS_HOST: pig-redis
-      NACOS_HOST: pig-register
+      MYSQL_HOST: bacon-mysql
+      REDIS_HOST: bacon-redis
+      NACOS_HOST: bacon-register
     networks:
       - spring_cloud_default
 

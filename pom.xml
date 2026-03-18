@@ -1,25 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--
-  ~ Copyright (c) 2020 pig4cloud Authors. All Rights Reserved.
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~     http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.pig4cloud</groupId>
-	<artifactId>pig</artifactId>
+	<groupId>com.github.thundax</groupId>
+	<artifactId>bacon</artifactId>
 	<name>${project.artifactId}</name>
 	<version>${revision}</version>
 	<packaging>pom</packaging>
@@ -99,21 +84,21 @@
 	</dependencies>
 
 	<modules>
-		<module>pig-register</module>
-		<module>pig-gateway</module>
-		<module>pig-auth</module>
-		<module>pig-upms</module>
-		<module>pig-common</module>
-		<module>pig-visual</module>
-		<module>pig-boot</module>
+		<module>bacon-register</module>
+		<module>bacon-gateway</module>
+		<module>bacon-auth</module>
+		<module>bacon-upms</module>
+		<module>bacon-common</module>
+		<module>bacon-visual</module>
+		<module>bacon-boot</module>
 	</modules>
 
 	<dependencyManagement>
 		<dependencies>
-			<!--pig 公共版本定义-->
+			<!--bacon 公共版本定义-->
 			<dependency>
-				<groupId>com.pig4cloud</groupId>
-				<artifactId>pig-common-bom</artifactId>
+				<groupId>com.github.thundax</groupId>
+				<artifactId>bacon-common-bom</artifactId>
 				<version>${project.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
@@ -216,7 +201,7 @@
 						</authConfig>
 						<images>
 							<image>
-								<!-- 镜像名称： 172.17.0.111/library/pig-gateway:2.6.3-->
+								<!-- 镜像名称： 172.17.0.111/library/bacon-gateway:2.6.3-->
 								<name>${docker.registry}/${docker.namespace}/${project.name}:${project.version}</name>
 								<build>
 									<dockerFile>${project.basedir}/Dockerfile</dockerFile>
@@ -321,7 +306,7 @@
 		<profile>
 			<id>boot</id>
 			<modules>
-				<module>pig-boot</module>
+				<module>bacon-boot</module>
 			</modules>
 		</profile>
 		<!-- 自动激活，针对 lombok 注解增强-->
