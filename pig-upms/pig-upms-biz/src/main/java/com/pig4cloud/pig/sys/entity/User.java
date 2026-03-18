@@ -26,6 +26,7 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
+import lombok.experimental.Accessors;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -41,6 +42,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @NoArgsConstructor
+@Accessors(chain = true)
 @FieldNameConstants
 public class User implements Serializable {
 

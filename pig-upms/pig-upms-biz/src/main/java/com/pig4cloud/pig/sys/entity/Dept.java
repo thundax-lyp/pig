@@ -27,6 +27,7 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 import lombok.experimental.FieldNameConstants;
 
 import java.io.Serial;
@@ -42,6 +43,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @NoArgsConstructor
+@Accessors(chain = true)
 @FieldNameConstants
 @EqualsAndHashCode(callSuper = true)
 public class Dept extends Model<Dept> {
