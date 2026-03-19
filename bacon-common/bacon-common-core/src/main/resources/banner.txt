@@ -1,3 +1,0 @@
-${AnsiColor.BRIGHT_YELLOW}
-Pig Microservice Architecture
-${AnsiColor.DEFAULT}

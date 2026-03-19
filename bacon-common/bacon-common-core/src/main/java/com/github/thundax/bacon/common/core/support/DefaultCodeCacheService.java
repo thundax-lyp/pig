@@ -14,7 +14,6 @@ import java.time.Duration;
 
 /**
  * 验证码缓存服务
- *
  */
 @Component
 @RequiredArgsConstructor
@@ -27,9 +26,9 @@ public class DefaultCodeCacheService {
 	@PostConstruct
 	public void init() {
 		QuickConfig quickConfig = QuickConfig.newBuilder(CacheConstants.DEFAULT_CODE_CACHE + ":")
-			.expire(Duration.ofSeconds(SecurityConstants.CODE_TIME))
-			.cacheType(CacheType.REMOTE)
-			.build();
+				.expire(Duration.ofSeconds(SecurityConstants.CODE_TIME))
+				.cacheType(CacheType.REMOTE)
+				.build();
 		cache = cacheManager.getOrCreateCache(quickConfig);
 	}
 
