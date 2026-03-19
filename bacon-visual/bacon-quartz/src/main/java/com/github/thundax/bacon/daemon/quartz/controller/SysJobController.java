@@ -1,20 +1,3 @@
-/*
- *    Copyright (c) 2018-2025, lengleng All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- * Neither the name of the pig4cloud.com developer nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- * Author: lengleng (wangiegie@gmail.com)
- */
-
 package com.github.thundax.bacon.daemon.quartz.controller;
 
 import cn.hutool.core.bean.BeanUtil;
@@ -80,7 +63,7 @@ public class SysJobController {
 	 */
 	@GetMapping("/page")
 	@Operation(summary = "分页定时业务查询", description = "分页定时业务查询")
-	public R getJobPage(Page page, SysJobDTO sysJob) {
+	public R<?> getJobPage(Page page, SysJobDTO sysJob) {
 		LambdaQueryWrapper<SysJob> wrapper = Wrappers.<SysJob>lambdaQuery()
 			.like(StrUtil.isNotBlank(sysJob.getJobName()), SysJob::getJobName, sysJob.getJobName())
 			.like(StrUtil.isNotBlank(sysJob.getJobGroup()), SysJob::getJobGroup, sysJob.getJobGroup())
@@ -98,7 +81,7 @@ public class SysJobController {
 	 */
 	@GetMapping("/{id}")
 	@Operation(summary = "唯一标识查询定时任务", description = "唯一标识查询定时任务")
-	public R getById(@PathVariable("id") Long id) {
+	public R<?> getById(@PathVariable("id") Long id) {
 		return R.ok(toJobDto(sysJobService.getById(id)));
 	}
 
@@ -111,7 +94,7 @@ public class SysJobController {
 	@PostMapping
 	@HasPermission("job_sys_job_add")
 	@Operation(summary = "新增定时任务", description = "新增定时任务")
-	public R saveJob(@RequestBody SysJobDTO sysJobDto) {
+	public R<?> saveJob(@RequestBody SysJobDTO sysJobDto) {
 		SysJob sysJob = toJobEntity(sysJobDto);
 		long count = sysJobService.count(
 				Wrappers.query(SysJob.builder().jobName(sysJob.getJobName()).jobGroup(sysJob.getJobGroup()).build()));
@@ -146,7 +129,7 @@ public class SysJobController {
 	@PutMapping
 	@HasPermission("job_sys_job_edit")
 	@Operation(summary = "修改定时任务", description = "修改定时任务")
-	public R updateJob(@RequestBody SysJobDTO sysJobDto) {
+	public R<?> updateJob(@RequestBody SysJobDTO sysJobDto) {
 		SysJob sysJob = toJobEntity(sysJobDto);
 		// 安全验证：对于Java类类型的任务，验证类名和方法名
 		if (JobTypeQuartzEnum.JAVA.getType().equals(sysJob.getJobType())) {
@@ -183,7 +166,7 @@ public class SysJobController {
 	@DeleteMapping("/{id}")
 	@HasPermission("job_sys_job_del")
 	@Operation(summary = "唯一标识查询定时任务，暂停任务才能删除", description = "唯一标识查询定时任务，暂停任务才能删除")
-	public R removeById(@PathVariable Long id) {
+	public R<?> removeById(@PathVariable Long id) {
 		SysJob querySysJob = this.sysJobService.getById(id);
 		if (BaconQuartzEnum.JOB_STATUS_NOT_RUNNING.getType().equals(querySysJob.getJobStatus())) {
 			this.taskUtil.removeJob(querySysJob, scheduler);
@@ -203,7 +186,7 @@ public class SysJobController {
 	@PostMapping("/shutdown-jobs")
 	@HasPermission("job_sys_job_shutdown_job")
 	@Operation(summary = "暂停全部定时任务", description = "暂停全部定时任务")
-	public R shutdownJobs() {
+	public R<?> shutdownJobs() {
 		taskUtil.pauseJobs(scheduler);
 		long count = this.sysJobService.count(new LambdaQueryWrapper<SysJob>().eq(SysJob::getJobStatus,
 				BaconQuartzEnum.JOB_STATUS_RUNNING.getType()));
@@ -222,13 +205,12 @@ public class SysJobController {
 
 	/**
 	 * 启动全部定时任务
-	 * @return
 	 */
 	@SysLog("启动全部暂停的定时任务")
 	@PostMapping("/start-jobs")
 	@HasPermission("job_sys_job_start_job")
 	@Operation(summary = "启动全部暂停的定时任务", description = "启动全部暂停的定时任务")
-	public R startJobs() {
+	public R<?> startJobs() {
 		// 更新定时任务状态条件，暂停状态3更新为运行状态2
 		this.sysJobService.update(SysJob.builder().jobStatus(BaconQuartzEnum.JOB_STATUS_RUNNING.getType()).build(),
 				new UpdateWrapper<SysJob>().lambda()
@@ -245,7 +227,7 @@ public class SysJobController {
 	@PostMapping("/refresh-jobs")
 	@HasPermission("job_sys_job_refresh_job")
 	@Operation(summary = "刷新全部定时任务", description = "刷新全部定时任务")
-	public R refreshJobs() {
+	public R<?> refreshJobs() {
 		sysJobService.list().forEach(sysjob -> {
 			if (BaconQuartzEnum.JOB_STATUS_RUNNING.getType().equals(sysjob.getJobStatus())
 					|| BaconQuartzEnum.JOB_STATUS_NOT_RUNNING.getType().equals(sysjob.getJobStatus())) {
@@ -267,7 +249,7 @@ public class SysJobController {
 	@PostMapping("/start-job/{id}")
 	@HasPermission("job_sys_job_start_job")
 	@Operation(summary = "启动定时任务", description = "启动定时任务")
-	public R startJob(@PathVariable("id") Long jobId) throws SchedulerException {
+	public R<?> startJob(@PathVariable("id") Long jobId) throws SchedulerException {
 		SysJob querySysJob = this.sysJobService.getById(jobId);
 		if (querySysJob == null) {
 			return R.failed("无此定时任务,请确认");
@@ -300,7 +282,7 @@ public class SysJobController {
 	@PostMapping("/run-job/{id}")
 	@HasPermission("job_sys_job_run_job")
 	@Operation(summary = "立刻执行定时任务", description = "立刻执行定时任务")
-	public R runJob(@PathVariable("id") Long jobId) throws SchedulerException {
+	public R<?> runJob(@PathVariable("id") Long jobId) throws SchedulerException {
 		SysJob querySysJob = this.sysJobService.getById(jobId);
 
 		// 执行定时任务前判定任务是否在quartz中
@@ -315,13 +297,13 @@ public class SysJobController {
 
 	/**
 	 * 暂停定时任务
-	 * @return
+	 * @return R
 	 */
 	@SysLog("暂停定时任务")
 	@PostMapping("/shutdown-job/{id}")
 	@HasPermission("job_sys_job_shutdown_job")
 	@Operation(summary = "暂停定时任务", description = "暂停定时任务")
-	public R shutdownJob(@PathVariable("id") Long id) {
+	public R<?> shutdownJob(@PathVariable("id") Long id) {
 		SysJob querySysJob = this.sysJobService.getById(id);
 		// 更新定时任务状态条件，运行状态2更新为暂停状态3
 		this.sysJobService.updateById(SysJob.builder()
@@ -340,7 +322,7 @@ public class SysJobController {
 	 */
 	@GetMapping("/job-log")
 	@Operation(summary = "唯一标识查询定时执行日志", description = "唯一标识查询定时执行日志")
-	public R getJobLogPage(Page page, SysJobLogDTO sysJobLog) {
+	public R<?> getJobLogPage(Page page, SysJobLogDTO sysJobLog) {
 		Page<SysJobLog> jobLogPage = sysJobLogService.page(page, Wrappers.query(toJobLogEntity(sysJobLog)));
 		return R.ok(toJobLogDtoPage(jobLogPage));
 	}
@@ -353,7 +335,7 @@ public class SysJobController {
 	 */
 	@GetMapping("/is-valid-task-name")
 	@Operation(summary = "检验任务名称和任务组联合是否唯一", description = "检验任务名称和任务组联合是否唯一")
-	public R isValidTaskName(@RequestParam String jobName, @RequestParam String jobGroup) {
+	public R<?> isValidTaskName(@RequestParam String jobName, @RequestParam String jobGroup) {
 		return this.sysJobService
 			.count(Wrappers.query(SysJob.builder().jobName(jobName).jobGroup(jobGroup).build())) > 0
 					? R.failed("任务重复，请检查此组内是否已包含同名任务") : R.ok();

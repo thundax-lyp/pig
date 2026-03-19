@@ -1,20 +1,3 @@
-/*
- *    Copyright (c) 2018-2025, lengleng All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- * Neither the name of the pig4cloud.com developer nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- * Author: lengleng (wangiegie@gmail.com)
- */
-
 package com.github.thundax.bacon.daemon.quartz.config;
 
 import com.github.thundax.bacon.daemon.quartz.constants.BaconQuartzEnum;
@@ -41,10 +24,9 @@ public class BaconInitQuartzJob implements InitializingBean {
 
 	/**
 	 * 在属性设置完成后执行，根据任务状态进行相应操作
-	 * @throws Exception 执行过程中可能抛出的异常
 	 */
 	@Override
-	public void afterPropertiesSet() throws Exception {
+	public void afterPropertiesSet() {
 		sysJobService.list().forEach(sysjob -> {
 			if (BaconQuartzEnum.JOB_STATUS_RELEASE.getType().equals(sysjob.getJobStatus())) {
 				taskUtil.removeJob(sysjob, scheduler);
