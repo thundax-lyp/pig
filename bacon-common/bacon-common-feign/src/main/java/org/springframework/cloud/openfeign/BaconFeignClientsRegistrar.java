@@ -1,23 +1,7 @@
-/*
- *    Copyright (c) 2018-2025, lengleng All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- * Neither the name of the pig4cloud.com developer nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- * Author: lengleng (wangiegie@gmail.com)
- */
-
 package org.springframework.cloud.openfeign;
 
 import lombok.Getter;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
@@ -63,7 +47,7 @@ public class BaconFeignClientsRegistrar
 	 * @param registry Bean定义注册器
 	 */
 	@Override
-	public void registerBeanDefinitions(AnnotationMetadata metadata, BeanDefinitionRegistry registry) {
+	public void registerBeanDefinitions(@NonNull AnnotationMetadata metadata, @NonNull BeanDefinitionRegistry registry) {
 		registerFeignClients(registry);
 	}
 
@@ -72,7 +56,7 @@ public class BaconFeignClientsRegistrar
 	 * @param classLoader 要设置的类加载器
 	 */
 	@Override
-	public void setBeanClassLoader(ClassLoader classLoader) {
+	public void setBeanClassLoader(@NonNull ClassLoader classLoader) {
 		this.beanClassLoader = classLoader;
 	}
 
@@ -236,7 +220,7 @@ public class BaconFeignClientsRegistrar
 
 		Object objUrl = attributes.get("url");
 
-		String url = "";
+		String url;
 		if (StringUtils.hasText(objUrl.toString())) {
 			url = resolve(objUrl.toString());
 		}
@@ -325,7 +309,7 @@ public class BaconFeignClientsRegistrar
 	 * @param environment 要设置的环境变量对象
 	 */
 	@Override
-	public void setEnvironment(Environment environment) {
+	public void setEnvironment(@NonNull Environment environment) {
 		this.environment = environment;
 	}
 

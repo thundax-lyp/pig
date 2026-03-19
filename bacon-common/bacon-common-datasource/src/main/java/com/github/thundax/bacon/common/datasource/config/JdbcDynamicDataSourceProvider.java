@@ -1,20 +1,3 @@
-/*
- *    Copyright (c) 2018-2025, lengleng All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- * Neither the name of the pig4cloud.com developer nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- * Author: lengleng (wangiegie@gmail.com)
- */
-
 package com.github.thundax.bacon.common.datasource.config;
 
 import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
@@ -27,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.StringEncryptor;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,10 +37,9 @@ public class JdbcDynamicDataSourceProvider extends AbstractJdbcDataSourceProvide
 	 * 执行语句获得数据源参数
 	 * @param statement 语句
 	 * @return 数据源参数
-	 * @throws SQLException sql异常
 	 */
 	@Override
-	protected Map<String, DataSourceProperty> executeStmt(Statement statement) throws SQLException {
+	protected Map<String, DataSourceProperty> executeStmt(Statement statement) {
 
 		Map<String, DataSourceProperty> map = new HashMap<>(8);
 
