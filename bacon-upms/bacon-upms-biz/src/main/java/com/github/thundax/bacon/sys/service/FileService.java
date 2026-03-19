@@ -1,20 +1,3 @@
-/*
- *    Copyright (c) 2018-2025, lengleng All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- * Neither the name of the pig4cloud.com developer nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- * Author: lengleng (wangiegie@gmail.com)
- */
-
 package com.github.thundax.bacon.sys.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -37,7 +20,7 @@ public interface FileService extends IService<File> {
 	 * @param file 要上传的文件
 	 * @return 包含文件信息的响应结果，失败时返回错误信息
 	 */
-	R uploadFile(MultipartFile file);
+	R<?> uploadFile(MultipartFile file);
 
 	/**
 	 * 从指定存储桶中获取文件并写入HTTP响应流
