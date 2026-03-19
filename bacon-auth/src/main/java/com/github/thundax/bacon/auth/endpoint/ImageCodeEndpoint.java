@@ -1,8 +1,8 @@
 package com.github.thundax.bacon.auth.endpoint;
 
 import cn.hutool.core.lang.Validator;
-import com.pig4cloud.captcha.ArithmeticCaptcha;
 import com.github.thundax.bacon.common.core.support.DefaultCodeCacheService;
+import com.pig4cloud.captcha.ArithmeticCaptcha;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;

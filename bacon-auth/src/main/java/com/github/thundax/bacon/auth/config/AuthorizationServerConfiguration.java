@@ -2,9 +2,9 @@
 package com.github.thundax.bacon.auth.config;
 
 import com.github.thundax.bacon.auth.support.CustomeOAuth2AccessTokenGenerator;
+import com.github.thundax.bacon.auth.support.core.BaconDaoAuthenticationProvider;
 import com.github.thundax.bacon.auth.support.core.CustomeOAuth2TokenCustomizer;
 import com.github.thundax.bacon.auth.support.core.FormIdentityLoginConfigurer;
-import com.github.thundax.bacon.auth.support.core.BaconDaoAuthenticationProvider;
 import com.github.thundax.bacon.auth.support.filter.PasswordDecoderFilter;
 import com.github.thundax.bacon.auth.support.filter.ValidateCodeFilter;
 import com.github.thundax.bacon.auth.support.handler.BaconAuthenticationFailureEventHandler;
