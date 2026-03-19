@@ -1,20 +1,3 @@
-/*
- *    Copyright (c) 2018-2025, lengleng All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- * Neither the name of the pig4cloud.com developer nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- * Author: lengleng (wangiegie@gmail.com)
- */
-
 package com.github.thundax.bacon.common.file.oss.service;
 
 import com.github.thundax.bacon.common.file.core.FileProperties;
@@ -71,7 +54,6 @@ public class OssTemplate implements InitializingBean, FileTemplate {
 	/**
 	 * 创建存储桶
 	 * @param bucketName 存储桶名称，必须全局唯一且符合DNS命名规范
-	 * @throws Exception 创建失败时抛出异常
 	 */
 	@SneakyThrows
 	public void createBucket(String bucketName) {
@@ -173,7 +155,6 @@ public class OssTemplate implements InitializingBean, FileTemplate {
 	 * @param objectName 文件对象名称
 	 * @param expires 过期时间（天数）
 	 * @return 预签名的访问URL
-	 * @throws Exception 生成失败时抛出异常
 	 */
 	@SneakyThrows
 	public String getObjectURL(String bucketName, String objectName, Integer expires) {
@@ -192,7 +173,6 @@ public class OssTemplate implements InitializingBean, FileTemplate {
 	 * @param bucketName 存储桶名称
 	 * @param objectName 文件对象名称
 	 * @return S3响应对象，包含文件流和元数据
-	 * @throws Exception 获取失败时抛出异常
 	 * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/s3-2006-03-01/GetObject">AWS
 	 * API Documentation</a>
 	 */
@@ -240,12 +220,11 @@ public class OssTemplate implements InitializingBean, FileTemplate {
 	 * @param size 文件大小（字节数）
 	 * @param contextType 文件MIME类型
 	 * @return PutObjectResponse 上传响应对象
-	 * @throws Exception 上传失败时抛出异常
 	 * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/s3-2006-03-01/PutObject">AWS
 	 * API Documentation</a>
 	 */
 	public PutObjectResponse putObject(String bucketName, String objectName, InputStream stream, long size,
-			String contextType) throws Exception {
+			String contextType) {
 		PutObjectRequest request = PutObjectRequest.builder()
 			.bucket(bucketName)
 			.key(objectName)
@@ -261,11 +240,10 @@ public class OssTemplate implements InitializingBean, FileTemplate {
 	 * @param bucketName 存储桶名称
 	 * @param objectName 文件对象名称
 	 * @return HeadObjectResponse 文件元数据响应对象
-	 * @throws Exception 获取失败时抛出异常
 	 * @see <a href="http://docs.aws.amazon.com/goto/WebAPI/s3-2006-03-01/GetObject">AWS
 	 * API Documentation</a>
 	 */
-	public HeadObjectResponse getObjectInfo(String bucketName, String objectName) throws Exception {
+	public HeadObjectResponse getObjectInfo(String bucketName, String objectName) {
 		HeadObjectRequest request = HeadObjectRequest.builder().bucket(bucketName).key(objectName).build();
 		return s3Client.headObject(request);
 	}
@@ -278,12 +256,11 @@ public class OssTemplate implements InitializingBean, FileTemplate {
 	 * </p>
 	 * @param bucketName 存储桶名称
 	 * @param objectName 文件对象名称
-	 * @throws Exception 删除失败时抛出异常
 	 * @see <a href=
 	 * "http://docs.aws.amazon.com/goto/WebAPI/s3-2006-03-01/DeleteObject">AWS API
 	 * Documentation</a>
 	 */
-	public void removeObject(String bucketName, String objectName) throws Exception {
+	public void removeObject(String bucketName, String objectName) {
 		DeleteObjectRequest request = DeleteObjectRequest.builder().bucket(bucketName).key(objectName).build();
 		s3Client.deleteObject(request);
 	}
@@ -294,7 +271,6 @@ public class OssTemplate implements InitializingBean, FileTemplate {
 	 * <p>
 	 * 在Spring Bean属性设置完成后自动调用，配置端点地址、区域、访问凭证等
 	 * </p>
-	 * @throws Exception 初始化失败时抛出异常
 	 */
 	@Override
 	public void afterPropertiesSet() {

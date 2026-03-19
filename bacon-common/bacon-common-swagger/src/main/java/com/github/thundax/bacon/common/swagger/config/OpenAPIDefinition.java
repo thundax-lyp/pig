@@ -1,19 +1,3 @@
-/*
- *    Copyright (c) 2018-2025, lengleng All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- * Neither the name of the pig4cloud.com developer nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- * Author: lengleng (wangiegie@gmail.com)
- */
 package com.github.thundax.bacon.common.swagger.config;
 
 import com.github.thundax.bacon.common.swagger.support.SwaggerProperties;
@@ -26,6 +10,7 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.jspecify.annotations.NonNull;
 import org.springdoc.core.utils.SpringDocUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
@@ -75,10 +60,9 @@ public class OpenAPIDefinition extends OpenAPI implements InitializingBean, Appl
 
 	/**
 	 * 初始化Swagger配置
-	 * @throws Exception 初始化过程中可能抛出的异常
 	 */
 	@Override
-	public void afterPropertiesSet() throws Exception {
+	public void afterPropertiesSet() {
 		SwaggerProperties swaggerProperties = applicationContext.getBean(SwaggerProperties.class);
 		this.info(new Info().title(swaggerProperties.getTitle()));
 		// oauth2.0 password
@@ -97,7 +81,7 @@ public class OpenAPIDefinition extends OpenAPI implements InitializingBean, Appl
 	 * @throws BeansException 如果设置上下文时发生错误
 	 */
 	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+	public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 	}
 

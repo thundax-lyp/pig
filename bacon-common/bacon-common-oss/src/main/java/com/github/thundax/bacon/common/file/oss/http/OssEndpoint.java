@@ -1,20 +1,3 @@
-/*
- *    Copyright (c) 2018-2025, lengleng All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- * Neither the name of the pig4cloud.com developer nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- * Author: lengleng (wangiegie@gmail.com)
- */
-
 package com.github.thundax.bacon.common.file.oss.http;
 
 import com.github.thundax.bacon.common.file.oss.service.OssTemplate;
@@ -49,7 +32,6 @@ public class OssEndpoint {
 	 * 创建指定名称的存储桶
 	 * @param bucketName 存储桶名称
 	 * @return 创建的存储桶对象
-	 * @throws Exception 创建过程中可能抛出的异常
 	 */
 	@SneakyThrows
 	@PostMapping("/bucket/{bucketName}")
@@ -63,7 +45,6 @@ public class OssEndpoint {
 	/**
 	 * 获取所有存储桶列表
 	 * @return 存储桶列表
-	 * @throws Exception 获取过程中可能抛出的异常
 	 */
 	@SneakyThrows
 	@GetMapping("/bucket")
@@ -86,7 +67,6 @@ public class OssEndpoint {
 	/**
 	 * 删除指定名称的存储桶
 	 * @param bucketName 要删除的存储桶名称
-	 * @throws Exception 删除过程中可能抛出的异常
 	 */
 	@SneakyThrows
 	@DeleteMapping("/bucket/{bucketName}")
@@ -100,7 +80,6 @@ public class OssEndpoint {
 	 * @param object 要上传的文件对象
 	 * @param bucketName 目标存储桶名称
 	 * @return 上传后的对象信息响应
-	 * @throws IOException 文件操作异常
 	 */
 	@SneakyThrows
 	@PostMapping("/object/{bucketName}")
@@ -124,7 +103,6 @@ public class OssEndpoint {
 	 * @param bucketName 存储桶名称
 	 * @param objectName 对象名称
 	 * @return 创建成功的对象信息
-	 * @throws Exception 当文件上传或获取对象信息失败时抛出异常
 	 */
 	@SneakyThrows
 	@PostMapping("/object/{bucketName}/{objectName}")
@@ -147,7 +125,6 @@ public class OssEndpoint {
 	 * @param bucketName 存储桶名称
 	 * @param objectName 对象名前缀
 	 * @return 匹配前缀的S3对象列表
-	 * @throws Exception 操作执行过程中可能抛出的异常
 	 */
 	@SneakyThrows
 	@GetMapping("/object/{bucketName}/{objectName}")
@@ -181,7 +158,6 @@ public class OssEndpoint {
 	 * 删除指定存储桶中的对象
 	 * @param bucketName 存储桶名称
 	 * @param objectName 对象名称
-	 * @throws Exception 删除对象时可能抛出的异常
 	 */
 	@SneakyThrows
 	@ResponseStatus(HttpStatus.ACCEPTED)
