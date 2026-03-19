@@ -1,19 +1,3 @@
-/*
- *    Copyright (c) 2018-2025, lengleng All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- * Neither the name of the pig4cloud.com developer nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- * Author: lengleng (wangiegie@gmail.com)
- */
 package com.github.thundax.bacon.codegen.service.impl;
 
 import cn.hutool.core.util.StrUtil;
@@ -69,7 +53,7 @@ public class GenTemplateServiceImpl extends ServiceImpl<GenTemplateMapper, GenTe
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public R onlineUpdate() {
+	public R<?> onlineUpdate() {
 		// 获取 config.json 和 version 文件
 		Map<String, Object> configAndVersion = getConfigAndVersion();
 		JSONObject configJsonObj = (JSONObject) configAndVersion.get("configJsonObj");
@@ -96,7 +80,7 @@ public class GenTemplateServiceImpl extends ServiceImpl<GenTemplateMapper, GenTe
 	 * 检查版本
 	 * @return 返回检查结果，包含版本是否存在信息
 	 */
-	public R checkVersion() {
+	public R<?> checkVersion() {
 		// 关闭在线更新提示
 		if (!defaultProperties.isAutoCheckVersion()) {
 			return R.ok(true);

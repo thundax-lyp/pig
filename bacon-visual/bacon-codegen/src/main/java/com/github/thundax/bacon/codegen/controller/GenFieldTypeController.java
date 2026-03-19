@@ -1,20 +1,3 @@
-/*
- *    Copyright (c) 2018-2025, lengleng All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- * Neither the name of the pig4cloud.com developer nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- * Author: lengleng (wangiegie@gmail.com)
- */
-
 package com.github.thundax.bacon.codegen.controller;
 
 import cn.hutool.core.collection.CollUtil;
@@ -56,7 +39,7 @@ public class GenFieldTypeController {
 	 */
 	@GetMapping("/page")
 	@Operation(summary = "分页查询", description = "分页查询")
-	public R getFieldTypePage(Page page, GenFieldType fieldType) {
+	public R<?> getFieldTypePage(Page page, GenFieldType fieldType) {
 		return R.ok(fieldTypeService.page(page,
 				Wrappers.<GenFieldType>lambdaQuery()
 					.like(StrUtil.isNotBlank(fieldType.getColumnType()), GenFieldType::getColumnType,
@@ -70,7 +53,7 @@ public class GenFieldTypeController {
 	 */
 	@GetMapping("/list")
 	@Operation(summary = "查询列表", description = "查询列表")
-	public R listFieldTypes(GenFieldType fieldType) {
+	public R<?> listFieldTypes(GenFieldType fieldType) {
 		return R.ok(fieldTypeService.list(Wrappers.query(fieldType)));
 	}
 
@@ -81,7 +64,7 @@ public class GenFieldTypeController {
 	 */
 	@GetMapping("/details/{id}")
 	@Operation(summary = "通过id查询", description = "通过id查询")
-	public R getFieldTypeById(@PathVariable("id") Long id) {
+	public R<?> getFieldTypeById(@PathVariable Long id) {
 		return R.ok(fieldTypeService.getById(id));
 	}
 
@@ -92,7 +75,7 @@ public class GenFieldTypeController {
 	 */
 	@GetMapping("/details")
 	@Operation(summary = "根据查询条件获取字段类型详情", description = "根据查询条件获取字段类型详情")
-	public R getFieldTypeDetails(GenFieldType query) {
+	public R<?> getFieldTypeDetails(GenFieldType query) {
 		return R.ok(fieldTypeService.getOne(Wrappers.query(query), false));
 	}
 
@@ -104,7 +87,7 @@ public class GenFieldTypeController {
 	@PostMapping
 	@SysLog("新增列属性")
 	@Operation(summary = "新增列属性", description = "新增列属性")
-	public R saveFieldType(@RequestBody GenFieldType fieldType) {
+	public R<?> saveFieldType(@RequestBody GenFieldType fieldType) {
 		return R.ok(fieldTypeService.save(fieldType));
 	}
 
@@ -116,7 +99,7 @@ public class GenFieldTypeController {
 	@PutMapping
 	@SysLog("修改列属性")
 	@Operation(summary = "修改列属性", description = "修改列属性")
-	public R updateFieldType(@RequestBody GenFieldType fieldType) {
+	public R<?> updateFieldType(@RequestBody GenFieldType fieldType) {
 		return R.ok(fieldTypeService.updateById(fieldType));
 	}
 
@@ -128,7 +111,7 @@ public class GenFieldTypeController {
 	@DeleteMapping
 	@SysLog("通过id删除列属性")
 	@Operation(summary = "通过id删除列属性", description = "通过id删除列属性")
-	public R removeFieldTypeByIds(@RequestBody Long[] ids) {
+	public R<?> removeFieldTypeByIds(@RequestBody Long[] ids) {
 		return R.ok(fieldTypeService.removeBatchByIds(CollUtil.toList(ids)));
 	}
 

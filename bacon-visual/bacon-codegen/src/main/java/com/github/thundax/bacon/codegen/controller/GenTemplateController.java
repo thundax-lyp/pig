@@ -1,20 +1,3 @@
-/*
- *    Copyright (c) 2018-2025, lengleng All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- * Neither the name of the pig4cloud.com developer nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- * Author: lengleng (wangiegie@gmail.com)
- */
-
 package com.github.thundax.bacon.codegen.controller;
 
 import cn.hutool.core.collection.CollUtil;
@@ -60,7 +43,7 @@ public class GenTemplateController {
 	@Operation(summary = "分页查询", description = "分页查询")
 	@GetMapping("/page")
 	@HasPermission("codegen_template_view")
-	public R getTemplatePage(Page page, GenTemplateEntity genTemplate) {
+	public R<?> getTemplatePage(Page page, GenTemplateEntity genTemplate) {
 		LambdaQueryWrapper<GenTemplateEntity> wrapper = Wrappers.<GenTemplateEntity>lambdaQuery()
 			.like(genTemplate.getId() != null, GenTemplateEntity::getId, genTemplate.getId())
 			.like(StrUtil.isNotEmpty(genTemplate.getTemplateName()), GenTemplateEntity::getTemplateName,
@@ -70,12 +53,11 @@ public class GenTemplateController {
 
 	/**
 	 * 查询全部模板
-	 * @return
 	 */
 	@Operation(summary = "查询全部", description = "查询全部")
 	@GetMapping("/list")
 	@HasPermission("codegen_template_view")
-	public R listTemplates() {
+	public R<?> listTemplates() {
 		return R.ok(genTemplateService
 			.list(Wrappers.<GenTemplateEntity>lambdaQuery().orderByDesc(GenTemplateEntity::getCreateTime)));
 	}
@@ -88,7 +70,7 @@ public class GenTemplateController {
 	@Operation(summary = "通过id查询", description = "通过id查询")
 	@GetMapping("/{id}")
 	@HasPermission("codegen_template_view")
-	public R getTemplateById(@PathVariable("id") Long id) {
+	public R<?> getTemplateById(@PathVariable Long id) {
 		return R.ok(genTemplateService.getById(id));
 	}
 
@@ -102,7 +84,7 @@ public class GenTemplateController {
 	@SysLog("新增模板")
 	@PostMapping
 	@HasPermission("codegen_template_add")
-	public R saveTemplate(@RequestBody GenTemplateEntity genTemplate) {
+	public R<?> saveTemplate(@RequestBody GenTemplateEntity genTemplate) {
 		return R.ok(genTemplateService.save(genTemplate));
 	}
 
@@ -116,7 +98,7 @@ public class GenTemplateController {
 	@SysLog("修改模板")
 	@PutMapping
 	@HasPermission("codegen_template_edit")
-	public R updateTemplate(@RequestBody GenTemplateEntity genTemplate) {
+	public R<?> updateTemplate(@RequestBody GenTemplateEntity genTemplate) {
 		return R.ok(genTemplateService.updateById(genTemplate));
 	}
 
@@ -129,7 +111,7 @@ public class GenTemplateController {
 	@SysLog("通过id删除模板")
 	@DeleteMapping
 	@HasPermission("codegen_template_del")
-	public R removeTemplateByIds(@RequestBody Long[] ids) {
+	public R<?> removeTemplateByIds(@RequestBody Long[] ids) {
 		return R.ok(genTemplateService.removeBatchByIds(CollUtil.toList(ids)));
 	}
 
@@ -153,7 +135,7 @@ public class GenTemplateController {
 	@Operation(summary = "在线更新模板", description = "在线更新模板")
 	@GetMapping("/online")
 	@HasPermission("codegen_template_view")
-	public R online() {
+	public R<?> online() {
 		return genTemplateService.onlineUpdate();
 	}
 
@@ -164,7 +146,7 @@ public class GenTemplateController {
 	@Operation(summary = "在线检查模板", description = "在线检查模板")
 	@GetMapping("/checkVersion")
 	@HasPermission("codegen_template_view")
-	public R checkVersion() {
+	public R<?> checkVersion() {
 		return genTemplateService.checkVersion();
 	}
 

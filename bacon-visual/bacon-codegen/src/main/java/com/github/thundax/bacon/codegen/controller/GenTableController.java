@@ -1,20 +1,3 @@
-/*
- *    Copyright (c) 2018-2025, lengleng All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- * Neither the name of the pig4cloud.com developer nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- * Author: lengleng (wangiegie@gmail.com)
- */
-
 package com.github.thundax.bacon.codegen.controller;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -57,11 +40,10 @@ public class GenTableController {
 	 * 分页查询
 	 * @param page 分页对象
 	 * @param table 列属性
-	 * @return
 	 */
 	@GetMapping("/page")
 	@Operation(summary = "分页查询", description = "分页查询")
-	public R getTablePage(Page page, GenTable table) {
+	public R<?> getTablePage(Page page, GenTable table) {
 		return R.ok(tableService.queryTablePage(page, table));
 	}
 
@@ -72,7 +54,7 @@ public class GenTableController {
 	 */
 	@GetMapping("/{id}")
 	@Operation(summary = "通过id查询", description = "通过id查询")
-	public R getTableById(@PathVariable("id") Long id) {
+	public R<?> getTableById(@PathVariable Long id) {
 		return R.ok(tableService.getById(id));
 	}
 
@@ -83,7 +65,7 @@ public class GenTableController {
 	 */
 	@GetMapping("/list/{dsName}")
 	@Operation(summary = "查询数据源所有表", description = "查询数据源所有表")
-	public R listTables(@PathVariable("dsName") String dsName) {
+	public R<?> listTables(@PathVariable String dsName) {
 		return R.ok(tableService.queryTableList(dsName));
 	}
 
@@ -94,7 +76,7 @@ public class GenTableController {
 	 */
 	@GetMapping("/{dsName}/{tableName}")
 	@Operation(summary = "获取表信息", description = "获取表信息")
-	public R<GenTable> getTable(@PathVariable("dsName") String dsName, @PathVariable String tableName) {
+	public R<GenTable> getTable(@PathVariable String dsName, @PathVariable String tableName) {
 		return R.ok(tableService.queryOrBuildTable(dsName, tableName));
 	}
 
@@ -105,7 +87,7 @@ public class GenTableController {
 	 */
 	@GetMapping("/column/{dsName}/{tableName}")
 	@Operation(summary = "查询表Column的DDL语句", description = "查询表Column的DDL语句")
-	public R getTableColumn(@PathVariable("dsName") String dsName, @PathVariable String tableName) throws Exception {
+	public R<?> getTableColumn(@PathVariable String dsName, @PathVariable String tableName) {
 		return R.ok(tableService.queryTableColumn(dsName, tableName));
 	}
 
@@ -116,7 +98,7 @@ public class GenTableController {
 	 */
 	@GetMapping("/ddl/{dsName}/{tableName}")
 	@Operation(summary = "查询表DDL语句", description = "查询表DDL语句")
-	public R getTableDdl(@PathVariable("dsName") String dsName, @PathVariable String tableName) throws Exception {
+	public R<?> getTableDdl(@PathVariable String dsName, @PathVariable String tableName) throws Exception {
 		return R.ok(tableService.queryTableDdl(dsName, tableName));
 	}
 
@@ -127,7 +109,7 @@ public class GenTableController {
 	 */
 	@GetMapping("/sync/{dsName}/{tableName}")
 	@Operation(summary = "同步表信息", description = "同步表信息")
-	public R<GenTable> syncTable(@PathVariable("dsName") String dsName, @PathVariable String tableName) {
+	public R<GenTable> syncTable(@PathVariable String dsName, @PathVariable String tableName) {
 		// 表配置删除
 		tableService.remove(
 				Wrappers.<GenTable>lambdaQuery().eq(GenTable::getDsName, dsName).eq(GenTable::getTableName, tableName));
@@ -146,7 +128,7 @@ public class GenTableController {
 	@PutMapping
 	@SysLog("修改列属性")
 	@Operation(summary = "修改列属性", description = "修改列属性")
-	public R updateTable(@RequestBody GenTable table) {
+	public R<?> updateTable(@RequestBody GenTable table) {
 		return R.ok(tableService.updateById(table));
 	}
 
@@ -158,8 +140,8 @@ public class GenTableController {
 	 */
 	@PutMapping("/field/{dsName}/{tableName}")
 	@Operation(summary = "修改表字段数据", description = "修改表字段数据")
-	public R<String> updateTableField(@PathVariable("dsName") String dsName, @PathVariable String tableName,
-			@RequestBody List<GenTableColumnEntity> tableFieldList) {
+	public R<String> updateTableField(@PathVariable String dsName, @PathVariable String tableName,
+									  @RequestBody List<GenTableColumnEntity> tableFieldList) {
 		tableColumnService.updateTableField(dsName, tableName, tableFieldList);
 		return R.ok();
 	}

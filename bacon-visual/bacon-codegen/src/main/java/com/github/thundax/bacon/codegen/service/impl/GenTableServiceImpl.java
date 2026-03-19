@@ -1,19 +1,3 @@
-/*
- *    Copyright (c) 2018-2025, lengleng All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- * Neither the name of the pig4cloud.com developer nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- * Author: lengleng (wangiegie@gmail.com)
- */
 package com.github.thundax.bacon.codegen.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
@@ -77,7 +61,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
 	public String queryTableDdl(String dsName, String tableName) throws Exception {
 		// 手动切换数据源
 		DynamicDataSourceContextHolder.push(dsName);
-		Table table = ServiceProxy.metadata().table(tableName); // 获取表结构
+		Table<?> table = ServiceProxy.metadata().table(tableName); // 获取表结构
 		table.execute(false);// 不执行SQL
 		ServiceProxy.ddl().create(table);
 		return table.getDdl();// 返回创建表的DDL
@@ -104,7 +88,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
 	 * @return 表
 	 */
 	@Override
-	public IPage queryTablePage(Page<Table> page, GenTable table) {
+	public IPage<?> queryTablePage(Page<Table> page, GenTable table) {
 		// 手动切换数据源
 		DynamicDataSourceContextHolder.push(table.getDsName());
 		CacheProxy.clear();

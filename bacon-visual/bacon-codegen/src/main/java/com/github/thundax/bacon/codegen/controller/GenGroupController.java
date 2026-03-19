@@ -1,20 +1,3 @@
-/*
- *    Copyright (c) 2018-2025, lengleng All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- * Neither the name of the pig4cloud.com developer nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- * Author: lengleng (wangiegie@gmail.com)
- */
-
 package com.github.thundax.bacon.codegen.controller;
 
 import cn.hutool.core.util.StrUtil;
@@ -60,7 +43,7 @@ public class GenGroupController {
 	@GetMapping("/page")
 	@HasPermission("codegen_group_view")
 	@Operation(summary = "分页查询模板分组", description = "分页查询模板分组")
-	public R getGroupPage(Page page, GenGroupEntity genGroup) {
+	public R<?> getGroupPage(Page page, GenGroupEntity genGroup) {
 		LambdaQueryWrapper<GenGroupEntity> wrapper = Wrappers.<GenGroupEntity>lambdaQuery()
 			.like(genGroup.getId() != null, GenGroupEntity::getId, genGroup.getId())
 			.like(StrUtil.isNotEmpty(genGroup.getGroupName()), GenGroupEntity::getGroupName, genGroup.getGroupName());
@@ -75,7 +58,7 @@ public class GenGroupController {
 	@GetMapping("/{id}")
 	@HasPermission("codegen_group_view")
 	@Operation(summary = "通过id查询模板分组", description = "通过id查询模板分组")
-	public R getGroupById(@PathVariable("id") Long id) {
+	public R<?> getGroupById(@PathVariable("id") Long id) {
 		return R.ok(genGroupService.getGroupVoById(id));
 	}
 
@@ -88,7 +71,7 @@ public class GenGroupController {
 	@SysLog("新增模板分组")
 	@HasPermission("codegen_group_add")
 	@Operation(summary = "新增模板分组", description = "新增模板分组")
-	public R saveGroup(@RequestBody TemplateGroupDTO genTemplateGroup) {
+	public R<?> saveGroup(@RequestBody TemplateGroupDTO genTemplateGroup) {
 		genGroupService.saveGenGroup(genTemplateGroup);
 		return R.ok();
 	}
@@ -102,7 +85,7 @@ public class GenGroupController {
 	@SysLog("修改模板分组")
 	@HasPermission("codegen_group_edit")
 	@Operation(summary = "修改模板分组", description = "修改模板分组")
-	public R updateGroup(@RequestBody GroupVO groupVo) {
+	public R<?> updateGroup(@RequestBody GroupVO groupVo) {
 		genGroupService.updateGroupAndTemplateById(groupVo);
 		return R.ok();
 	}
@@ -116,7 +99,7 @@ public class GenGroupController {
 	@SysLog("通过id删除模板分组")
 	@HasPermission("codegen_group_del")
 	@Operation(summary = "通过id删除模板分组", description = "通过id删除模板分组")
-	public R removeGroupByIds(@RequestBody Long[] ids) {
+	public R<?> removeGroupByIds(@RequestBody Long[] ids) {
 		genGroupService.delGroupAndTemplate(ids);
 		return R.ok();
 	}
@@ -140,7 +123,7 @@ public class GenGroupController {
 	 */
 	@GetMapping("/list")
 	@Operation(summary = "查询列表", description = "查询列表")
-	public R listGroups() {
+	public R<?> listGroups() {
 		List<GenGroupEntity> list = genGroupService
 			.list(Wrappers.<GenGroupEntity>lambdaQuery().orderByDesc(GenGroupEntity::getCreateTime));
 		return R.ok(list);

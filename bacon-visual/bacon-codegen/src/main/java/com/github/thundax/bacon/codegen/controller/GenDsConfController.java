@@ -1,19 +1,3 @@
-/*
- *    Copyright (c) 2018-2025, lengleng All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- * Neither the name of the pig4cloud.com developer nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- * Author: lengleng (wangiegie@gmail.com)
- */
 package com.github.thundax.bacon.codegen.controller;
 
 import cn.hutool.core.io.IoUtil;
@@ -62,7 +46,7 @@ public class GenDsConfController {
 	 */
 	@GetMapping("/page")
 	@Operation(summary = "分页查询数据源配置", description = "分页查询数据源配置")
-	public R getDsConfPage(Page page, GenDatasourceConf datasourceConf) {
+	public R<?> getDsConfPage(Page page, GenDatasourceConf datasourceConf) {
 		return R.ok(datasourceConfService.page(page,
 				Wrappers.<GenDatasourceConf>lambdaQuery()
 					.like(StrUtil.isNotBlank(datasourceConf.getDsName()), GenDatasourceConf::getDsName,
@@ -76,7 +60,7 @@ public class GenDsConfController {
 	@Inner(value = false)
 	@GetMapping("/list")
 	@Operation(summary = "查询全部数据源列表", description = "查询全部数据源列表")
-	public R listDsConfs() {
+	public R<?> listDsConfs() {
 		return R.ok(datasourceConfService.list());
 	}
 
@@ -87,7 +71,7 @@ public class GenDsConfController {
 	 */
 	@GetMapping("/{id}")
 	@Operation(summary = "根据ID查询数据源表", description = "根据ID查询数据源表")
-	public R getDsConfById(@PathVariable("id") Long id) {
+	public R<?> getDsConfById(@PathVariable("id") Long id) {
 		return R.ok(datasourceConfService.getById(id));
 	}
 
@@ -99,7 +83,7 @@ public class GenDsConfController {
 	@PostMapping
 	@XssCleanIgnore
 	@Operation(summary = "新增数据源表", description = "新增数据源表")
-	public R saveDsConf(@RequestBody GenDatasourceConf datasourceConf) {
+	public R<?> saveDsConf(@RequestBody GenDatasourceConf datasourceConf) {
 		return R.ok(datasourceConfService.saveDsByEnc(datasourceConf));
 	}
 
@@ -111,7 +95,7 @@ public class GenDsConfController {
 	@PutMapping
 	@XssCleanIgnore
 	@Operation(summary = "修改数据源表", description = "修改数据源表")
-	public R updateDsConf(@RequestBody GenDatasourceConf conf) {
+	public R<?> updateDsConf(@RequestBody GenDatasourceConf conf) {
 		return R.ok(datasourceConfService.updateDsByEnc(conf));
 	}
 
@@ -122,7 +106,7 @@ public class GenDsConfController {
 	 */
 	@DeleteMapping
 	@Operation(summary = "通过id数组删除数据源表", description = "通过id数组删除数据源表")
-	public R removeDsConfByIds(@RequestBody Long[] ids) {
+	public R<?> removeDsConfByIds(@RequestBody Long[] ids) {
 		return R.ok(datasourceConfService.removeByDsId(ids));
 	}
 
